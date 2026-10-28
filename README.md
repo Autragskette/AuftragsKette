@@ -13,3 +13,7 @@ npm run dev
 ```
 
 Dann im Browser http://localhost:3000 öffnen.
+
+## Einrichtung
+
+Anmeldung und Datenbank laufen über Supabase. Schritt-für-Schritt-Anleitung: [SETUP.md](SETUP.md)

@@ -1,5 +1,11 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import Footer from "../components/Footer";
+import AnmeldeFormular from "./AnmeldeFormular";
+
+export const metadata: Metadata = {
+  title: "Anmelden",
+};
 
 export default function Anmelden() {
   return (
@@ -35,46 +41,7 @@ export default function Anmelden() {
             Melde dich mit deinen Zugangsdaten bei AuftragsKette an.
           </p>
 
-          <form className="mt-8 space-y-5">
-            <div>
-              <label
-                htmlFor="email"
-                className="mb-2 block text-sm font-semibold text-gray-700"
-              >
-                E-Mail-Adresse
-              </label>
-
-              <input
-                id="email"
-                type="email"
-                placeholder="name@unternehmen.de"
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="mb-2 block text-sm font-semibold text-gray-700"
-              >
-                Passwort
-              </label>
-
-              <input
-                id="password"
-                type="password"
-                placeholder="Passwort eingeben"
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
-              />
-            </div>
-
-            <button
-              type="button"
-              className="w-full rounded-lg bg-gray-900 px-6 py-3 font-semibold text-white"
-            >
-              Anmelden
-            </button>
-          </form>
+          <AnmeldeFormular />
 
           <div className="mt-8 border-t border-gray-200 pt-6">
             <p className="text-sm leading-6 text-gray-600">
