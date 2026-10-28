@@ -52,6 +52,9 @@ create trigger nach_konto_erstellt
   after insert on auth.users
   for each row execute function public.profil_anlegen();
 
+-- Die Funktion darf nur vom Trigger laufen, nicht über die API aufrufbar sein
+revoke execute on function public.profil_anlegen() from public, anon, authenticated;
+
 -- ─────────────────────────────────────────────────────────────
 -- Kontakte: Geschäftskontakte, die ein Mitglied persönlich kennt
 -- und fachlich einschätzen kann ("Mein Netzwerk")
@@ -106,6 +109,7 @@ create table public.empfehlungen (
 
 create index empfehlungen_von_idx on public.empfehlungen (von_id);
 create index empfehlungen_an_idx  on public.empfehlungen (an_id);
+create index empfehlungen_kontakt_idx on public.empfehlungen (kontakt_id);
 
 alter table public.empfehlungen enable row level security;
 
