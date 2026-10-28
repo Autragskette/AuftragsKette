@@ -33,7 +33,7 @@ Visitenkarte.
   vorher vollständig sein.
 - Ein neues Mitglied gibt **zu Beginn mindestens 2 Kontakte** an.
 - Der 3. Kontakt muss innerhalb einer **Anfangsfrist** folgen
-  (Frist: siehe offene Fragen).
+  (**3 Monate** ab Aufnahme).
 - Das Dashboard zeigt jederzeit an, wie viele bestätigte Kontakte noch
   fehlen und wie lange die Frist noch läuft.
 
@@ -44,7 +44,11 @@ Visitenkarte.
   - wer ihn empfohlen hat,
   - was AuftragsKette ist und wie das Konzept funktioniert,
   - Bitte um Zustimmung, im Netzwerk gelistet zu werden.
-- Der Kontakt bestätigt mit einem Klick (oder lehnt ab).
+- Der Kontakt bestätigt mit einem Klick (oder lehnt ab) und kann die
+  Zustimmung jederzeit über denselben Link widerrufen.
+- Ein bestätigter Kontakt ist **gelisteter Partner** (kein Login, keine
+  Kosten). In der Bestätigung kann er zusätzlich Interesse an einer
+  eigenen Mitgliedschaft angeben.
 - **Erst nach Bestätigung** ist der Kontakt im Netzwerk sichtbar und
   empfehlbar, und erst dann zählt er als Pflichtkontakt.
 - Ohne Bestätigung keine Veröffentlichung (DSGVO).
@@ -96,15 +100,31 @@ Visitenkarte.
 | Stufe | Inhalt | Status |
 |---|---|---|
 | 0 | Startseite, Anmeldung, Dashboard, Mein Netzwerk | fertig, online |
-| 1 | E-Mail-Versand, Kontaktbestätigung, Pflichtkontakte mit Frist | in Arbeit |
-| 2 | Regionale Suche im Netzwerk | geplant |
-| 3 | Empfehlung an Kunden (WhatsApp, E-Mail, Visitenkarte) | geplant |
-| 4 | Nachverfolgung nach 7 Tagen, Erinnerung, Statistik | geplant |
+| 1 | Kontaktbestätigung, Pflichtkontakte mit Frist, Profil | fertig, online |
+| 2 | Regionale Suche im Netzwerk (PLZ-Bereich oder Ort) | fertig, online |
+| 3 | Empfehlung an Kunden (WhatsApp, E-Mail, Visitenkarte mit vCard) | fertig, online |
+| 4 | Nachfrage nach 7 Tagen in der App, Erinnerung an Kunden, Statistik | fertig, online |
+| 4b | Automatische E-Mails (Resend) und tägliche Nachfrage per E-Mail | vorbereitet, Resend-Konto fehlt |
 | 5 | Profile, Einladungen, Zahlung, Veranstaltungen | geplant |
 
-## Offene Fragen
+## Entscheidungen
 
-Werden mit dem Auftraggeber geklärt und hier eingetragen.
+- Bestätigter Kontakt = gelisteter Partner, Mitgliedschaft optional
+- Pflichtkontakte: 2 bestätigte zum Start, der 3. innerhalb von 3 Monaten
+- E-Mail-Dienst: Resend. Bis er eingerichtet ist, verschicken Mitglieder
+  Einladungen, Empfehlungen und Erinnerungen über WhatsApp oder ihre
+  eigene E-Mail-App direkt aus der App heraus.
+- Nachfrage beim Kunden nur, wenn der Kunde zugestimmt hat (DSGVO)
+
+## Offene Punkte
+
+- Resend-Konto und eigene Domain (z. B. auftragskette.de) für den
+  automatischen Versand; dann `RESEND_API_KEY` und `EMAIL_ABSENDER`
+  bei Vercel eintragen
+- Automatische tägliche Nachfrage per E-Mail (Vercel Cron), sobald Resend
+  läuft
+- Umkreissuche in km (aktuell PLZ-Bereich bzw. Ort)
+- Übersicht, welche Gewerke in welchen Regionen fehlen
 
 ## Technik
 

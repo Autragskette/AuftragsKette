@@ -5,6 +5,7 @@ const STIL: Record<string, { text: string; klassen: string }> = {
   offen: { text: "Offen", klassen: "bg-gray-100 text-gray-700" },
   auftrag: { text: "Auftrag erhalten", klassen: "bg-green-50 text-green-800" },
   kein_auftrag: { text: "Kein Auftrag", klassen: "bg-gray-100 text-gray-600" },
+  faellig: { text: "Nachfrage fällig", klassen: "bg-amber-50 text-amber-800" },
 };
 
 export default function StatusPlakette({ status }: { status: string }) {
