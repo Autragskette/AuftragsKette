@@ -3,6 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { sendeEmail } from "@/lib/email";
+import { einladungsText } from "@/lib/texte";
+import { anzeigeName, type Profil } from "@/lib/mitglied";
+import { basisUrl } from "@/lib/url";
 
 export type KontaktFelder = {
   name: string;
@@ -10,6 +14,8 @@ export type KontaktFelder = {
   leistung: string;
   email: string;
   telefon: string;
+  plz: string;
+  ort: string;
   notiz: string;
 };
 
@@ -27,6 +33,8 @@ const MAX_LAENGE: Record<keyof KontaktFelder, number> = {
   leistung: 200,
   email: 200,
   telefon: 50,
+  plz: 5,
+  ort: 80,
   notiz: 2000,
 };
 
@@ -41,6 +49,8 @@ function felderAuslesen(formData: FormData): KontaktFelder {
     leistung: lies("leistung"),
     email: lies("email"),
     telefon: lies("telefon"),
+    plz: lies("plz"),
+    ort: lies("ort"),
     notiz: lies("notiz"),
   };
 }
@@ -55,6 +65,9 @@ function pruefen(werte: KontaktFelder): KontaktStatus["feldFehler"] {
     fehler.email = "Diese E-Mail-Adresse sieht nicht richtig aus.";
   if (!werte.email && !werte.telefon)
     fehler.telefon = "Bitte E-Mail-Adresse oder Telefonnummer angeben.";
+  if (!/^\d{5}$/.test(werte.plz))
+    fehler.plz = "Bitte eine fünfstellige Postleitzahl angeben.";
+  if (!werte.ort) fehler.ort = "Bitte den Ort angeben.";
 
   (Object.keys(MAX_LAENGE) as (keyof KontaktFelder)[]).forEach((feld) => {
     if (!fehler[feld] && werte[feld].length > MAX_LAENGE[feld]) {
@@ -92,17 +105,26 @@ export async function kontaktSpeichern(
   } = await supabase.auth.getUser();
   if (!user) redirect("/anmelden");
 
-  const { error } = id
-    ? await supabase
-        .from("kontakte")
-        .update(werte)
-        .eq("id", id)
-        .eq("besitzer_id", user.id)
-    : await supabase
-        .from("kontakte")
-        .insert({ ...werte, besitzer_id: user.id });
+  let kontaktId = id;
+  let error;
 
-  if (error) {
+  if (id) {
+    ({ error } = await supabase
+      .from("kontakte")
+      .update(werte)
+      .eq("id", id)
+      .eq("besitzer_id", user.id));
+  } else {
+    const antwort = await supabase
+      .from("kontakte")
+      .insert({ ...werte, besitzer_id: user.id })
+      .select("id")
+      .single();
+    error = antwort.error;
+    kontaktId = antwort.data?.id ?? null;
+  }
+
+  if (error || !kontaktId) {
     console.error("Kontakt speichern fehlgeschlagen:", error);
     return {
       fehler: "Der Kontakt konnte nicht gespeichert werden. Bitte erneut versuchen.",
@@ -112,8 +134,64 @@ export async function kontaktSpeichern(
     };
   }
 
+  // Bei neuem Kontakt (oder geänderter E-Mail) automatisch einladen, falls möglich
+  const { data: stand } = await supabase
+    .from("kontakte")
+    .select("status, email, name, einladung_token")
+    .eq("id", kontaktId)
+    .single();
+
+  let versendet = false;
+  if (stand && stand.status === "eingeladen" && stand.email) {
+    versendet = await einladungVersenden(user.id, stand);
+  }
+
   revalidatePath("/dashboard", "layout");
-  redirect("/dashboard/netzwerk");
+  redirect(`/dashboard/netzwerk/${kontaktId}?gespeichert=1${versendet ? "&versendet=1" : ""}`);
+}
+
+async function einladungVersenden(
+  userId: string,
+  kontakt: { email: string; name: string; einladung_token: string },
+) {
+  const supabase = await createClient();
+  const { data: profil } = await supabase
+    .from("profile")
+    .select("vorname, nachname, firma, branche, plz, ort, telefon, erstellt_am")
+    .eq("id", userId)
+    .single();
+
+  const absender = anzeigeName((profil ?? {}) as Profil);
+  const link = `${await basisUrl()}/bestaetigen/${kontakt.einladung_token}`;
+
+  return sendeEmail({
+    an: kontakt.email,
+    betreff: `${absender} hat dich bei AuftragsKette empfohlen`,
+    text: einladungsText({ kontaktName: kontakt.name, absender, link }),
+  });
+}
+
+/** Einladung erneut per E-Mail senden (nur wenn E-Mail-Versand eingerichtet ist). */
+export async function einladungErneutSenden(id: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/anmelden");
+
+  const { data: kontakt } = await supabase
+    .from("kontakte")
+    .select("email, name, einladung_token, status")
+    .eq("id", id)
+    .eq("besitzer_id", user.id)
+    .single();
+
+  const versendet =
+    kontakt && kontakt.status !== "bestaetigt" && kontakt.email
+      ? await einladungVersenden(user.id, kontakt)
+      : false;
+
+  redirect(`/dashboard/netzwerk/${id}?${versendet ? "versendet=1" : "nichtversendet=1"}`);
 }
 
 export async function kontaktLoeschen(id: string) {

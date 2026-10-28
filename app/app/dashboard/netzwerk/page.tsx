@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import StatusPlakette from "@/app/components/StatusPlakette";
 
 export const metadata: Metadata = {
   title: "Mein Netzwerk",
@@ -13,6 +14,9 @@ type Kontakt = {
   leistung: string;
   email: string;
   telefon: string;
+  plz: string;
+  ort: string;
+  status: string;
 };
 
 export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk">) {
@@ -27,13 +31,15 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
 
   const { data, error } = await supabase
     .from("kontakte")
-    .select("id, name, firma, leistung, email, telefon")
+    .select("id, name, firma, leistung, email, telefon, plz, ort, status")
     .eq("besitzer_id", user.id)
     .order("name", { ascending: true });
 
   const alle = (data ?? []) as Kontakt[];
   const kontakte = suche ? alle.filter((k) => passt(k, suche)) : alle;
-  const fehlend = Math.max(0, 3 - alle.length);
+  const bestaetigt = alle.filter((k) => k.status === "bestaetigt").length;
+  const wartend = alle.filter((k) => k.status === "eingeladen").length;
+  const fehlend = Math.max(0, 3 - bestaetigt);
 
   return (
     <>
@@ -59,8 +65,9 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
 
       {fehlend > 0 && (
         <div className="mt-8 rounded-xl border border-blue-200 bg-blue-50 p-5 text-sm leading-6 text-blue-900">
-          Für die Aufnahme brauchst du mindestens drei Kontakte. Noch{" "}
-          <strong>{fehlend}</strong> {fehlend === 1 ? "fehlt" : "fehlen"}.
+          <strong>{bestaetigt} von 3</strong> Pflichtkontakten bestätigt.
+          {wartend > 0 && <> {wartend} {wartend === 1 ? "wartet" : "warten"} noch auf Zustimmung.</>}
+          {" "}Zum Start brauchst du 2 bestätigte Kontakte, den 3. innerhalb von 3 Monaten.
         </div>
       )}
 
@@ -126,14 +133,13 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
                       <p className="truncate text-sm text-gray-500">{k.firma}</p>
                     )}
                   </div>
-                  <span className="shrink-0 text-sm font-medium text-blue-600">
-                    Bearbeiten
-                  </span>
+                  <StatusPlakette status={k.status} />
                 </div>
 
                 <p className="mt-3 text-sm text-gray-700">{k.leistung}</p>
 
                 <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
+                  {(k.plz || k.ort) && <span>{`${k.plz} ${k.ort}`.trim()}</span>}
                   {k.email && <span className="truncate">{k.email}</span>}
                   {k.telefon && <span>{k.telefon}</span>}
                 </div>
@@ -148,7 +154,7 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
 
 function passt(k: Kontakt, suche: string) {
   const s = suche.toLocaleLowerCase("de");
-  return [k.name, k.firma, k.leistung].some((wert) =>
+  return [k.name, k.firma, k.leistung, k.ort, k.plz].some((wert) =>
     wert.toLocaleLowerCase("de").includes(s),
   );
 }

@@ -6,8 +6,9 @@ import { usePathname } from "next/navigation";
 const MENUE: { name: string; href: string | null }[] = [
   { name: "Übersicht", href: "/dashboard" },
   { name: "Mein Netzwerk", href: "/dashboard/netzwerk" },
-  { name: "Empfehlungen", href: null },
-  { name: "Mitglieder", href: null },
+  { name: "Suchen & Empfehlen", href: "/dashboard/suche" },
+  { name: "Meine Empfehlungen", href: "/dashboard/empfehlungen" },
+  { name: "Mein Profil", href: "/dashboard/profil" },
   { name: "Veranstaltungen", href: null },
 ];
 

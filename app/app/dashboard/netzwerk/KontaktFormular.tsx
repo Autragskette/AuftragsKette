@@ -14,6 +14,8 @@ const LEER: KontaktFelder = {
   leistung: "",
   email: "",
   telefon: "",
+  plz: "",
+  ort: "",
   notiz: "",
 };
 
@@ -94,6 +96,31 @@ export default function KontaktFormular({
         />
       </div>
 
+      <div className="grid gap-5 sm:grid-cols-[140px_1fr]">
+        <Feld
+          name="plz"
+          label="PLZ"
+          pflicht
+          versuch={v}
+          wert={w.plz}
+          fehler={f.plz}
+          placeholder="12345"
+          autoComplete="postal-code"
+          inputMode="numeric"
+        />
+
+        <Feld
+          name="ort"
+          label="Ort"
+          pflicht
+          versuch={v}
+          wert={w.ort}
+          fehler={f.ort}
+          placeholder="z. B. Münster"
+          autoComplete="address-level2"
+        />
+      </div>
+
       <div>
         <label
           htmlFor="notiz"
@@ -163,6 +190,7 @@ function Feld({
   type = "text",
   placeholder,
   autoComplete,
+  inputMode,
 }: {
   name: keyof KontaktFelder;
   label: string;
@@ -173,6 +201,7 @@ function Feld({
   type?: string;
   placeholder?: string;
   autoComplete?: string;
+  inputMode?: "numeric" | "text";
 }) {
   return (
     <div>
@@ -192,6 +221,7 @@ function Feld({
         defaultValue={wert}
         placeholder={placeholder}
         autoComplete={autoComplete}
+        inputMode={inputMode}
         aria-invalid={Boolean(fehler)}
         className={eingabeKlassen(Boolean(fehler))}
       />
