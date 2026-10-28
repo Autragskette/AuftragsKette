@@ -1,19 +1,22 @@
+import Link from "next/link";
+import Footer from "../components/Footer";
+
 export default function Anmelden() {
   return (
     <main className="min-h-screen bg-gray-50">
       {/* Kopfbereich */}
       <header className="border-b border-gray-200 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-          <a href="/" className="text-xl font-bold text-blue-600">
+          <Link href="/" className="text-xl font-bold text-blue-600">
             AuftragsKette
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/"
             className="text-sm font-medium text-gray-600 hover:text-gray-900"
           >
             Zurück zur Startseite
-          </a>
+          </Link>
         </div>
       </header>
 
@@ -82,6 +85,8 @@ export default function Anmelden() {
           </div>
         </div>
       </section>
+
+      <Footer />
     </main>
   );
 }

@@ -1,12 +1,14 @@
+import Link from "next/link";
+
 export default function Dashboard() {
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900">
       {/* Kopfzeile */}
       <header className="border-b border-gray-200 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <a href="/" className="text-xl font-bold text-blue-600">
+          <Link href="/" className="text-xl font-bold text-blue-600">
             AuftragsKette
-          </a>
+          </Link>
 
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-500">Mitgliederbereich</span>

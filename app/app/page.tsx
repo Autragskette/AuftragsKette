@@ -1,28 +1,37 @@
+import Link from "next/link";
+import Footer from "./components/Footer";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-white text-gray-900">
       {/* Navigation */}
       <header className="border-b border-gray-100">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-          <div className="text-xl font-bold text-blue-600">
+          <Link href="/" className="text-xl font-bold text-blue-600">
             AuftragsKette
-          </div>
+          </Link>
 
           <nav className="flex items-center gap-7 text-sm font-medium">
-            <a href="#so-funktionierts" className="hover:text-blue-600">
+            <a
+              href="#so-funktionierts"
+              className="hidden hover:text-blue-600 sm:inline"
+            >
               So funktioniert&apos;s
             </a>
 
-            <a href="#mitgliedschaft" className="hover:text-blue-600">
+            <a
+              href="#mitgliedschaft"
+              className="hidden hover:text-blue-600 sm:inline"
+            >
               Mitgliedschaft
             </a>
 
-            <a
-              href="#anmelden"
+            <Link
+              href="/anmelden"
               className="rounded-lg bg-gray-900 px-5 py-2.5 text-white"
             >
               Anmelden
-            </a>
+            </Link>
           </nav>
         </div>
       </header>
@@ -33,7 +42,7 @@ export default function Home() {
           AuftragsKette
         </p>
 
-        <h1 className="max-w-3xl text-5xl font-bold tracking-tight">
+        <h1 className="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
           Gute Geschäftskontakte.
           <br />
           Echte Empfehlungen.
@@ -48,7 +57,7 @@ export default function Home() {
           gegenseitig weiterempfehlen.
         </p>
 
-        <div className="mt-10 flex gap-4">
+        <div className="mt-10 flex flex-wrap gap-4">
           <a
             href="#so-funktionierts"
             className="rounded-lg bg-gray-900 px-6 py-3 font-semibold text-white"
@@ -57,13 +66,15 @@ export default function Home() {
           </a>
 
           <a
-            href="#anmelden"
+            href="#mitgliedschaft"
             className="rounded-lg border border-gray-300 px-6 py-3 font-semibold"
           >
             Mitglied werden
           </a>
         </div>
-      </section>      {/* So funktioniert AuftragsKette */}
+      </section>
+
+      {/* So funktioniert AuftragsKette */}
       <section
         id="so-funktionierts"
         className="border-t border-gray-100 bg-gray-50"
@@ -125,7 +136,9 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>      {/* Mitgliedschaft */}
+      </section>
+
+      {/* Mitgliedschaft */}
       <section id="mitgliedschaft" className="bg-white">
         <div className="mx-auto max-w-6xl px-6 py-24">
           <div className="grid items-start gap-12 md:grid-cols-2">
@@ -179,16 +192,18 @@ export default function Home() {
                 </p>
               </div>
 
-              <a
-                href="#anmelden"
+              <Link
+                href="/anmelden"
                 className="mt-8 block rounded-lg bg-gray-900 px-6 py-3 text-center font-semibold text-white"
               >
                 Zugang zur AuftragsKette
-              </a>
+              </Link>
             </div>
           </div>
         </div>
       </section>
+
+      <Footer />
     </main>
   );
 }
