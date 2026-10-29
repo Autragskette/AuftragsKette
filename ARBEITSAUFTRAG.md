@@ -189,6 +189,11 @@ Rangliste „Top im Netzwerk“: aktivste Mitglieder und meistempfohlene Partner
 
 ## Technik
 
+- **Mobile first**: Mitglieder nutzen die App fast nur am Handy. Jede neue
+  Seite zuerst für Handybreite gestalten (untere Navigationsleiste, große
+  Tippflächen, Eingabefelder mind. 16px). Die App ist als Web-App auf dem
+  Startbildschirm installierbar (`app/manifest.ts`).
+
 - Next.js + Tailwind im Ordner `app/`
 - Supabase (Datenbank, Anmeldung), Region EU (Irland)
 - Hosting: Vercel, Funktionen in Dublin (`dub1`), automatische
