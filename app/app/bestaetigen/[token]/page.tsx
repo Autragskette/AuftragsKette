@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { supabaseEingerichtet } from "@/lib/supabase/config";
 import Footer from "@/app/components/Footer";
 import { einladungBeantworten } from "./actions";
-import { TARIFE } from "@/lib/preise";
+import { KENNENLERN_EMPFEHLUNGEN, KENNENLERN_MONATE, KENNENLERN_MONATE_MAX, TARIFE } from "@/lib/preise";
 
 export const metadata: Metadata = {
   title: "Empfehlung bestätigen",
@@ -147,12 +147,18 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
               <p className="font-semibold text-gray-900">Was kostet das?</p>
               <p className="mt-1">
                 Für dich ist das zunächst ganz kostenlos: Die ersten
-                Empfehlungen bzw. die ersten drei Monate kannst du
+                Empfehlungen bzw. bis zu sechs Monate kannst du
                 unverbindlich ausprobieren. Danach entscheidest du selbst, ob
                 du Mitglied werden möchtest, im Jahresabo für {TARIFE[0].preis} € oder
                 im Halbjahresabo für {TARIFE[1].preis} € im Monat (netto, zzgl.
-                MwSt.). Ohne Mitgliedschaft endet deine Listung automatisch, es
+                MwSt.). Ohne Mitgliedschaft wird deine Listung pausiert, es
                 entstehen keine Kosten.
+              </p>
+              <p className="mt-2 text-xs leading-5 text-slate-500">
+                Genau gilt: Die kostenlose Phase endet mit der {KENNENLERN_EMPFEHLUNGEN}. Empfehlung
+                an einen Kunden, spätestens {KENNENLERN_MONATE} Monate nach deiner Zustimmung. Bekommst
+                du in dieser Zeit noch keine Empfehlung, verlängert sie sich, bis
+                die erste kommt, längstens auf {KENNENLERN_MONATE_MAX} Monate.
               </p>
             </div>
 

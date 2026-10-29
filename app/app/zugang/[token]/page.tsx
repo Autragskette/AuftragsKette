@@ -5,7 +5,7 @@ import Logo from "@/app/components/Logo";
 import Footer from "@/app/components/Footer";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseEingerichtet } from "@/lib/supabase/config";
-import { KENNENLERN_MONATE } from "@/lib/preise";
+import { KENNENLERN_MONATE_MAX } from "@/lib/preise";
 import ZugangFormular from "./ZugangFormular";
 
 export const metadata: Metadata = {
@@ -70,7 +70,7 @@ export default async function Zugang(props: PageProps<"/zugang/[token]">) {
               </p>
               <ul className="mt-4 space-y-1.5 text-sm leading-6 text-slate-700">
                 <li>✓ Benachrichtigung aufs Handy, sobald du empfohlen wirst</li>
-                <li>✓ Die ersten Empfehlungen bzw. die ersten {KENNENLERN_MONATE} Monate ganz kostenlos, ohne Zahlungsdaten</li>
+                <li>✓ Die ersten Empfehlungen bzw. bis zu {KENNENLERN_MONATE_MAX} Monate ganz kostenlos, ohne Zahlungsdaten</li>
                 <li>✓ Danach entscheidest du selbst, ob du Mitglied wirst</li>
               </ul>
               {v.email ? (

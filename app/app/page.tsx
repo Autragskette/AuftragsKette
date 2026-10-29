@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Footer from "./components/Footer";
 import Logo from "./components/Logo";
-import { KENNENLERN_MONATE, TARIFE } from "@/lib/preise";
+import { KENNENLERN_MONATE_MAX, TARIFE } from "@/lib/preise";
 
 export default function Home() {
   return (
@@ -224,7 +224,7 @@ export default function Home() {
               </div>
               <p className="mt-3 text-xs text-gray-500">
                 Alle Preise netto zzgl. MwSt. Empfohlene Partner testen die
-                ersten Empfehlungen bzw. die ersten {KENNENLERN_MONATE} Monate kostenlos.
+                ersten Empfehlungen bzw. bis zu {KENNENLERN_MONATE_MAX} Monate kostenlos.
               </p>
 
               <div className="mt-8 space-y-4 text-gray-700">
