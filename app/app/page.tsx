@@ -13,10 +13,10 @@ export default function Home() {
 
           <nav className="flex items-center gap-7 text-sm font-medium">
             <a
-              href="#so-funktionierts"
+              href="#netzwerk"
               className="hidden hover:text-blue-600 sm:inline"
             >
-              So funktioniert&apos;s
+              Netzwerk
             </a>
 
             <a
@@ -43,26 +43,30 @@ export default function Home() {
         </p>
 
         <h1 className="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
-          Gute Geschäftskontakte.
+          Das Unternehmernetzwerk,
           <br />
-          Echte Empfehlungen.
-          <br />
-          Neue Aufträge.
+          aus dem Aufträge entstehen.
         </h1>
 
         <p className="mt-8 max-w-2xl text-xl leading-8 text-gray-600">
-          AuftragsKette ist ein geschlossenes Empfehlungsnetzwerk für
-          Unternehmer und Selbstständige, die sich persönlich kennen,
-          die Qualität ihrer Kontakte einschätzen können und sich
-          gegenseitig weiterempfehlen.
+          AuftragsKette ist in erster Linie ein großes, geschlossenes
+          Netzwerk für Unternehmer und Selbstständige: Wir vernetzen uns in
+          Online-Meetings und auf Branchentreffen, tauschen Erfahrungen aus
+          und lernen voneinander.
+        </p>
+
+        <p className="mt-4 max-w-2xl text-xl leading-8 text-gray-600">
+          Der besondere Mehrwert: Weil sich unsere Mitglieder persönlich
+          kennen, empfehlen sie sich gegenseitig an ihre Kunden weiter. So
+          entstehen aus echten Beziehungen neue Aufträge.
         </p>
 
         <div className="mt-10 flex flex-wrap gap-4">
           <a
-            href="#so-funktionierts"
+            href="#netzwerk"
             className="rounded-lg bg-gray-900 px-6 py-3 font-semibold text-white"
           >
-            So funktioniert AuftragsKette
+            Was dich erwartet
           </a>
 
           <a
@@ -74,6 +78,52 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Unternehmernetzwerk */}
+      <section id="netzwerk" className="border-t border-gray-100 bg-white">
+        <div className="mx-auto max-w-6xl px-6 py-24">
+          <p className="mb-3 font-semibold text-blue-600">
+            Mehr als Aufträge
+          </p>
+
+          <h2 className="max-w-2xl text-4xl font-bold tracking-tight">
+            Ein Netzwerk, in dem Unternehmer zusammenwachsen.
+          </h2>
+
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-gray-600">
+            Bei AuftragsKette geht es nicht nur ums Geschäft. Hier triffst du
+            Menschen, die vor den gleichen Herausforderungen stehen wie du,
+            und baust Beziehungen auf, die über einzelne Aufträge hinaus
+            tragen.
+          </p>
+
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                titel: "Online-Meetings",
+                text: "Regelmäßige virtuelle Treffen zum Netzwerken, Kennenlernen und Austauschen, bequem vom Büro oder unterwegs.",
+              },
+              {
+                titel: "Branchentreffen",
+                text: "Persönliche Treffen in deiner Region und branchenübergreifend, bei denen aus Kontakten echte Beziehungen werden.",
+              },
+              {
+                titel: "Erfahrungsaustausch",
+                text: "Von anderen Unternehmern lernen: Tipps, Kontakte und ehrliche Einschätzungen aus der Praxis.",
+              },
+              {
+                titel: "Empfehlungen & Aufträge",
+                text: "Der Mehrwert obendrauf: Mitglieder empfehlen sich gegenseitig an Kunden, ganz ohne Provision.",
+              },
+            ].map((punkt) => (
+              <div key={punkt.titel} className="rounded-xl border border-gray-200 bg-gray-50 p-7">
+                <h3 className="text-lg font-bold">{punkt.titel}</h3>
+                <p className="mt-3 leading-7 text-gray-600">{punkt.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* So funktioniert AuftragsKette */}
       <section
         id="so-funktionierts"
@@ -81,7 +131,7 @@ export default function Home() {
       >
         <div className="mx-auto max-w-6xl px-6 py-24">
           <p className="mb-3 font-semibold text-blue-600">
-            So funktioniert&apos;s
+            So entstehen Aufträge
           </p>
 
           <h2 className="max-w-2xl text-4xl font-bold tracking-tight">
@@ -171,10 +221,11 @@ export default function Home() {
               </div>
 
               <div className="mt-8 space-y-4 text-gray-700">
-                <p>✓ Zugang zum geschlossenen Mitgliedernetzwerk</p>
-                <p>✓ Persönliche Empfehlungen innerhalb des Netzwerks</p>
+                <p>✓ Zugang zum geschlossenen Unternehmernetzwerk</p>
+                <p>✓ Online-Meetings zum Netzwerken</p>
+                <p>✓ Branchentreffen und Veranstaltungen für Mitglieder</p>
+                <p>✓ Persönliche Empfehlungen an Kunden und neue Aufträge</p>
                 <p>✓ Eigenes Mitglieder- und Unternehmensprofil</p>
-                <p>✓ Zugang zu Veranstaltungen für Mitglieder</p>
                 <p>✓ Keine Empfehlungsprovision</p>
               </div>
 

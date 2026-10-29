@@ -89,7 +89,7 @@ export default async function Visitenkarte(props: PageProps<"/k/[token]">) {
             <Link href="/" className="font-semibold text-gray-500">
               AuftragsKette
             </Link>
-            , das geschlossene Empfehlungsnetzwerk.
+            , dem geschlossenen Unternehmernetzwerk.
             <br />
             <Link href="/impressum" className="underline">Impressum</Link>
             {" · "}

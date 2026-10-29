@@ -12,8 +12,11 @@ https://auftragskette.vercel.app veröffentlicht und dort getestet.
 
 ## Grundidee
 
-AuftragsKette ist ein **geschlossenes Empfehlungsnetzwerk** für Unternehmer
-und Selbstständige. Mitglieder bringen Geschäftskontakte ein, die sie
+AuftragsKette ist **in erster Linie ein großes, geschlossenes
+Unternehmernetzwerk** für Unternehmer und Selbstständige: mit
+Online-Meetings zum Netzwerken, Branchentreffen und Erfahrungsaustausch.
+Der besondere Mehrwert ist, dass daraus Aufträge entstehen. So muss die App
+nach außen auftreten (Startseite, Einladungen, Bestätigungsseite). Mitglieder bringen Geschäftskontakte ein, die sie
 persönlich kennen und fachlich einschätzen können. Braucht ein Kunde eine
 Leistung, empfiehlt ein Mitglied gezielt einen passenden Kontakt aus der
 Region. Aus Empfehlungen entstehen Aufträge.

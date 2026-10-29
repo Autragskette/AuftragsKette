@@ -98,10 +98,11 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
             <div className="mt-6 space-y-3 rounded-xl bg-gray-50 p-5 text-sm leading-6 text-gray-700">
               <p className="font-semibold text-gray-900">So funktioniert AuftragsKette</p>
               <p>
-                AuftragsKette ist ein geschlossenes Empfehlungsnetzwerk für
-                Unternehmer und Selbstständige. Mitglieder empfehlen ihren
-                Kunden nur Betriebe, die sie persönlich kennen und deren Arbeit
-                sie einschätzen können.
+                AuftragsKette ist ein geschlossenes Unternehmernetzwerk für
+                Unternehmer und Selbstständige, mit Online-Meetings,
+                Branchentreffen und Erfahrungsaustausch. Der besondere
+                Mehrwert: Mitglieder empfehlen ihren Kunden Betriebe, die sie
+                persönlich kennen und deren Arbeit sie einschätzen können.
               </p>
               <p>
                 Fragt ein Kunde zum Beispiel einen Fotografen nach einem

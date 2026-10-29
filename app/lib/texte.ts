@@ -16,7 +16,7 @@ export function einladungsText({
 
 ${absender} hat dich als vertrauenswürdigen Geschäftskontakt empfohlen und lädt dich ein, Teil der AuftragsKette zu werden.
 
-AuftragsKette ist ein geschlossenes Empfehlungsnetzwerk für Unternehmer und Selbstständige. Mitglieder empfehlen ihren Kunden nur Betriebe, die sie persönlich kennen und deren Arbeit sie einschätzen können. So entstehen neue Aufträge über echte Empfehlungen, ohne Provision.
+AuftragsKette ist ein geschlossenes Unternehmernetzwerk für Unternehmer und Selbstständige: mit Online-Meetings, Branchentreffen und Erfahrungsaustausch. Der Mehrwert: Mitglieder empfehlen ihren Kunden Betriebe, die sie persönlich kennen und deren Arbeit sie einschätzen können. So entstehen neue Aufträge über echte Empfehlungen, ohne Provision.
 
 Damit du im Netzwerk gelistet und weiterempfohlen werden darfst, brauchen wir kurz deine Zustimmung:
 ${link}

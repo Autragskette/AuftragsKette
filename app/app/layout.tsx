@@ -14,11 +14,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "AuftragsKette – Das geschlossene Empfehlungsnetzwerk",
+    default: "AuftragsKette – Das Unternehmernetzwerk, aus dem Aufträge entstehen",
     template: "%s | AuftragsKette",
   },
   description:
-    "AuftragsKette ist ein geschlossenes Empfehlungsnetzwerk für Unternehmer und Selbstständige, die sich persönlich kennen und gegenseitig weiterempfehlen.",
+    "AuftragsKette ist ein geschlossenes Unternehmernetzwerk mit Online-Meetings, Branchentreffen und gegenseitigen Empfehlungen, aus denen neue Aufträge entstehen.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
