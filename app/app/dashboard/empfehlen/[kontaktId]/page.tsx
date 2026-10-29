@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { aktuellesMitglied } from "@/lib/mitglied";
+import ProfilFehlt from "@/app/components/ProfilFehlt";
 import EmpfehlungFormular from "./EmpfehlungFormular";
 
 export const metadata: Metadata = {
@@ -28,7 +29,7 @@ export default async function Empfehlen(props: PageProps<"/dashboard/empfehlen/[
   const { kontaktId } = await props.params;
   if (!UUID_MUSTER.test(kontaktId)) notFound();
 
-  const { supabase } = await aktuellesMitglied();
+  const { supabase, profilVollstaendig } = await aktuellesMitglied();
   const { data } = await supabase.rpc("netzwerk_kontakt", { p_id: kontaktId });
   const partner = (Array.isArray(data) ? data[0] : data) as Partner | undefined;
   if (!partner) notFound();
@@ -59,7 +60,11 @@ export default async function Empfehlen(props: PageProps<"/dashboard/empfehlen/[
       </p>
 
       <div className="mt-4">
-        <EmpfehlungFormular kontaktId={partner.id} />
+        {profilVollstaendig ? (
+          <EmpfehlungFormular kontaktId={partner.id} />
+        ) : (
+          <ProfilFehlt zurueck={`/dashboard/empfehlen/${partner.id}`} was="der Empfehlung" />
+        )}
       </div>
     </div>
   );

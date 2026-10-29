@@ -17,13 +17,13 @@ const FELDER: { name: keyof Werte; label: string; placeholder?: string; breit?: 
   { name: "vorname", label: "Vorname *" },
   { name: "nachname", label: "Nachname *" },
   { name: "firma", label: "Firma", placeholder: "z. B. Lichtblick Fotografie", breit: true },
-  { name: "branche", label: "Gewerk / Branche", placeholder: "z. B. Hochzeitsfotografie", breit: true },
+  { name: "branche", label: "Tätigkeit / Gewerk", placeholder: "z. B. Fotograf, Freelancer Webdesign", breit: true },
   { name: "plz", label: "PLZ", placeholder: "12345" },
   { name: "ort", label: "Ort" },
   { name: "telefon", label: "Telefon", breit: true },
 ];
 
-export default function ProfilFormular({ werte }: { werte: Werte }) {
+export default function ProfilFormular({ werte, zurueck }: { werte: Werte; zurueck?: string }) {
   const [status, aktion, laeuft] = useActionState(profilSpeichern, {
     fehler: null,
     gespeichert: false,
@@ -31,6 +31,7 @@ export default function ProfilFormular({ werte }: { werte: Werte }) {
 
   return (
     <form action={aktion} className="grid gap-5 rounded-xl border border-gray-200 bg-white p-6 sm:grid-cols-2">
+      {zurueck && <input type="hidden" name="zurueck" value={zurueck} />}
       {FELDER.map((feld) => (
         <div key={feld.name} className={feld.breit ? "sm:col-span-2" : ""}>
           <label htmlFor={feld.name} className="mb-2 block text-sm font-semibold text-gray-700">
@@ -63,7 +64,7 @@ export default function ProfilFormular({ werte }: { werte: Werte }) {
           disabled={laeuft}
           className="rounded-lg bg-gray-900 px-6 py-3 font-semibold text-white disabled:opacity-60"
         >
-          {laeuft ? "Wird gespeichert …" : "Profil speichern"}
+          {laeuft ? "Wird gespeichert …" : zurueck ? "Speichern und weiter" : "Profil speichern"}
         </button>
       </div>
     </form>

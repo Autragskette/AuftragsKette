@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { sendeEmail } from "@/lib/email";
-import { anzeigeName, type Profil } from "@/lib/mitglied";
+import { anzeigeName, profilVollstaendig, type Profil } from "@/lib/mitglied";
 
 export type EmpfehlungStatus = { fehler: string | null };
 
@@ -34,6 +34,15 @@ export async function empfehlungAnlegen(
   } = await supabase.auth.getUser();
   if (!user) redirect("/anmelden");
 
+  const { data: ich } = await supabase
+    .from("profile")
+    .select("vorname, nachname, firma, branche, plz, ort, telefon, erstellt_am")
+    .eq("id", user.id)
+    .single();
+  if (!ich || !profilVollstaendig(ich)) {
+    return { fehler: "Bitte trage zuerst deinen Namen in deinem Profil ein, damit der Kunde sieht, wer empfiehlt." };
+  }
+
   const { data: treffer } = await supabase.rpc("netzwerk_kontakt", { p_id: kontaktId });
   const partner = (Array.isArray(treffer) ? treffer[0] : treffer) as Partner | undefined;
   if (!partner) return { fehler: "Dieser Partner ist nicht (mehr) im Netzwerk verfügbar." };
@@ -60,12 +69,7 @@ export async function empfehlungAnlegen(
 
   // Partner informieren (nur wenn automatischer E-Mail-Versand eingerichtet ist)
   if (partner.email) {
-    const { data: profil } = await supabase
-      .from("profile")
-      .select("vorname, nachname, firma, branche, plz, ort, telefon, erstellt_am")
-      .eq("id", user.id)
-      .single();
-    const absender = anzeigeName((profil ?? {}) as Profil, user.email);
+    const absender = anzeigeName(ich as Profil);
     await sendeEmail({
       an: partner.email,
       betreff: `Neue Empfehlung über AuftragsKette`,

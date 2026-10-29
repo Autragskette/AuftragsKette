@@ -20,6 +20,8 @@ type Einladung = {
   leistung: string;
   status: "eingeladen" | "bestaetigt" | "abgelehnt";
   empfohlen_von: string;
+  /** Nur der Name, ohne Firma (ab Migration 0004) */
+  empfohlen_von_name?: string;
 };
 
 export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]">) {
@@ -87,9 +89,10 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
               Hallo {einladung.kontakt_name.split(" ")[0]},
             </h1>
             <p className="mt-4 leading-7 text-gray-700">
-              <strong>{einladung.empfohlen_von}</strong> hat dich bei
-              AuftragsKette als vertrauenswürdigen Geschäftskontakt für{" "}
-              <strong>{einladung.leistung}</strong> empfohlen.
+              <strong>{einladung.empfohlen_von}</strong> hat dich als
+              vertrauenswürdigen Geschäftskontakt für{" "}
+              <strong>{einladung.leistung}</strong> empfohlen und lädt dich
+              ein, Teil der AuftragsKette zu werden.
             </p>
 
             <div className="mt-6 space-y-3 rounded-xl bg-gray-50 p-5 text-sm leading-6 text-gray-700">
@@ -113,7 +116,7 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
               <p className="font-semibold text-gray-900">Was wird gelistet?</p>
               <p className="mt-1">
                 Name, Firma, Leistung, Telefon, E-Mail-Adresse und Ort, so wie
-                von {einladung.empfohlen_von.split(" (")[0]} eingetragen. Diese
+                von {einladung.empfohlen_von_name ?? einladung.empfohlen_von.split(" (")[0]} eingetragen. Diese
                 Angaben sehen nur Mitglieder, und sie werden an Kunden
                 weitergegeben, denen du empfohlen wirst. Du kannst deine
                 Zustimmung jederzeit über diesen Link widerrufen.

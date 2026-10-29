@@ -8,6 +8,7 @@ import { mailtoLink, whatsappLink } from "@/lib/teilen";
 import { basisUrl } from "@/lib/url";
 import StatusPlakette from "@/app/components/StatusPlakette";
 import TeilenKnoepfe from "@/app/components/TeilenKnoepfe";
+import ProfilFehlt from "@/app/components/ProfilFehlt";
 import KontaktFormular from "../KontaktFormular";
 import { einladungErneutSenden } from "../actions";
 import LoeschenKnopf from "./LoeschenKnopf";
@@ -26,7 +27,7 @@ export default async function KontaktBearbeiten(
   const hinweis = await props.searchParams;
   if (!UUID_MUSTER.test(id)) notFound();
 
-  const { supabase, user, anzeigeName } = await aktuellesMitglied();
+  const { supabase, user, anzeigeName, signatur, profilVollstaendig } = await aktuellesMitglied();
 
   const { data: kontakt } = await supabase
     .from("kontakte")
@@ -40,7 +41,7 @@ export default async function KontaktBearbeiten(
   if (!kontakt) notFound();
 
   const link = `${await basisUrl()}/bestaetigen/${kontakt.einladung_token}`;
-  const text = einladungsText({ kontaktName: kontakt.name, absender: anzeigeName, link });
+  const text = einladungsText({ kontaktName: kontakt.name, absender: anzeigeName, signatur, link });
   const betreff = `${anzeigeName} hat dich bei AuftragsKette empfohlen`;
   const mailVersand = emailVersandAktiv();
 
@@ -98,19 +99,33 @@ export default async function KontaktBearbeiten(
             </p>
           )}
 
-          <p className="mt-5 text-sm font-semibold text-gray-700">
-            Einladung selbst senden
-          </p>
-          <div className="mt-3">
-            <TeilenKnoepfe
-              whatsapp={whatsappLink(text, kontakt.telefon || undefined)}
-              mailto={kontakt.email ? mailtoLink(kontakt.email, betreff, text) : undefined}
-              kopierText={link}
-              kopierLabel="Bestätigungslink kopieren"
-            />
-          </div>
+          {!profilVollstaendig ? (
+            <div className="mt-5">
+              <ProfilFehlt zurueck={`/dashboard/netzwerk/${id}`} was="der Einladung" />
+            </div>
+          ) : (
+            <>
+              <p className="mt-5 text-sm font-semibold text-gray-700">
+                Einladung selbst senden
+              </p>
+              <div className="mt-3">
+                <TeilenKnoepfe
+                  whatsapp={whatsappLink(text, kontakt.telefon || undefined)}
+                  mailto={kontakt.email ? mailtoLink(kontakt.email, betreff, text) : undefined}
+                  kopierText={link}
+                  kopierLabel="Bestätigungslink kopieren"
+                />
+              </div>
+              <details className="mt-4 text-sm">
+                <summary className="cursor-pointer font-medium text-gray-600">Einladung ansehen</summary>
+                <pre className="mt-3 whitespace-pre-wrap rounded-lg bg-gray-50 p-4 font-sans text-gray-700">
+                  {text}
+                </pre>
+              </details>
+            </>
+          )}
 
-          {mailVersand && kontakt.email && (
+          {profilVollstaendig && mailVersand && kontakt.email && (
             <form action={einladungErneutSenden.bind(null, id)} className="mt-4">
               <button
                 type="submit"

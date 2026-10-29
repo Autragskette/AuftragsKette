@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { sendeEmail } from "@/lib/email";
 import { einladungsText } from "@/lib/texte";
-import { anzeigeName, type Profil } from "@/lib/mitglied";
+import { anzeigeName, profilVollstaendig, signatur, type Profil } from "@/lib/mitglied";
 import { basisUrl } from "@/lib/url";
 
 export type KontaktFelder = {
@@ -161,13 +161,20 @@ async function einladungVersenden(
     .eq("id", userId)
     .single();
 
-  const absender = anzeigeName((profil ?? {}) as Profil);
+  // Ohne Namen keine Einladung: der Kontakt soll sehen, wer ihn empfohlen hat
+  if (!profil || !profilVollstaendig(profil)) return false;
+  const absender = anzeigeName(profil as Profil);
   const link = `${await basisUrl()}/bestaetigen/${kontakt.einladung_token}`;
 
   return sendeEmail({
     an: kontakt.email,
     betreff: `${absender} hat dich bei AuftragsKette empfohlen`,
-    text: einladungsText({ kontaktName: kontakt.name, absender, link }),
+    text: einladungsText({
+      kontaktName: kontakt.name,
+      absender,
+      signatur: signatur(profil as Profil),
+      link,
+    }),
   });
 }
 

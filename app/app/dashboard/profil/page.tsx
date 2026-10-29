@@ -6,20 +6,25 @@ export const metadata: Metadata = {
   title: "Mein Profil",
 };
 
-export default async function MeinProfil() {
+export default async function MeinProfil(props: PageProps<"/dashboard/profil">) {
+  const { zurueck } = await props.searchParams;
   const { profil, user } = await aktuellesMitglied();
+  const ziel = typeof zurueck === "string" ? zurueck : undefined;
 
   return (
     <div className="max-w-2xl">
       <p className="font-semibold text-blue-600">Mein Profil</p>
       <h1 className="mt-2 text-3xl font-bold tracking-tight">Deine Angaben</h1>
       <p className="mt-3 text-gray-600">
-        Dein Name und deine Firma stehen in Einladungen und Empfehlungen, die
-        du verschickst. Angemeldet als {user.email}.
+        Dein Name und deine Firma stehen in jeder Einladung und Empfehlung,
+        die du verschickst, z. B. „Max Muster von Lichtblick Fotografie hat
+        dich empfohlen“. Hast du keine Firma, trag deine Tätigkeit ein, etwa
+        „Freelancer Webdesign“. Angemeldet als {user.email}.
       </p>
 
       <div className="mt-8">
         <ProfilFormular
+          zurueck={ziel}
           werte={{
             vorname: profil.vorname,
             nachname: profil.nachname,

@@ -3,36 +3,39 @@
 export function einladungsText({
   kontaktName,
   absender,
+  signatur,
   link,
 }: {
   kontaktName: string;
   absender: string;
+  signatur: string;
   link: string;
 }) {
   const vorname = kontaktName.split(" ")[0] || kontaktName;
   return `Hallo ${vorname},
 
-${absender} hat dich bei AuftragsKette als vertrauenswürdigen Geschäftskontakt empfohlen.
+${absender} hat dich als vertrauenswürdigen Geschäftskontakt empfohlen und lädt dich ein, Teil der AuftragsKette zu werden.
 
 AuftragsKette ist ein geschlossenes Empfehlungsnetzwerk für Unternehmer und Selbstständige. Mitglieder empfehlen ihren Kunden nur Betriebe, die sie persönlich kennen und deren Arbeit sie einschätzen können. So entstehen neue Aufträge über echte Empfehlungen, ohne Provision.
 
-Damit wir dich im Netzwerk listen und weiterempfehlen dürfen, brauchen wir kurz deine Zustimmung:
+Damit du im Netzwerk gelistet und weiterempfohlen werden darfst, brauchen wir kurz deine Zustimmung:
 ${link}
 
 Viele Grüße
-AuftragsKette`;
+${signatur}
+über AuftragsKette`;
 }
 
 export function empfehlungsText({
   kundeName,
   kontakt,
-  absender,
+  signatur,
   karte,
   nachricht,
 }: {
   kundeName: string;
   kontakt: { name: string; firma: string; leistung: string; telefon: string; email: string };
-  absender: string;
+  signatur: string;
   karte: string;
   nachricht: string;
 }) {
@@ -51,7 +54,7 @@ export function empfehlungsText({
     `Digitale Visitenkarte: ${karte}`,
     "",
     "Viele Grüße",
-    absender,
+    signatur,
   ];
   return zeilen.filter((z, i, alle) => z !== "" || alle[i - 1] !== "").join("\n");
 }
@@ -59,12 +62,12 @@ export function empfehlungsText({
 export function erinnerungsText({
   kundeName,
   kontaktName,
-  absender,
+  signatur,
   karte,
 }: {
   kundeName: string;
   kontaktName: string;
-  absender: string;
+  signatur: string;
   karte: string;
 }) {
   const anrede = kundeName ? `Hallo ${kundeName.split(" ")[0]},` : "Hallo,";
@@ -74,5 +77,5 @@ kurze Erinnerung an meine Empfehlung: ${kontaktName}. Falls du noch Bedarf hast,
 ${karte}
 
 Viele Grüße
-${absender}`;
+${signatur}`;
 }

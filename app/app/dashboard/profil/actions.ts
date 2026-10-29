@@ -36,5 +36,10 @@ export async function profilSpeichern(
   }
 
   revalidatePath("/dashboard", "layout");
+
+  // Zurück zur Einladung oder Empfehlung, von der man kam
+  const zurueck = String(formData.get("zurueck") ?? "");
+  if (/^\/dashboard\/[\w\-\/]*$/.test(zurueck)) redirect(zurueck);
+
   return { fehler: null, gespeichert: true };
 }

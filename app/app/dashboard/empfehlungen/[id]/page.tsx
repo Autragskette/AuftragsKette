@@ -7,6 +7,7 @@ import { empfehlungsText, erinnerungsText } from "@/lib/texte";
 import { mailtoLink, whatsappLink } from "@/lib/teilen";
 import { basisUrl } from "@/lib/url";
 import StatusPlakette from "@/app/components/StatusPlakette";
+import ProfilFehlt from "@/app/components/ProfilFehlt";
 import { empfehlungLoeschen, ergebnisEintragen } from "../actions";
 import { EmpfehlungVersenden, ErinnerungVersenden } from "./Versenden";
 
@@ -32,7 +33,7 @@ export default async function EmpfehlungDetail(
   const { neu } = await props.searchParams;
   if (!UUID_MUSTER.test(id)) notFound();
 
-  const { supabase, anzeigeName } = await aktuellesMitglied();
+  const { supabase, signatur, profilVollstaendig } = await aktuellesMitglied();
 
   const { data: e } = await supabase
     .from("kundenempfehlungen")
@@ -57,7 +58,7 @@ export default async function EmpfehlungDetail(
     ? empfehlungsText({
         kundeName: e.kunde_name,
         kontakt: partner,
-        absender: anzeigeName,
+        signatur,
         karte,
         nachricht: e.nachricht,
       })
@@ -65,7 +66,7 @@ export default async function EmpfehlungDetail(
   const erinnerung = erinnerungsText({
     kundeName: e.kunde_name,
     kontaktName: e.kontakt_name,
-    absender: anzeigeName,
+    signatur,
     karte,
   });
 
@@ -84,7 +85,11 @@ export default async function EmpfehlungDetail(
       <p className="mt-2 text-sm text-gray-500">Empfohlen am {datum(e.erstellt_am)}</p>
 
       {/* Versenden */}
-      {partner ? (
+      {partner && !profilVollstaendig ? (
+        <div className="mt-6">
+          <ProfilFehlt zurueck={`/dashboard/empfehlungen/${e.id}`} was="der Empfehlung" />
+        </div>
+      ) : partner ? (
         <div className="mt-6 rounded-xl border border-blue-200 bg-white p-6">
           <h2 className="font-bold">{neu ? "Jetzt an den Kunden senden" : "Erneut senden"}</h2>
           <p className="mt-2 text-sm leading-6 text-gray-600">
@@ -156,7 +161,7 @@ export default async function EmpfehlungDetail(
                     ? `Erinnerung gesendet am ${datum(e.erinnert_am)}`
                     : "Beim Kunden einmal nachhaken"}
                 </p>
-                {!e.erinnert_am && (
+                {!e.erinnert_am && profilVollstaendig && (
                   <div className="mt-3">
                     <ErinnerungVersenden
                       id={e.id}
