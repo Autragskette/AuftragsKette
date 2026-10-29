@@ -21,7 +21,7 @@ export default async function TopImNetzwerk() {
   const { supabase, user } = await aktuellesMitglied();
 
   const [mitgliederAntwort, partnerAntwort] = await Promise.all([
-    supabase.rpc("mitglieder_kennzahlen", { p_id: null }),
+    supabase.rpc("mitglieder_kennzahlen_v2", { p_id: null }),
     supabase.rpc("top_partner", { p_limit: 10 }),
   ]);
 

@@ -105,6 +105,8 @@ Punkte (letzte 12 Monate), Regeln zentral in `app/lib/aktivitaet.ts`:
 | Kontakt eingebracht und bestätigt | 15 |
 | Eigener Kontakt von anderen empfohlen | 5 |
 | Aktive Woche in der App | 2 |
+| Teilnahme an einem Online-Branchen-Call (Teams) | 8 |
+| Teilnahme an einem regionalen Community-Treffen | 12 |
 
 Stufen:
 - **Mitglied**: unter 40 Punkten
@@ -114,10 +116,23 @@ Stufen:
 
 Rangliste „Top im Netzwerk“: aktivste Mitglieder und meistempfohlene Partner.
 
+### Veranstaltungen
+
+- **Online-Branchen-Calls**: innerhalb einer Branche, in Teams-Räumen
+  (Link wird angemeldeten Mitgliedern angezeigt).
+- **Regionale Community-Treffen**: vor Ort, alle Branchen einer Region.
+- Mitglieder melden sich an („Ich bin dabei“) und checken während der
+  Veranstaltung mit einem **Teilnahme-Code** ein, den der Gastgeber nennt.
+  Erst dann gibt es Punkte (ab 30 Minuten vor Beginn bis 24 Stunden nach Ende).
+- Veranstaltungen legen Admins an (Spalte `ist_admin` im Profil, nur per
+  Datenbank setzbar). Admins sehen den Teilnahme-Code und die Zahl der
+  Anmeldungen und Teilnahmen.
+- Eine Teilnahme zählt auch als Beitrag gegen Inaktivität.
+
 ## 7. Inaktivität und Verlängerung
 
 - Nach **30 Tagen ohne Besuch** oder **60 Tagen ohne Beitrag** (Empfehlung,
-  Kontakt, Ergebnis): Erinnerung in der App und per E-Mail.
+  Kontakt, Ergebnis, Teilnahme an einer Veranstaltung): Erinnerung in der App und per E-Mail.
 - Nach **90 Tagen ohne Beitrag**: Warnung, Verlängerung gefährdet.
 - Neue Mitglieder haben 30 Tage Schonfrist.
 - Die Mitgliedschaft läuft ein Jahr. Sie wird **nur verlängert**, wenn man
@@ -149,7 +164,8 @@ Rangliste „Top im Netzwerk“: aktivste Mitglieder und meistempfohlene Partner
 | 4 | Nachfrage nach 7 Tagen in der App, Erinnerung an Kunden, Statistik | fertig, online |
 | 4b | Automatische E-Mails (Resend), täglicher Lauf für Nachfragen und Erinnerungen | vorbereitet, Resend-Konto und Server-Schlüssel fehlen |
 | 5 | Neue Pflichtkontakt-Regeln, Aktivitätspunkte, Top-Mitglied, Rangliste, Inaktivität | fertig, online |
-| 6 | Einladung neuer Mitglieder, Zahlung, Veranstaltungen | geplant |
+| 5b | Veranstaltungen (Branchen-Calls, regionale Treffen) mit Check-in und Punkten | fertig, online |
+| 6 | Einladung neuer Mitglieder, Zahlung | geplant |
 
 ## Entscheidungen
 

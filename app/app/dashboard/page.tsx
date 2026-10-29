@@ -6,6 +6,7 @@ import { datum, nachfrageFaellig } from "@/lib/empfehlung";
 import { aktivStatus, stufe, STUFE_AKTIV, STUFE_TOP, type Kennzahlen } from "@/lib/aktivitaet";
 import PflichtKontakte from "@/app/components/PflichtKontakte";
 import StufenAbzeichen from "@/app/components/StufenAbzeichen";
+import { ARTEN, zeitraum, type Veranstaltung } from "@/lib/veranstaltungen";
 
 export const metadata: Metadata = {
   title: "Übersicht",
@@ -14,15 +15,25 @@ export const metadata: Metadata = {
 export default async function Dashboard() {
   const { supabase, user, profil } = await aktuellesMitglied();
 
-  const [kontakteAntwort, empfehlungenAntwort, kennzahlenAntwort] = await Promise.all([
+  const [kontakteAntwort, empfehlungenAntwort, kennzahlenAntwort, terminAntwort] = await Promise.all([
     supabase.from("kontakte").select("status, abgelehnt_am").eq("besitzer_id", user.id),
     supabase
       .from("kundenempfehlungen")
       .select("id, kontakt_name, kunde_name, ergebnis, erstellt_am")
       .order("erstellt_am", { ascending: false })
       .limit(200),
-    supabase.rpc("mitglieder_kennzahlen", { p_id: user.id }),
+    supabase.rpc("mitglieder_kennzahlen_v2", { p_id: user.id }),
+    supabase
+      .from("veranstaltungen")
+      .select("id, titel, art, branche, region, beginn, ende")
+      .gte("ende", new Date().toISOString())
+      .order("beginn", { ascending: true })
+      .limit(3),
   ]);
+  const termine = (terminAntwort.data ?? []) as Pick<
+    Veranstaltung,
+    "id" | "titel" | "art" | "branche" | "region" | "beginn" | "ende"
+  >[];
 
   const kontakte = kontakteAntwort.data ?? [];
   const bestaetigt = kontakte.filter((k) => k.status === "bestaetigt").length;
@@ -132,6 +143,30 @@ export default async function Dashboard() {
             {status.verlaengerungGesichert ? "gesichert ✓" : `noch nicht gesichert (ab ${STUFE_AKTIV} Punkten)`}
           </p>
         </Link>
+      )}
+
+      {/* Nächste Veranstaltungen */}
+      {termine.length > 0 && (
+        <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <h2 className="font-bold">Nächste Veranstaltungen</h2>
+            <Link href="/dashboard/veranstaltungen" className="text-sm font-semibold text-blue-700">Alle ansehen →</Link>
+          </div>
+          <ul className="mt-3 divide-y divide-gray-100">
+            {termine.map((v) => (
+              <li key={v.id}>
+                <Link href={`/dashboard/veranstaltungen#v-${v.id}`} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-3">
+                  <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${ARTEN[v.art].stil}`}>
+                    {ARTEN[v.art].name}
+                  </span>
+                  <span className="font-semibold">{v.titel}</span>
+                  <span className="text-sm text-gray-500">{zeitraum(v.beginn, v.ende)}</span>
+                  <span className="text-xs text-gray-400">+{ARTEN[v.art].punkte} Punkte</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
 
       {/* Kennzahlen */}

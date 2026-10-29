@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 
 export default async function MeineAktivitaet() {
   const { supabase, user } = await aktuellesMitglied();
-  const { data, error } = await supabase.rpc("mitglieder_kennzahlen", { p_id: user.id });
+  const { data, error } = await supabase.rpc("mitglieder_kennzahlen_v2", { p_id: user.id });
   const k = (Array.isArray(data) ? data[0] : data) as Kennzahlen | undefined;
 
   if (error || !k) {
@@ -143,7 +143,8 @@ export default async function MeineAktivitaet() {
           </li>
           <li>
             Nach {ERINNERUNG_LOGIN_TAGE} Tagen ohne Besuch oder{" "}
-            {ERINNERUNG_BEITRAG_TAGE} Tagen ohne Beitrag bekommst du eine Erinnerung.
+            {ERINNERUNG_BEITRAG_TAGE} Tagen ohne Beitrag (Empfehlung, Kontakt
+            oder Teilnahme an einer Veranstaltung) bekommst du eine Erinnerung.
           </li>
           <li>
             Nach {WARNUNG_BEITRAG_TAGE} Tagen ohne Beitrag ist die Verlängerung gefährdet.
@@ -163,6 +164,9 @@ export default async function MeineAktivitaet() {
         </Link>
         <Link href="/dashboard/netzwerk/neu" className="rounded-lg border border-gray-300 bg-white px-5 py-3 text-sm font-semibold">
           Kontakt einbringen
+        </Link>
+        <Link href="/dashboard/veranstaltungen" className="rounded-lg border border-gray-300 bg-white px-5 py-3 text-sm font-semibold">
+          Zu den Veranstaltungen
         </Link>
       </div>
     </div>
