@@ -55,7 +55,7 @@ export default async function KontaktBearbeiten(
       </Link>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{kontakt.name}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-tinte sm:text-3xl">{kontakt.name}</h1>
         <StatusPlakette status={kontakt.status} />
       </div>
 
@@ -131,7 +131,7 @@ export default async function KontaktBearbeiten(
             <form action={einladungErneutSenden.bind(null, id)} className="mt-4">
               <button
                 type="submit"
-                className="text-sm font-semibold text-blue-700 underline"
+                className="text-sm font-semibold text-kette underline"
               >
                 Automatische E-Mail erneut senden
               </button>

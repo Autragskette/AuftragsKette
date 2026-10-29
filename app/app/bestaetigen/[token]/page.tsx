@@ -37,9 +37,9 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
 
   return (
     <main className="flex min-h-screen flex-col bg-gray-50 text-gray-900">
-      <header className="border-b border-gray-200 bg-white">
+      <header className="border-b border-linie bg-white">
         <div className="mx-auto flex max-w-3xl items-center px-5 py-4 sm:px-6 sm:py-5">
-          <Link href="/" className="text-xl font-bold text-blue-600">
+          <Link href="/" className="text-xl font-bold text-kette">
             AuftragsKette
           </Link>
         </div>
@@ -84,7 +84,6 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
           </Karte>
         ) : (
           <Karte>
-            <p className="font-semibold text-blue-600">Du wurdest empfohlen</p>
             <h1 className="mt-2 text-2xl font-bold tracking-tight">
               Hallo {einladung.kontakt_name.split(" ")[0]},
             </h1>
@@ -113,7 +112,7 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
               </p>
             </div>
 
-            <div className="mt-6 rounded-xl border border-gray-200 p-5 text-sm leading-6 text-gray-700">
+            <div className="mt-6 rounded-xl border border-linie p-5 text-sm leading-6 text-gray-700">
               <p className="font-semibold text-gray-900">Was wird gelistet?</p>
               <p className="mt-1">
                 Name, Firma, Leistung, Telefon, E-Mail-Adresse und Ort, so wie
@@ -152,7 +151,7 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
 
 function Karte({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-7">
+    <div className="rounded-2xl border border-linie bg-white p-5 shadow-sm sm:p-7">
       {children}
     </div>
   );
@@ -171,7 +170,7 @@ function ZustimmungsFormular({ token }: { token: string }) {
       </label>
       <button
         type="submit"
-        className="w-full rounded-lg bg-gray-900 px-6 py-3 font-semibold text-white"
+        className="w-full rounded-xl bg-tinte px-6 py-3 font-semibold text-white"
       >
         Ja, ich stimme zu
       </button>

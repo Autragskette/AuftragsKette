@@ -39,7 +39,7 @@ export default function KontaktFormular({
     <form
       action={aktion}
       noValidate
-      className="space-y-5 rounded-xl border border-gray-200 bg-white p-4 sm:p-6"
+      className="space-y-5 rounded-2xl border border-linie bg-white p-4 sm:p-6"
     >
       <Feld
         name="name"
@@ -154,7 +154,7 @@ export default function KontaktFormular({
         <button
           type="submit"
           disabled={laeuft}
-          className="w-full rounded-lg bg-gray-900 px-6 py-3 font-semibold text-white disabled:opacity-60 sm:w-auto"
+          className="w-full rounded-xl bg-tinte px-6 py-3 font-semibold text-white disabled:opacity-60 sm:w-auto"
         >
           {laeuft ? "Wird gespeichert …" : id ? "Änderungen speichern" : "Kontakt speichern"}
         </button>
@@ -171,7 +171,7 @@ export default function KontaktFormular({
 }
 
 function eingabeKlassen(fehler: boolean) {
-  return `w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-600 ${
+  return `w-full rounded-lg border px-4 py-3 outline-none focus:border-kette ${
     fehler ? "border-red-400" : "border-gray-300"
   }`;
 }

@@ -77,8 +77,8 @@ export default async function EmpfehlungDetail(
       </Link>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          {e.kontakt_name} → {e.kunde_name}
+        <h1 className="text-2xl font-semibold tracking-tight text-tinte sm:text-3xl">
+          {e.kontakt_name}{e.kunde_name ? ` für ${e.kunde_name}` : ""}
         </h1>
         <StatusPlakette status={e.ergebnis} />
       </div>
@@ -111,7 +111,7 @@ export default async function EmpfehlungDetail(
               {text}
             </pre>
           </details>
-          <Link href={`/k/${e.karten_token}`} target="_blank" className="mt-4 inline-block text-sm font-semibold text-blue-700 underline">
+          <Link href={`/k/${e.karten_token}`} target="_blank" className="mt-4 inline-block text-sm font-semibold text-kette underline">
             Visitenkarte ansehen
           </Link>
         </div>
@@ -123,7 +123,7 @@ export default async function EmpfehlungDetail(
       )}
 
       {/* Nachverfolgung */}
-      <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
+      <div className="mt-6 rounded-2xl border border-linie bg-white p-6">
         <h2 className="font-bold">Kam es zu einem Auftrag?</h2>
 
         {e.ergebnis === "offen" ? (
@@ -140,7 +140,7 @@ export default async function EmpfehlungDetail(
                 </button>
               </form>
               <form action={ergebnisEintragen.bind(null, e.id, "kein_auftrag")}>
-                <button className="rounded-lg border border-gray-300 px-5 py-3 text-sm font-semibold">
+                <button className="rounded-xl border border-linie px-5 py-3 text-sm font-semibold">
                   Nein, bisher nicht
                 </button>
               </form>
@@ -154,7 +154,7 @@ export default async function EmpfehlungDetail(
         )}
 
         {e.ergebnis === "kein_auftrag" && (
-          <div className="mt-5 border-t border-gray-200 pt-5">
+          <div className="mt-5 border-t border-linie pt-5">
             {e.nachfrage_erlaubt ? (
               <>
                 <p className="text-sm font-semibold text-gray-700">

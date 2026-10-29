@@ -4,13 +4,27 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { sendeEmail } from "@/lib/email";
-import { anzeigeName, profilVollstaendig, type Profil } from "@/lib/mitglied";
+import { anzeigeName, profilVollstaendig, signatur, type Profil } from "@/lib/mitglied";
+import { empfehlungsText } from "@/lib/texte";
+import { whatsappLink } from "@/lib/teilen";
+import { basisUrl } from "@/lib/url";
 
-export type EmpfehlungStatus = { fehler: string | null };
+export type EmpfehlungStatus = {
+  fehler: string | null;
+  /** Nach dem Speichern: wohin es weitergeht */
+  weiter?: { id: string; whatsapp: string | null };
+};
 
 const EMAIL_MUSTER = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-type Partner = { id: string; name: string; email: string; leistung: string };
+type Partner = {
+  id: string;
+  name: string;
+  firma: string;
+  email: string;
+  telefon: string;
+  leistung: string;
+};
 
 export async function empfehlungAnlegen(
   kontaktId: string,
@@ -23,8 +37,8 @@ export async function empfehlungAnlegen(
   const kunde_email = lies("kunde_email");
   const nachricht = lies("nachricht", 1000);
   const nachfrage_erlaubt = formData.get("nachfrage_erlaubt") === "on";
+  const kanal = formData.get("kanal") === "whatsapp" ? "whatsapp" : "visitenkarte";
 
-  if (!kunde_name) return { fehler: "Bitte den Namen des Kunden angeben." };
   if (kunde_email && !EMAIL_MUSTER.test(kunde_email))
     return { fehler: "Die E-Mail-Adresse des Kunden sieht nicht richtig aus." };
 
@@ -58,8 +72,9 @@ export async function empfehlungAnlegen(
       kunde_email,
       nachricht,
       nachfrage_erlaubt,
+      kanal,
     })
-    .select("id")
+    .select("id, karten_token")
     .single();
 
   if (error || !data) {
@@ -75,7 +90,7 @@ export async function empfehlungAnlegen(
       betreff: `Neue Empfehlung über AuftragsKette`,
       text: `Hallo ${partner.name.split(" ")[0]},
 
-${absender} hat dich gerade über AuftragsKette an ${kunde_name} für ${partner.leistung} empfohlen. Der Kunde meldet sich bei dir oder hat deine Kontaktdaten erhalten.
+${absender} hat dich gerade über AuftragsKette${kunde_name ? ` an ${kunde_name}` : ""} für ${partner.leistung} empfohlen. Der Kunde meldet sich bei dir oder hat deine Kontaktdaten erhalten.
 
 Viel Erfolg!
 AuftragsKette`,
@@ -83,7 +98,22 @@ AuftragsKette`,
   }
 
   revalidatePath("/dashboard", "layout");
-  redirect(`/dashboard/empfehlungen/${data.id}?neu=1`);
+
+  // Fertigen Text für WhatsApp vorbereiten
+  let whatsapp: string | null = null;
+  if (kanal === "whatsapp") {
+    const karte = `${await basisUrl()}/k/${data.karten_token}`;
+    const text = empfehlungsText({
+      kundeName: kunde_name,
+      kontakt: partner,
+      signatur: signatur(ich as Profil),
+      karte,
+      nachricht,
+    });
+    whatsapp = whatsappLink(text, kunde_telefon || undefined);
+  }
+
+  return { fehler: null, weiter: { id: data.id, whatsapp } };
 }
 
 const KANAELE = ["whatsapp", "email", "visitenkarte"] as const;

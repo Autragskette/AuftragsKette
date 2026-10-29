@@ -88,7 +88,7 @@ export default function MobilNavigation() {
   return (
     <nav
       aria-label="Hauptnavigation"
-      className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-gray-200 bg-white/95 backdrop-blur md:hidden"
+      className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-linie bg-white/95 backdrop-blur md:hidden"
     >
       <ul className="mx-auto grid h-[var(--tab-hoehe)] max-w-lg grid-cols-5">
         {TABS.map((tab) => {
@@ -99,13 +99,13 @@ export default function MobilNavigation() {
                 href={tab.href}
                 aria-current={aktiv ? "page" : undefined}
                 className={`flex flex-1 flex-col items-center justify-center gap-1 text-[11px] font-semibold ${
-                  aktiv ? "text-blue-700" : "text-gray-500"
+                  aktiv ? "text-tinte" : "text-slate-400"
                 }`}
               >
                 {tab.hervorgehoben ? (
                   <span
                     className={`-mt-5 flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg ${
-                      aktiv ? "bg-blue-700" : "bg-blue-600"
+                      aktiv ? "bg-tinte" : "bg-kette"
                     }`}
                   >
                     {tab.icon}

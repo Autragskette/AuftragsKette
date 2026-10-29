@@ -16,7 +16,7 @@ export default function NeuerKontakt() {
         ← Zurück zu Mein Netzwerk
       </Link>
 
-      <h1 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">
+      <h1 className="mt-4 text-2xl font-semibold tracking-tight text-tinte sm:text-3xl">
         Kontakt hinzufügen
       </h1>
       <p className="mt-3 text-gray-600">

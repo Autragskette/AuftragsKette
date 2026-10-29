@@ -3,16 +3,18 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { aktuellesMitglied, pflichtStand } from "@/lib/mitglied";
 import { datum, nachfrageFaellig } from "@/lib/empfehlung";
-import { aktivStatus, stufe, STUFE_AKTIV, STUFE_TOP, type Kennzahlen } from "@/lib/aktivitaet";
-import PflichtKontakte from "@/app/components/PflichtKontakte";
-import StufenAbzeichen from "@/app/components/StufenAbzeichen";
+import { aktivStatus, stufe, type Kennzahlen } from "@/lib/aktivitaet";
 import { ARTEN, zeitraum, type Veranstaltung } from "@/lib/veranstaltungen";
+import SuchKarte from "@/app/components/SuchKarte";
+import StufenAbzeichen from "@/app/components/StufenAbzeichen";
 
 export const metadata: Metadata = {
-  title: "Übersicht",
+  title: "Start",
 };
 
-export default async function Dashboard() {
+type Aufgabe = { text: string; hinweis?: string; href: string; dringend?: boolean };
+
+export default async function Start() {
   const { supabase, user, profil } = await aktuellesMitglied();
 
   const [kontakteAntwort, empfehlungenAntwort, kennzahlenAntwort, terminAntwort] = await Promise.all([
@@ -28,213 +30,191 @@ export default async function Dashboard() {
       .select("id, titel, art, branche, region, beginn, ende")
       .gte("ende", new Date().toISOString())
       .order("beginn", { ascending: true })
-      .limit(3),
+      .limit(1),
   ]);
-  const termine = (terminAntwort.data ?? []) as Pick<
-    Veranstaltung,
-    "id" | "titel" | "art" | "branche" | "region" | "beginn" | "ende"
-  >[];
 
   const kontakte = kontakteAntwort.data ?? [];
   const bestaetigt = kontakte.filter((k) => k.status === "bestaetigt").length;
   const wartend = kontakte.filter((k) => k.status === "eingeladen").length;
   const letzteAblehnung =
     kontakte.map((k) => k.abgelehnt_am as string | null).filter(Boolean).sort().pop() ?? null;
+  const pflicht = pflichtStand(bestaetigt, profil.erstellt_am, letzteAblehnung);
 
   const empfehlungen = empfehlungenAntwort.data ?? [];
   const faellig = empfehlungen.filter(nachfrageFaellig);
+  const auftraege = empfehlungen.filter((e) => e.ergebnis === "auftrag").length;
 
-  const pflicht = pflichtStand(bestaetigt, profil.erstellt_am, letzteAblehnung);
-  const profilUnvollstaendig = !profil.vorname || !profil.nachname;
-
-  const kennzahlen = (Array.isArray(kennzahlenAntwort.data)
+  const k = (Array.isArray(kennzahlenAntwort.data)
     ? kennzahlenAntwort.data[0]
     : kennzahlenAntwort.data) as Kennzahlen | undefined;
-  const meineStufe = kennzahlen ? stufe(kennzahlen) : null;
-  const status = kennzahlen ? aktivStatus(kennzahlen) : null;
+  const meineStufe = k ? stufe(k) : null;
+  const status = k ? aktivStatus(k) : null;
+
+  const termin = ((terminAntwort.data ?? []) as Pick<
+    Veranstaltung,
+    "id" | "titel" | "art" | "branche" | "region" | "beginn" | "ende"
+  >[])[0];
+
+  // Was gerade zu tun ist, wichtigstes zuerst
+  const aufgaben: Aufgabe[] = [];
+  if (!profil.vorname || !profil.nachname) {
+    aufgaben.push({
+      text: "Profil vervollständigen",
+      hinweis: "Dein Name steht in jeder Empfehlung",
+      href: "/dashboard/profil",
+      dringend: true,
+    });
+  }
+  if (status && status.lage !== "aktiv") {
+    aufgaben.push({
+      text: status.lage === "warnung" ? "Verlängerung gefährdet" : "Wieder aktiv werden",
+      hinweis: "Gib eine Empfehlung oder bring einen Kontakt ein",
+      href: "/dashboard/aktivitaet",
+      dringend: status.lage === "warnung",
+    });
+  }
+  if (pflicht.naechster) {
+    const s = pflicht.naechster;
+    aufgaben.push({
+      text: `${s.nr}. Pflichtkontakt einbringen`,
+      hinweis: s.sofort
+        ? "Zum Start"
+        : s.ueberfaellig
+          ? `Überfällig seit ${datum(s.frist.toISOString())}`
+          : `Bis ${datum(s.frist.toISOString())}${wartend ? `, ${wartend} wartet auf Zustimmung` : ""}`,
+      href: "/dashboard/netzwerk/neu",
+      dringend: s.sofort || s.ueberfaellig,
+    });
+  }
+  if (faellig.length) {
+    aufgaben.push({
+      text: faellig.length === 1 ? "Kam es zum Auftrag?" : `${faellig.length} Empfehlungen nachfassen`,
+      hinweis: faellig.length === 1 ? `${faellig[0].kontakt_name}${faellig[0].kunde_name ? ` für ${faellig[0].kunde_name}` : ""}` : "Älter als eine Woche",
+      href: faellig.length === 1 ? `/dashboard/empfehlungen/${faellig[0].id}` : "/dashboard/empfehlungen",
+    });
+  }
+  if (status?.gibUndNimm) {
+    aufgaben.push({
+      text: "Gib etwas zurück",
+      hinweis: `Du wurdest ${k!.empfehlungen_erhalten}-mal empfohlen`,
+      href: "/dashboard/suche",
+    });
+  }
 
   return (
-    <>
-      <p className="font-semibold text-blue-600">Übersicht</p>
-      <div className="mt-2 flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          {profil.vorname ? `Willkommen, ${profil.vorname}` : "Willkommen bei AuftragsKette"}
+    <div className="mx-auto max-w-2xl">
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-2xl font-semibold tracking-tight text-tinte">
+          {profil.vorname ? `Hallo ${profil.vorname}` : "Willkommen"}
         </h1>
-        {meineStufe && <StufenAbzeichen name={meineStufe.name} />}
-      </div>
-
-      {profilUnvollstaendig && (
-        <Hinweis farbe="blau">
-          Bitte vervollständige zuerst{" "}
-          <Link href="/dashboard/profil" className="font-semibold underline">dein Profil</Link>
-          . Dein Name steht in jeder Einladung und Empfehlung.
-        </Hinweis>
-      )}
-
-      {/* Inaktivität */}
-      {status && status.lage !== "aktiv" && (
-        <Hinweis farbe={status.lage === "warnung" ? "rot" : "gelb"}>
-          <p className="font-semibold">
-            {status.lage === "warnung"
-              ? "Deine Verlängerung ist gefährdet"
-              : "Wir vermissen dich in der AuftragsKette"}
-          </p>
-          {status.gruende.map((g) => (
-            <p key={g} className="mt-1">{g}</p>
-          ))}
-          <p className="mt-1">
-            Die Community lebt davon, dass alle mitmachen. Gib eine Empfehlung
-            oder bring einen Kontakt ein, dann bist du wieder dabei.
-          </p>
-          <Link href="/dashboard/suche" className="mt-2 inline-block font-semibold underline">
-            Jetzt jemanden empfehlen
+        {meineStufe && (
+          <Link href="/dashboard/aktivitaet" aria-label="Meine Aktivität">
+            <StufenAbzeichen name={meineStufe.name} />
           </Link>
-        </Hinweis>
-      )}
+        )}
+      </div>
 
-      {status?.gibUndNimm && (
-        <Hinweis farbe="gelb">
-          Du wurdest im letzten Jahr {kennzahlen!.empfehlungen_erhalten}-mal
-          empfohlen, hast selbst aber erst {kennzahlen!.empfehlungen_gegeben}{" "}
-          Empfehlung{kennzahlen!.empfehlungen_gegeben === 1 ? "" : "en"} gegeben. Gib
-          etwas zurück, davon lebt die AuftragsKette.
-        </Hinweis>
-      )}
+      <div className="mt-4">
+        <SuchKarte ort={profil.plz || profil.ort} />
+      </div>
 
-      <PflichtKontakte stand={pflicht} wartend={wartend} />
+      <Link
+        href="/dashboard/netzwerk/neu"
+        className="mt-3 flex items-center justify-between rounded-2xl border border-linie bg-white px-5 py-4"
+      >
+        <span>
+          <span className="block font-semibold text-tinte">Kontakt einbringen</span>
+          <span className="block text-sm text-slate-500">Einen Betrieb eintragen, den du empfehlen würdest</span>
+        </span>
+        <Plus />
+      </Link>
 
-      {/* Fällige Nachfragen */}
-      {faellig.length > 0 && (
-        <Hinweis farbe="gelb">
-          <p className="font-semibold">Kam es zum Auftrag? {faellig.length} Nachfrage{faellig.length === 1 ? "" : "n"} fällig</p>
-          <ul className="mt-2 space-y-1">
-            {faellig.slice(0, 5).map((e) => (
-              <li key={e.id}>
-                <Link href={`/dashboard/empfehlungen/${e.id}`} className="underline">
-                  {e.kontakt_name} → {e.kunde_name} ({datum(e.erstellt_am)})
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Hinweis>
-      )}
-
-      {/* Aktivität */}
-      {kennzahlen && meineStufe && status && (
-        <Link
-          href="/dashboard/aktivitaet"
-          className="mt-8 block rounded-xl border border-gray-200 bg-white p-6 hover:border-blue-300"
-        >
-          <div className="flex flex-wrap items-baseline justify-between gap-3">
-            <h2 className="font-bold">Deine Aktivität</h2>
-            <span className="text-sm text-gray-500">letzte 12 Monate</span>
-          </div>
-          <p className="mt-3 text-3xl font-bold">
-            {kennzahlen.punkte} <span className="text-base font-medium text-gray-500">Punkte</span>
-          </p>
-          <Fortschritt punkte={kennzahlen.punkte} />
-          <p className="mt-3 text-sm text-gray-600">
-            {meineStufe.top
-              ? "Du bist Top-Mitglied. Danke, dass du die AuftragsKette stark machst!"
-              : `Noch ${meineStufe.fehlendePunkte} Punkte bis ${meineStufe.naechste}.`}
-          </p>
-          <p className={`mt-2 text-sm ${status.verlaengerungGesichert ? "text-green-700" : "text-amber-700"}`}>
-            Verlängerung am {datum(status.verlaengerungAm.toISOString())}:{" "}
-            {status.verlaengerungGesichert ? "gesichert ✓" : `noch nicht gesichert (ab ${STUFE_AKTIV} Punkten)`}
-          </p>
-        </Link>
-      )}
-
-      {/* Nächste Veranstaltungen */}
-      {termine.length > 0 && (
-        <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
-          <div className="flex flex-wrap items-baseline justify-between gap-3">
-            <h2 className="font-bold">Nächste Veranstaltungen</h2>
-            <Link href="/dashboard/veranstaltungen" className="text-sm font-semibold text-blue-700">Alle ansehen →</Link>
-          </div>
-          <ul className="mt-3 divide-y divide-gray-100">
-            {termine.map((v) => (
-              <li key={v.id}>
-                <Link href={`/dashboard/veranstaltungen#v-${v.id}`} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-3">
-                  <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${ARTEN[v.art].stil}`}>
-                    {ARTEN[v.art].name}
+      {aufgaben.length > 0 && (
+        <Abschnitt titel="Zu erledigen">
+          <ul className="divide-y divide-linie overflow-hidden rounded-2xl border border-linie bg-white">
+            {aufgaben.map((a) => (
+              <li key={a.text}>
+                <Link href={a.href} className="flex items-center gap-3 px-4 py-3.5 active:bg-slate-50">
+                  <span
+                    aria-hidden
+                    className={`h-2.5 w-2.5 shrink-0 rounded-full ${a.dringend ? "bg-amber-500" : "bg-kette"}`}
+                  />
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-medium text-tinte">{a.text}</span>
+                    {a.hinweis && <span className="block truncate text-sm text-slate-500">{a.hinweis}</span>}
                   </span>
-                  <span className="font-semibold">{v.titel}</span>
-                  <span className="text-sm text-gray-500">{zeitraum(v.beginn, v.ende)}</span>
-                  <span className="text-xs text-gray-400">+{ARTEN[v.art].punkte} Punkte</span>
+                  <Pfeil />
                 </Link>
               </li>
             ))}
           </ul>
-        </div>
+        </Abschnitt>
       )}
 
-      {/* Kennzahlen */}
-      <div className="mt-6 grid grid-cols-3 gap-3 sm:gap-5">
-        <Kennzahl titel="Mein Netzwerk" wert={bestaetigt} text="bestätigte Partner" href="/dashboard/netzwerk" />
-        <Kennzahl titel="Empfehlungen" wert={empfehlungen.length} text="an Kunden gegeben" href="/dashboard/empfehlungen" />
-        <Kennzahl
-          titel="Aufträge"
-          wert={empfehlungen.filter((e) => e.ergebnis === "auftrag").length}
-          text="aus Empfehlungen"
-          href="/dashboard/empfehlungen"
-        />
-      </div>
+      <Abschnitt titel="Deine AuftragsKette">
+        <div className="grid grid-cols-3 overflow-hidden rounded-2xl border border-linie bg-white text-center">
+          <Zahl wert={bestaetigt} text={bestaetigt === 1 ? "Partner" : "Partner"} href="/dashboard/netzwerk" />
+          <Zahl wert={empfehlungen.length} text={empfehlungen.length === 1 ? "Empfehlung" : "Empfehlungen"} href="/dashboard/empfehlungen" mitte />
+          <Zahl wert={auftraege} text={auftraege === 1 ? "Auftrag" : "Aufträge"} href="/dashboard/empfehlungen" />
+        </div>
+        {k && (
+          <Link href="/dashboard/aktivitaet" className="mt-2 block px-1 text-sm text-slate-500">
+            {k.punkte} Aktivitätspunkte
+            {meineStufe && !meineStufe.top && `, noch ${meineStufe.fehlendePunkte} bis ${meineStufe.naechste}`}
+          </Link>
+        )}
+      </Abschnitt>
 
-      {/* Schnellzugriff */}
-      <div className="mt-6 grid gap-4 sm:mt-10 sm:gap-5 md:grid-cols-2">
-        <Link href="/dashboard/suche" className="rounded-xl border border-gray-200 bg-white p-6 hover:border-blue-300">
-          <h2 className="font-bold">Kunde sucht jemanden?</h2>
-          <p className="mt-2 text-sm leading-6 text-gray-600">
-            Finde einen passenden Partner aus der Region und schick die
-            Empfehlung per WhatsApp, E-Mail oder Visitenkarte.
-          </p>
-          <span className="mt-4 inline-block text-sm font-semibold text-blue-700">Netzwerk durchsuchen →</span>
-        </Link>
-        <Link href="/dashboard/top" className="rounded-xl border border-gray-200 bg-white p-6 hover:border-blue-300">
-          <h2 className="font-bold">Top im Netzwerk</h2>
-          <p className="mt-2 text-sm leading-6 text-gray-600">
-            Wer ist voll dabei? Die aktivsten Mitglieder und die
-            meistempfohlenen Partner der AuftragsKette.
-          </p>
-          <span className="mt-4 inline-block text-sm font-semibold text-blue-700">Zur Rangliste →</span>
-        </Link>
-      </div>
-    </>
-  );
-}
-
-function Fortschritt({ punkte }: { punkte: number }) {
-  const prozent = Math.min(100, Math.round((punkte / STUFE_TOP) * 100));
-  const markeAktiv = Math.round((STUFE_AKTIV / STUFE_TOP) * 100);
-  return (
-    <div className="relative mt-4 h-2.5 rounded-full bg-gray-100">
-      <div className="h-2.5 rounded-full bg-blue-600" style={{ width: `${prozent}%` }} />
-      <div
-        className="absolute -top-1 h-4.5 w-0.5 bg-gray-400"
-        style={{ left: `${markeAktiv}%` }}
-        title={`Aktives Mitglied ab ${STUFE_AKTIV} Punkten`}
-      />
+      {termin && (
+        <Abschnitt titel="Nächster Termin">
+          <Link
+            href={`/dashboard/veranstaltungen#v-${termin.id}`}
+            className="block rounded-2xl border border-linie bg-white px-5 py-4"
+          >
+            <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${ARTEN[termin.art].stil}`}>
+              {ARTEN[termin.art].name}
+            </span>
+            <span className="mt-2 block font-semibold text-tinte">{termin.titel}</span>
+            <span className="mt-0.5 block text-sm text-slate-500">{zeitraum(termin.beginn, termin.ende)}</span>
+          </Link>
+        </Abschnitt>
+      )}
     </div>
   );
 }
 
-function Hinweis({ farbe, children }: { farbe: "blau" | "gelb" | "rot"; children: ReactNode }) {
-  const klassen =
-    farbe === "rot"
-      ? "border-red-200 bg-red-50 text-red-900"
-      : farbe === "gelb"
-        ? "border-amber-200 bg-amber-50 text-amber-900"
-        : "border-blue-200 bg-blue-50 text-blue-900";
-  return <div className={`mt-6 rounded-xl border p-5 text-sm leading-6 ${klassen}`}>{children}</div>;
+function Abschnitt({ titel, children }: { titel: string; children: ReactNode }) {
+  return (
+    <section className="mt-7">
+      <h2 className="mb-2.5 px-1 text-sm font-semibold text-slate-500">{titel}</h2>
+      {children}
+    </section>
+  );
 }
 
-function Kennzahl({ titel, wert, text, href }: { titel: string; wert: number; text: string; href: string }) {
+function Zahl({ wert, text, href, mitte }: { wert: number; text: string; href: string; mitte?: boolean }) {
   return (
-    <Link href={href} className="block rounded-xl border border-gray-200 bg-white p-3 hover:border-blue-300 sm:p-6">
-      <p className="truncate text-xs font-medium text-gray-500 sm:text-sm">{titel}</p>
-      <p className="mt-1 text-2xl font-bold sm:mt-3 sm:text-3xl">{wert}</p>
-      <p className="mt-0.5 text-xs leading-4 text-gray-500 sm:mt-1 sm:text-sm">{text}</p>
+    <Link href={href} className={`px-2 py-4 ${mitte ? "border-x border-linie" : ""}`}>
+      <span className="block text-2xl font-semibold tabular-nums text-tinte">{wert}</span>
+      <span className="block text-xs text-slate-500">{text}</span>
     </Link>
+  );
+}
+
+function Pfeil() {
+  return (
+    <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-slate-300" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="m9 6 6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function Plus() {
+  return (
+    <span aria-hidden className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-papier text-tinte">
+      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2">
+        <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+      </svg>
+    </span>
   );
 }

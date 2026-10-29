@@ -19,13 +19,12 @@ export default async function Mehr() {
   const { user, anzeigeName } = await aktuellesMitglied();
 
   return (
-    <div className="max-w-2xl">
-      <h1 className="text-2xl font-bold tracking-tight">Mehr</h1>
-      <p className="mt-1 truncate text-sm text-gray-500">
-        {anzeigeName} · {user.email}
-      </p>
+    <div className="mx-auto max-w-2xl">
+      <h1 className="text-2xl font-semibold tracking-tight text-tinte">Mehr</h1>
+      <p className="mt-1 truncate text-sm text-slate-500">{anzeigeName}</p>
+      <p className="truncate text-sm text-slate-400">{user.email}</p>
 
-      <ul className="mt-6 divide-y divide-gray-100 overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <ul className="mt-6 divide-y divide-linie overflow-hidden rounded-2xl border border-linie bg-white">
         {EINTRAEGE.map((e) => (
           <li key={e.href}>
             <Link href={e.href} className="flex items-center justify-between gap-4 px-5 py-4 active:bg-gray-50">
@@ -46,7 +45,7 @@ export default async function Mehr() {
       <form action={abmelden} className="mt-6">
         <button
           type="submit"
-          className="w-full rounded-xl border border-gray-200 bg-white px-5 py-4 text-left font-semibold text-red-600 active:bg-gray-50"
+          className="w-full rounded-2xl border border-linie bg-white px-5 py-4 text-left font-semibold text-red-600 active:bg-gray-50"
         >
           Abmelden
         </button>

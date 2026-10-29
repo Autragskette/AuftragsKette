@@ -4,7 +4,7 @@ import { useActionState, useState } from "react";
 import { veranstaltungAnlegen, type AnlegenStatus } from "../actions";
 
 const EINGABE =
-  "w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-600";
+  "w-full rounded-xl border border-linie px-4 py-3 outline-none focus:border-kette";
 
 export default function Formular() {
   const [art, setArt] = useState("branche_online");
@@ -15,7 +15,7 @@ export default function Formular() {
   const online = art === "branche_online";
 
   return (
-    <form action={aktion} className="space-y-5 rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
+    <form action={aktion} className="space-y-5 rounded-2xl border border-linie bg-white p-4 sm:p-6">
       <fieldset>
         <legend className="mb-2 text-sm font-semibold text-gray-700">Art der Veranstaltung</legend>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -100,7 +100,7 @@ export default function Formular() {
       <button
         type="submit"
         disabled={laeuft}
-        className="w-full rounded-lg bg-gray-900 px-6 py-3 font-semibold text-white disabled:opacity-60 sm:w-auto"
+        className="w-full rounded-xl bg-tinte px-6 py-3 font-semibold text-white disabled:opacity-60 sm:w-auto"
       >
         {laeuft ? "Wird gespeichert …" : "Veranstaltung anlegen"}
       </button>

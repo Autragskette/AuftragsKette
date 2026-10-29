@@ -33,8 +33,7 @@ export default async function TopImNetzwerk() {
 
   return (
     <>
-      <p className="font-semibold text-blue-600">Top im Netzwerk</p>
-      <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Wer ist voll dabei?</h1>
+      <h1 className="mt-2 text-2xl font-semibold tracking-tight text-tinte sm:text-3xl">Wer ist voll dabei?</h1>
       <p className="mt-3 max-w-2xl text-gray-600">
         Die aktivsten Mitglieder und die meistempfohlenen Partner der letzten
         12 Monate. Top-Mitglieder sind mit ★ gekennzeichnet.
@@ -42,12 +41,12 @@ export default async function TopImNetzwerk() {
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         {/* Mitglieder */}
-        <section className="rounded-xl border border-gray-200 bg-white">
-          <h2 className="border-b border-gray-200 px-5 py-4 font-bold">Aktivste Mitglieder</h2>
+        <section className="rounded-2xl border border-linie bg-white">
+          <h2 className="border-b border-linie px-5 py-4 font-bold">Aktivste Mitglieder</h2>
           {mitglieder.length === 0 ? (
             <p className="px-5 py-6 text-sm text-gray-500">Noch keine Aktivität.</p>
           ) : (
-            <ol className="divide-y divide-gray-100">
+            <ol className="divide-y divide-linie">
               {mitglieder.map((m, i) => {
                 const s = stufe(m);
                 const ich = m.id === user.id;
@@ -60,7 +59,7 @@ export default async function TopImNetzwerk() {
                         {ich && <span className="font-normal text-gray-500"> (du)</span>}
                       </p>
                       <p className="truncate text-sm text-gray-500">
-                        {[m.firma || m.branche, m.ort].filter(Boolean).join(" · ")}
+                        {[m.firma || m.branche, m.ort].filter(Boolean).join(", ")}
                       </p>
                       <div className="mt-1.5">
                         <StufenAbzeichen name={s.name} />
@@ -69,7 +68,7 @@ export default async function TopImNetzwerk() {
                     <div className="shrink-0 text-right">
                       <p className="font-bold">{m.punkte}</p>
                       <p className="text-xs text-gray-500">
-                        {m.empfehlungen_gegeben} Empf. · {m.auftraege} Auftr.
+                        {m.empfehlungen_gegeben} Empfehlungen, {m.auftraege} Aufträge
                       </p>
                     </div>
                   </li>
@@ -80,19 +79,19 @@ export default async function TopImNetzwerk() {
         </section>
 
         {/* Partner */}
-        <section className="rounded-xl border border-gray-200 bg-white">
-          <h2 className="border-b border-gray-200 px-5 py-4 font-bold">Meistempfohlene Partner</h2>
+        <section className="rounded-2xl border border-linie bg-white">
+          <h2 className="border-b border-linie px-5 py-4 font-bold">Meistempfohlene Partner</h2>
           {partner.length === 0 ? (
             <p className="px-5 py-6 text-sm text-gray-500">Noch keine Empfehlungen.</p>
           ) : (
-            <ol className="divide-y divide-gray-100">
+            <ol className="divide-y divide-linie">
               {partner.map((p, i) => (
                 <li key={p.id} className="flex items-center gap-4 px-5 py-4">
                   <span className="w-6 shrink-0 text-center font-bold text-gray-400">{i + 1}</span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-semibold">{p.name}</p>
                     <p className="truncate text-sm text-gray-500">
-                      {[p.firma, p.leistung, p.ort].filter(Boolean).join(" · ")}
+                      {[p.firma, p.leistung, p.ort].filter(Boolean).join(", ")}
                     </p>
                   </div>
                   <div className="shrink-0 text-right">

@@ -51,8 +51,7 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="font-semibold text-blue-600">Mein Netzwerk</p>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-tinte sm:text-3xl">
             Deine Geschäftskontakte
           </h1>
           <p className="mt-3 max-w-2xl text-gray-600">
@@ -63,7 +62,7 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
 
         <Link
           href="/dashboard/netzwerk/neu"
-          className="w-full rounded-lg bg-gray-900 px-5 py-3 text-center font-semibold text-white sm:w-auto"
+          className="w-full rounded-xl bg-tinte px-5 py-3 text-center font-semibold text-white sm:w-auto"
         >
           + Kontakt hinzufügen
         </Link>
@@ -88,7 +87,7 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
             type="search"
             defaultValue={suche}
             placeholder="Nach Name, Firma oder Leistung suchen …"
-            className="w-full max-w-md rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-blue-600"
+            className="w-full max-w-md rounded-xl border border-linie bg-white px-4 py-3 outline-none focus:border-kette"
           />
         </form>
       )}
@@ -102,7 +101,7 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
           </p>
           <Link
             href="/dashboard/netzwerk/neu"
-            className="mt-6 inline-block rounded-lg bg-gray-900 px-5 py-3 font-semibold text-white"
+            className="mt-6 inline-block rounded-xl bg-tinte px-5 py-3 font-semibold text-white"
           >
             Ersten Kontakt hinzufügen
           </Link>
@@ -124,7 +123,7 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
             <li key={k.id}>
               <Link
                 href={`/dashboard/netzwerk/${k.id}`}
-                className="block h-full rounded-xl border border-gray-200 bg-white p-5 hover:border-blue-300"
+                className="block h-full rounded-2xl border border-linie bg-white p-5 hover:border-blue-300"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">

@@ -11,7 +11,7 @@ export default function ProfilFehlt({ zurueck, was }: { zurueck: string; was: st
       </p>
       <Link
         href={`/dashboard/profil?zurueck=${encodeURIComponent(zurueck)}`}
-        className="mt-3 inline-block rounded-lg bg-gray-900 px-5 py-2.5 font-semibold text-white"
+        className="mt-3 inline-block rounded-xl bg-tinte px-5 py-2.5 font-semibold text-white"
       >
         Profil ausfüllen
       </Link>

@@ -6,7 +6,7 @@ import ProfilFehlt from "@/app/components/ProfilFehlt";
 import EmpfehlungFormular from "./EmpfehlungFormular";
 
 export const metadata: Metadata = {
-  title: "An Kunden empfehlen",
+  title: "Empfehlen",
 };
 
 const UUID_MUSTER =
@@ -35,31 +35,25 @@ export default async function Empfehlen(props: PageProps<"/dashboard/empfehlen/[
   if (!partner) notFound();
 
   return (
-    <div className="max-w-2xl">
-      <Link href="/dashboard/suche" className="text-sm font-medium text-gray-600 hover:text-gray-900">
-        ← Zurück zur Suche
+    <div className="mx-auto max-w-lg">
+      <Link href="/dashboard/suche" className="text-sm font-medium text-slate-500">
+        Zurück zur Suche
       </Link>
 
-      <h1 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">An Kunden empfehlen</h1>
-
-      <div className="mt-6 rounded-xl border border-blue-200 bg-blue-50 p-5">
-        <p className="font-bold">{partner.name}</p>
-        {partner.firma && <p className="text-sm text-gray-600">{partner.firma}</p>}
-        <p className="mt-2 text-sm text-gray-800">{partner.leistung}</p>
-        <p className="mt-1 text-sm text-gray-600">{`${partner.plz} ${partner.ort}`.trim()}</p>
-        {!partner.eigener && (
-          <p className="mt-2 text-xs text-gray-500">
-            Im Netzwerk empfohlen von {partner.empfohlen_von || "einem Mitglied"}
-          </p>
-        )}
+      <div className="mt-4 rounded-2xl bg-tinte p-5 text-white">
+        <p className="text-sm text-slate-300">Du empfiehlst</p>
+        <p className="mt-1 text-xl font-semibold">{partner.firma || partner.name}</p>
+        <p className="mt-0.5 text-slate-200">
+          {partner.leistung}
+          {partner.firma && <span className="text-slate-400">, {partner.name}</span>}
+        </p>
+        <p className="mt-3 text-sm text-slate-300">
+          {`${partner.plz} ${partner.ort}`.trim()}
+          {partner.telefon && <span className="block">{partner.telefon}</span>}
+        </p>
       </div>
 
-      <p className="mt-6 text-gray-600">
-        Für wen ist die Empfehlung? Im nächsten Schritt schickst du sie per
-        WhatsApp, E-Mail oder als digitale Visitenkarte.
-      </p>
-
-      <div className="mt-4">
+      <div className="mt-5">
         {profilVollstaendig ? (
           <EmpfehlungFormular kontaktId={partner.id} />
         ) : (

@@ -33,8 +33,7 @@ export default async function MeineEmpfehlungen() {
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="font-semibold text-blue-600">Meine Empfehlungen</p>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-tinte sm:text-3xl">
             Empfehlungen an Kunden
           </h1>
           <p className="mt-3 text-gray-600">
@@ -44,7 +43,7 @@ export default async function MeineEmpfehlungen() {
         </div>
         <Link
           href="/dashboard/suche"
-          className="w-full rounded-lg bg-gray-900 px-5 py-3 text-center font-semibold text-white sm:w-auto"
+          className="w-full rounded-xl bg-tinte px-5 py-3 text-center font-semibold text-white sm:w-auto"
         >
           + Neue Empfehlung
         </Link>
@@ -68,7 +67,7 @@ export default async function MeineEmpfehlungen() {
             {faellig.map((e) => (
               <li key={e.id}>
                 <Link href={`/dashboard/empfehlungen/${e.id}`} className="text-sm font-semibold text-amber-900 underline">
-                  {e.kontakt_name} → {e.kunde_name}
+                  {e.kontakt_name}{e.kunde_name ? ` für ${e.kunde_name}` : ""}
                 </Link>
               </li>
             ))}
@@ -85,7 +84,7 @@ export default async function MeineEmpfehlungen() {
           </p>
           <Link
             href="/dashboard/suche"
-            className="mt-6 inline-block rounded-lg bg-gray-900 px-5 py-3 font-semibold text-white"
+            className="mt-6 inline-block rounded-xl bg-tinte px-5 py-3 font-semibold text-white"
           >
             Netzwerk durchsuchen
           </Link>
@@ -93,7 +92,7 @@ export default async function MeineEmpfehlungen() {
       )}
 
       {alle.length > 0 && (
-        <ul className="mt-6 divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white">
+        <ul className="mt-6 divide-y divide-linie rounded-2xl border border-linie bg-white">
           {alle.map((e) => (
             <li key={e.id}>
               <Link
@@ -102,7 +101,7 @@ export default async function MeineEmpfehlungen() {
               >
                 <div className="min-w-0">
                   <p className="truncate font-semibold">
-                    {e.kontakt_name} → {e.kunde_name}
+                    {e.kontakt_name}{e.kunde_name ? ` für ${e.kunde_name}` : ""}
                   </p>
                   <p className="text-sm text-gray-500">{datum(e.erstellt_am)}</p>
                 </div>

@@ -61,8 +61,7 @@ export default async function Veranstaltungen(props: PageProps<"/dashboard/veran
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="font-semibold text-blue-600">Veranstaltungen</p>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Gemeinsam netzwerken</h1>
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-tinte sm:text-3xl">Gemeinsam netzwerken</h1>
           <p className="mt-3 max-w-2xl text-gray-600">
             Online-Branchen-Calls über Teams und regionale Community-Treffen, bei
             denen sich alle Branchen begegnen. Für jede Teilnahme gibt es Punkte:
@@ -76,7 +75,7 @@ export default async function Veranstaltungen(props: PageProps<"/dashboard/veran
         {istAdmin && (
           <Link
             href="/dashboard/veranstaltungen/neu"
-            className="w-full rounded-lg bg-gray-900 px-5 py-3 text-center font-semibold text-white sm:w-auto"
+            className="w-full rounded-xl bg-tinte px-5 py-3 text-center font-semibold text-white sm:w-auto"
           >
             + Veranstaltung anlegen
           </Link>
@@ -89,7 +88,7 @@ export default async function Veranstaltungen(props: PageProps<"/dashboard/veran
             key={f.wert}
             href={f.wert ? `/dashboard/veranstaltungen?art=${f.wert}` : "/dashboard/veranstaltungen"}
             className={`rounded-full px-4 py-2 text-sm font-semibold ${
-              filter === f.wert ? "bg-gray-900 text-white" : "border border-gray-300 bg-white text-gray-700"
+              filter === f.wert ? "bg-tinte text-white" : "border border-gray-300 bg-white text-gray-700"
             }`}
           >
             {f.name}
@@ -118,7 +117,7 @@ export default async function Veranstaltungen(props: PageProps<"/dashboard/veran
           const vorbei = new Date(v.ende).getTime() < Date.now();
 
           return (
-            <li key={v.id} id={`v-${v.id}`} className="rounded-xl border border-gray-200 bg-white p-6">
+            <li key={v.id} id={`v-${v.id}`} className="rounded-2xl border border-linie bg-white p-6">
               <div className="flex flex-wrap items-center gap-2">
                 <span className={`rounded-full px-3 py-1 text-xs font-semibold ${a.stil}`}>{a.name}</span>
                 {(v.branche || v.region) && (
@@ -139,7 +138,7 @@ export default async function Veranstaltungen(props: PageProps<"/dashboard/veran
               )}
               <p className="mt-3 text-xs text-gray-400">
                 {z?.angemeldet ?? 0} angemeldet
-                {(z?.teilgenommen ?? 0) > 0 && ` · ${z!.teilgenommen} teilgenommen`}
+                {(z?.teilgenommen ?? 0) > 0 && `, ${z!.teilgenommen} teilgenommen`}
               </p>
 
               <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -148,8 +147,8 @@ export default async function Veranstaltungen(props: PageProps<"/dashboard/veran
                     <button
                       className={
                         angemeldet
-                          ? "rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold"
-                          : "rounded-lg bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white"
+                          ? "rounded-xl border border-linie px-5 py-2.5 text-sm font-semibold"
+                          : "rounded-xl bg-tinte px-5 py-2.5 text-sm font-semibold text-white"
                       }
                     >
                       {angemeldet ? "Abmelden" : "Ich bin dabei"}

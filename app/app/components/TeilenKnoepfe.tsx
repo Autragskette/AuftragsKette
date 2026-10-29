@@ -59,7 +59,7 @@ export default function TeilenKnoepfe({
         <button
           type="button"
           onClick={teilen}
-          className="rounded-lg bg-blue-600 px-5 py-3 text-center text-sm font-semibold text-white"
+          className="rounded-xl bg-kette px-5 py-3 text-center text-sm font-semibold text-white"
         >
           Teilen …
         </button>
@@ -81,7 +81,7 @@ export default function TeilenKnoepfe({
         <a
           href={mailto}
           onClick={() => onGeteilt?.("email")}
-          className="rounded-lg bg-gray-900 px-5 py-3 text-center text-sm font-semibold text-white"
+          className="rounded-xl bg-tinte px-5 py-3 text-center text-sm font-semibold text-white"
         >
           Per E-Mail senden
         </a>
@@ -91,7 +91,7 @@ export default function TeilenKnoepfe({
         <button
           type="button"
           onClick={kopieren}
-          className="rounded-lg border border-gray-300 bg-white px-5 py-3 text-center text-sm font-semibold"
+          className="rounded-xl border border-linie bg-white px-5 py-3 text-center text-sm font-semibold"
         >
           {kopiert ? "Kopiert ✓" : kopierLabel}
         </button>

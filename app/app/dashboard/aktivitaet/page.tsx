@@ -39,9 +39,8 @@ export default async function MeineAktivitaet() {
 
   return (
     <div className="max-w-3xl">
-      <p className="font-semibold text-blue-600">Meine Aktivität</p>
       <div className="mt-2 flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{k.punkte} Punkte</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-tinte sm:text-3xl">{k.punkte} Punkte</h1>
         <StufenAbzeichen name={s.name} />
       </div>
       <p className="mt-3 text-gray-600">
@@ -50,7 +49,7 @@ export default async function MeineAktivitaet() {
       </p>
 
       {/* Nächste Stufe */}
-      <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6">
+      <div className="mt-8 rounded-2xl border border-linie bg-white p-6">
         <h2 className="font-bold">
           {s.top ? "Du bist Top-Mitglied ★" : `Dein Weg zum ${s.naechste}`}
         </h2>
@@ -73,10 +72,10 @@ export default async function MeineAktivitaet() {
       </div>
 
       {/* Aufschlüsselung */}
-      <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
-        <h2 className="border-b border-gray-200 px-6 py-4 font-bold">So setzen sich deine Punkte zusammen</h2>
+      <div className="mt-6 overflow-hidden rounded-2xl border border-linie bg-white">
+        <h2 className="border-b border-linie px-6 py-4 font-bold">So setzen sich deine Punkte zusammen</h2>
         <table className="w-full text-sm">
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-linie">
             {PUNKTE.map((p) => {
               const anzahl = k[p.feld];
               return (
@@ -92,7 +91,7 @@ export default async function MeineAktivitaet() {
             })}
           </tbody>
           <tfoot>
-            <tr className="border-t border-gray-200 bg-gray-50">
+            <tr className="border-t border-linie bg-gray-50">
               <td className="px-6 py-3 font-bold" colSpan={2}>Gesamt</td>
               <td className="px-6 py-3 text-right font-bold">{k.punkte}</td>
             </tr>
@@ -102,11 +101,11 @@ export default async function MeineAktivitaet() {
 
       {/* Geben und Nehmen */}
       <div className="mt-6 grid gap-5 sm:grid-cols-2">
-        <div className="rounded-xl border border-gray-200 bg-white p-6">
+        <div className="rounded-2xl border border-linie bg-white p-6">
           <p className="text-sm font-medium text-gray-500">Empfehlungen gegeben</p>
           <p className="mt-2 text-3xl font-bold">{k.empfehlungen_gegeben}</p>
         </div>
-        <div className="rounded-xl border border-gray-200 bg-white p-6">
+        <div className="rounded-2xl border border-linie bg-white p-6">
           <p className="text-sm font-medium text-gray-500">Du selbst wurdest empfohlen</p>
           <p className="mt-2 text-3xl font-bold">{k.empfehlungen_erhalten}</p>
           <p className="mt-1 text-xs text-gray-400">wenn dich jemand als Partner eingetragen hat</p>
@@ -114,7 +113,7 @@ export default async function MeineAktivitaet() {
       </div>
 
       {/* Mitgliedschaft */}
-      <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
+      <div className="mt-6 rounded-2xl border border-linie bg-white p-6">
         <h2 className="font-bold">Deine Mitgliedschaft</h2>
         <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
           <dt className="text-gray-500">Mitglied seit</dt>
@@ -159,13 +158,13 @@ export default async function MeineAktivitaet() {
       </div>
 
       <div className="mt-8 flex flex-wrap gap-3">
-        <Link href="/dashboard/suche" className="rounded-lg bg-gray-900 px-5 py-3 text-sm font-semibold text-white">
+        <Link href="/dashboard/suche" className="rounded-xl bg-tinte px-5 py-3 text-sm font-semibold text-white">
           Jemanden empfehlen
         </Link>
-        <Link href="/dashboard/netzwerk/neu" className="rounded-lg border border-gray-300 bg-white px-5 py-3 text-sm font-semibold">
+        <Link href="/dashboard/netzwerk/neu" className="rounded-xl border border-linie bg-white px-5 py-3 text-sm font-semibold">
           Kontakt einbringen
         </Link>
-        <Link href="/dashboard/veranstaltungen" className="rounded-lg border border-gray-300 bg-white px-5 py-3 text-sm font-semibold">
+        <Link href="/dashboard/veranstaltungen" className="rounded-xl border border-linie bg-white px-5 py-3 text-sm font-semibold">
           Zu den Veranstaltungen
         </Link>
       </div>

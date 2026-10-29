@@ -15,7 +15,7 @@ export default async function Visitenkarte(props: PageProps<"/k/[token]">) {
   return (
     <main className="pt-safe pb-safe flex min-h-screen flex-col items-center bg-gray-50 px-4 py-6 text-gray-900 sm:px-6 sm:py-10">
       {!k ? (
-        <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 text-center">
+        <div className="w-full max-w-md rounded-2xl border border-linie bg-white p-8 text-center">
           <h1 className="text-xl font-bold">Visitenkarte nicht verfügbar</h1>
           <p className="mt-3 text-gray-600">
             Dieser Link ist nicht (mehr) gültig.
@@ -24,15 +24,15 @@ export default async function Visitenkarte(props: PageProps<"/k/[token]">) {
       ) : (
         <div className="w-full max-w-md">
           <p className="text-center text-sm text-gray-500">
-            {k.kunde_name ? `Für ${k.kunde_name} · ` : ""}empfohlen von{" "}
+            {k.kunde_name ? `Für ${k.kunde_name}, ` : ""}empfohlen von{" "}
             <strong className="text-gray-700">
               {k.empfohlen_von}
               {k.empfohlen_von_firma ? `, ${k.empfohlen_von_firma}` : ""}
             </strong>
           </p>
 
-          <div className="mt-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-            <div className="bg-gray-900 px-7 py-8 text-white">
+          <div className="mt-4 overflow-hidden rounded-2xl border border-linie bg-white shadow-sm">
+            <div className="bg-tinte px-7 py-8 text-white">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-xl font-bold text-gray-900">
                 {k.name.charAt(0).toUpperCase()}
               </div>
@@ -49,7 +49,7 @@ export default async function Visitenkarte(props: PageProps<"/k/[token]">) {
               )}
 
               {k.telefon && (
-                <a href={`tel:${k.telefon.replace(/\s/g, "")}`} className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3">
+                <a href={`tel:${k.telefon.replace(/\s/g, "")}`} className="flex items-center justify-between rounded-lg border border-linie px-4 py-3">
                   <span className="text-sm text-gray-500">Anrufen</span>
                   <span className="font-semibold">{k.telefon}</span>
                 </a>
@@ -59,14 +59,14 @@ export default async function Visitenkarte(props: PageProps<"/k/[token]">) {
                   href={`https://wa.me/${telefonInternational(k.telefon)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3"
+                  className="flex items-center justify-between rounded-lg border border-linie px-4 py-3"
                 >
                   <span className="text-sm text-gray-500">WhatsApp</span>
                   <span className="font-semibold">Nachricht schreiben</span>
                 </a>
               )}
               {k.email && (
-                <a href={`mailto:${k.email}`} className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 px-4 py-3">
+                <a href={`mailto:${k.email}`} className="flex items-center justify-between gap-3 rounded-lg border border-linie px-4 py-3">
                   <span className="text-sm text-gray-500">E-Mail</span>
                   <span className="truncate font-semibold">{k.email}</span>
                 </a>
@@ -77,7 +77,7 @@ export default async function Visitenkarte(props: PageProps<"/k/[token]">) {
 
               <a
                 href={`/k/${token}/vcard`}
-                className="block rounded-lg bg-blue-600 px-6 py-3 text-center font-semibold text-white"
+                className="block rounded-xl bg-kette px-6 py-3 text-center font-semibold text-white"
               >
                 In Kontakte speichern
               </a>
@@ -92,7 +92,7 @@ export default async function Visitenkarte(props: PageProps<"/k/[token]">) {
             , dem geschlossenen Unternehmernetzwerk.
             <br />
             <Link href="/impressum" className="underline">Impressum</Link>
-            {" · "}
+            {"  "}
             <Link href="/datenschutz" className="underline">Datenschutz</Link>
           </p>
         </div>

@@ -30,7 +30,7 @@ export default function ProfilFormular({ werte, zurueck }: { werte: Werte; zurue
   } as ProfilStatus);
 
   return (
-    <form action={aktion} className="grid gap-5 rounded-xl border border-gray-200 bg-white p-4 sm:p-6 sm:grid-cols-2">
+    <form action={aktion} className="grid gap-5 rounded-2xl border border-linie bg-white p-4 sm:p-6 sm:grid-cols-2">
       {zurueck && <input type="hidden" name="zurueck" value={zurueck} />}
       {FELDER.map((feld) => (
         <div key={feld.name} className={feld.breit ? "sm:col-span-2" : ""}>
@@ -42,7 +42,7 @@ export default function ProfilFormular({ werte, zurueck }: { werte: Werte; zurue
             name={feld.name}
             defaultValue={werte[feld.name]}
             placeholder={feld.placeholder}
-            className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
+            className="w-full rounded-xl border border-linie px-4 py-3 outline-none focus:border-kette"
           />
         </div>
       ))}
@@ -62,7 +62,7 @@ export default function ProfilFormular({ werte, zurueck }: { werte: Werte; zurue
         <button
           type="submit"
           disabled={laeuft}
-          className="w-full rounded-lg bg-gray-900 px-6 py-3 font-semibold text-white disabled:opacity-60 sm:w-auto"
+          className="w-full rounded-xl bg-tinte px-6 py-3 font-semibold text-white disabled:opacity-60 sm:w-auto"
         >
           {laeuft ? "Wird gespeichert …" : zurueck ? "Speichern und weiter" : "Profil speichern"}
         </button>

@@ -32,12 +32,12 @@ export default function Einchecken({ id, punkte }: { id: string; punkte: number 
           autoComplete="off"
           autoCapitalize="characters"
           placeholder="z. B. A1B2C3"
-          className="w-full min-w-0 rounded-lg border border-gray-300 bg-white px-3 py-2.5 uppercase tracking-widest outline-none focus:border-blue-600"
+          className="w-full min-w-0 rounded-xl border border-linie bg-white px-3 py-2.5 uppercase tracking-widest outline-none focus:border-kette"
         />
         <button
           type="submit"
           disabled={laeuft}
-          className="shrink-0 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+          className="shrink-0 rounded-xl bg-kette px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
         >
           {laeuft ? "…" : "Einchecken"}
         </button>

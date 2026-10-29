@@ -61,10 +61,16 @@ Visitenkarte.
 - Das Mitglied sieht pro Kontakt den Status: eingeladen, bestätigt,
   abgelehnt. Einladung kann erneut gesendet werden.
 
-## 3. Regionale Suche im Netzwerk
+## 3. Regionale Suche im Netzwerk (Umkreis)
 
 - Mitglieder suchen bestätigte Kontakte nach **Gewerk/Leistung** und
-  **Region** (PLZ bzw. Ort, Umkreis).
+  **Ort oder PLZ** im **Umkreis** (Standard 20 km, wählbar 10/20/30/50 km),
+  damit auch Nachbarorte gefunden werden. Ortsdaten: GeoNames (CC BY 4.0),
+  `app/lib/geo/plz-de.json`.
+- Ohne Treffer im Umkreis: Hinweis, Erweiterung auf 50 km und die
+  nächstgelegenen Partner außerhalb.
+- Empfehlen in zwei Schritten: „Empfehlen“ beim Partner, dann
+  „Per WhatsApp senden“ (Name und Nummer des Kunden optional).
 - Ergebnis zeigt auch, **wer** den Kontakt empfohlen hat.
 - Ziel: Jede Region und jedes Gewerk abdecken, auch wenn man selbst dort
   niemanden kennt.
@@ -188,6 +194,11 @@ Rangliste „Top im Netzwerk“: aktivste Mitglieder und meistempfohlene Partner
 - Übersicht, welche Gewerke in welchen Regionen fehlen
 
 ## Technik
+
+- **Gestaltung**: Marineblau (`tinte` #13294B) als Hauptfarbe, Ketten-Blau
+  (`kette` #2457D6) als Akzent, Messing (`messing` #B8862B) nur für
+  Top-Mitglieder, Hintergrund `papier` #F3F5F8, Schrift Instrument Sans.
+  Die Suchkarte „Wen sucht dein Kunde?“ ist das zentrale Element der Startseite.
 
 - **Mobile first**: Mitglieder nutzen die App fast nur am Handy. Jede neue
   Seite zuerst für Handybreite gestalten (untere Navigationsleiste, große

@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f9fafb;
-  --foreground: #111827;
+  --background: #f3f5f8;
+  --foreground: #172033;
   /* Platz für die untere Navigationsleiste auf dem Handy */
   --tab-hoehe: 4.25rem;
 }
@@ -10,8 +10,14 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-instrument), system-ui, sans-serif;
+  /* AuftragsKette-Farben */
+  --color-tinte: #13294b;
+  --color-tinte-hell: #1d3a66;
+  --color-kette: #2457d6;
+  --color-messing: #b8862b;
+  --color-papier: #f3f5f8;
+  --color-linie: #e2e6ed;
 }
 
 html {
@@ -24,7 +30,8 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-instrument), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-feature-settings: "ss01", "cv11";
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
 }
@@ -62,5 +69,20 @@ summary {
 @media (min-width: 768px) {
   .pb-tabs {
     padding-bottom: 2.5rem;
+  }
+}
+
+/* Sichtbarer Fokus für Tastatur-Bedienung */
+:focus-visible {
+  outline: 2px solid #2457d6;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }

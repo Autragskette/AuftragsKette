@@ -25,7 +25,7 @@ export default function AnmeldeFormular() {
           autoComplete="email"
           required
           placeholder="name@unternehmen.de"
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
+          className="w-full rounded-xl border border-linie px-4 py-3 outline-none focus:border-kette"
         />
       </div>
 
@@ -44,7 +44,7 @@ export default function AnmeldeFormular() {
           autoComplete="current-password"
           required
           placeholder="Passwort eingeben"
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-600"
+          className="w-full rounded-xl border border-linie px-4 py-3 outline-none focus:border-kette"
         />
       </div>
 
@@ -60,7 +60,7 @@ export default function AnmeldeFormular() {
       <button
         type="submit"
         disabled={laeuft}
-        className="w-full rounded-lg bg-gray-900 px-6 py-3 font-semibold text-white disabled:opacity-60"
+        className="w-full rounded-xl bg-tinte px-6 py-3 font-semibold text-white disabled:opacity-60"
       >
         {laeuft ? "Wird angemeldet …" : "Anmelden"}
       </button>

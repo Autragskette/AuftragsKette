@@ -13,8 +13,7 @@ export default async function MeinProfil(props: PageProps<"/dashboard/profil">) 
 
   return (
     <div className="max-w-2xl">
-      <p className="font-semibold text-blue-600">Mein Profil</p>
-      <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Deine Angaben</h1>
+      <h1 className="mt-2 text-2xl font-semibold tracking-tight text-tinte sm:text-3xl">Deine Angaben</h1>
       <p className="mt-3 text-gray-600">
         Dein Name und deine Firma stehen in jeder Einladung und Empfehlung,
         die du verschickst, z. B. „Max Muster von Lichtblick Fotografie hat
