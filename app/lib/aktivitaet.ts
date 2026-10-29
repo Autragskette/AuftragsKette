@@ -15,6 +15,7 @@ export type Kennzahlen = {
   auftraege: number;
   ergebnisse_gemeldet: number;
   kontakte_bestaetigt: number;
+  kontakte_netzwerk: number;
   kontakte_empfohlen: number;
   empfehlungen_erhalten: number;
   aktive_wochen: number;
@@ -24,12 +25,13 @@ export type Kennzahlen = {
   punkte: number;
 };
 
-/** Punkte je Aktion (müssen zur Datenbankfunktion mitglieder_kennzahlen_v2 passen). */
+/** Punkte je Aktion (müssen zur Datenbankfunktion mitglieder_kennzahlen_v3 passen). */
 export const PUNKTE = [
   { aktion: "Empfehlung an einen Kunden gegeben", punkte: 10, feld: "empfehlungen_gegeben" },
   { aktion: "Daraus ist ein Auftrag entstanden", punkte: 20, feld: "auftraege" },
   { aktion: "Ergebnis einer Empfehlung zurückgemeldet", punkte: 3, feld: "ergebnisse_gemeldet" },
-  { aktion: "Kontakt eingeladen und bestätigt", punkte: 15, feld: "kontakte_bestaetigt" },
+  { aktion: "Persönlichen Kontakt eingeladen und bestätigt", punkte: 15, feld: "kontakte_bestaetigt" },
+  { aktion: "Netzwerkkontakt aufgenommen (höchstens 5 pro Jahr)", punkte: 3, feld: "kontakte_netzwerk" },
   { aktion: "Dein Kontakt wurde von anderen empfohlen", punkte: 5, feld: "kontakte_empfohlen" },
   { aktion: "Teilnahme an einem Online-Branchen-Call", punkte: 8, feld: "teilnahmen_online" },
   { aktion: "Teilnahme an einem regionalen Community-Treffen", punkte: 12, feld: "teilnahmen_vor_ort" },

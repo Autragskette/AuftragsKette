@@ -63,6 +63,12 @@ export async function empfehlungAnlegen(
   const partner = (Array.isArray(treffer) ? treffer[0] : treffer) as Partner | undefined;
   if (!partner) return { fehler: "Dieser Partner ist nicht (mehr) im Netzwerk verfügbar." };
 
+  // "Persönlich bekannt" nur bei eigenen, persönlich eingeladenen Kontakten
+  if (partner.eigener) {
+    const { data: eigen } = await supabase.from("kontakte").select("herkunft").eq("id", partner.id).maybeSingle();
+    partner.eigener = eigen?.herkunft !== "netzwerk";
+  }
+
   const { data, error } = await supabase
     .from("kundenempfehlungen")
     .insert({

@@ -8,8 +8,12 @@ export const metadata: Metadata = {
   title: "Kontakt einladen",
 };
 
-export default async function NeuerKontakt() {
-  const { istPartner } = await aktuellesMitglied();
+const UUID_MUSTER =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export default async function NeuerKontakt(props: PageProps<"/dashboard/netzwerk/neu">) {
+  const { von } = await props.searchParams;
+  const { supabase, istPartner } = await aktuellesMitglied();
   if (istPartner) {
     return (
       <div className="mx-auto max-w-2xl">
@@ -20,6 +24,15 @@ export default async function NeuerKontakt() {
       </div>
     );
   }
+
+  // Aus der Suche: Betrieb aus dem Netzwerk in das eigene Netzwerk aufnehmen
+  type Vorlage = { name: string; firma: string; leistung: string; email: string; telefon: string; plz: string; ort: string };
+  let vorlage: Vorlage | null = null;
+  if (typeof von === "string" && UUID_MUSTER.test(von)) {
+    const { data } = await supabase.rpc("netzwerk_kontakt", { p_id: von });
+    vorlage = ((Array.isArray(data) ? data[0] : data) as Vorlage | undefined) ?? null;
+  }
+
   return (
     <div className="max-w-2xl">
       <Link
@@ -33,12 +46,29 @@ export default async function NeuerKontakt() {
         Kontakt einladen
       </h1>
       <p className="mt-3 text-gray-600">
-        Trage einen Geschäftskontakt ein, den du persönlich kennst und
-        dessen Arbeit du einschätzen kannst.
+        {vorlage
+          ? `Nimm ${vorlage.name} in dein Netzwerk auf. ${vorlage.name.split(" ")[0]} bekommt eine Einladung und bestätigt selbst.`
+          : "Lade einen Geschäftskontakt ein, dessen Arbeit du kennst und den du deinen Kunden guten Gewissens empfehlen würdest."}
       </p>
 
       <div className="mt-8">
-        <KontaktFormular />
+        <KontaktFormular
+          herkunft={vorlage ? "netzwerk" : "persoenlich"}
+          anfangswerte={
+            vorlage
+              ? {
+                  name: vorlage.name,
+                  firma: vorlage.firma,
+                  leistung: vorlage.leistung,
+                  email: vorlage.email,
+                  telefon: vorlage.telefon,
+                  plz: vorlage.plz,
+                  ort: vorlage.ort,
+                  notiz: "",
+                }
+              : undefined
+          }
+        />
       </div>
     </div>
   );

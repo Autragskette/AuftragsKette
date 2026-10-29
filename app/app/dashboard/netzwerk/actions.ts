@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { sendeEmail } from "@/lib/email";
-import { einladungsBetreff, einladungsText } from "@/lib/texte";
+import { einladungsBetreff, einladungsText, einladungsTextNetzwerk } from "@/lib/texte";
 import { profilVollstaendig, type Profil } from "@/lib/mitglied";
 import { basisUrl } from "@/lib/url";
 
@@ -115,9 +115,10 @@ export async function kontaktSpeichern(
       .eq("id", id)
       .eq("besitzer_id", user.id));
   } else {
+    const herkunft = formData.get("herkunft") === "netzwerk" ? "netzwerk" : "persoenlich";
     const antwort = await supabase
       .from("kontakte")
-      .insert({ ...werte, besitzer_id: user.id })
+      .insert({ ...werte, besitzer_id: user.id, herkunft })
       .select("id")
       .single();
     error = antwort.error;
@@ -137,7 +138,7 @@ export async function kontaktSpeichern(
   // Bei neuem Kontakt (oder geänderter E-Mail) automatisch einladen, falls möglich
   const { data: stand } = await supabase
     .from("kontakte")
-    .select("status, email, name, leistung, einladung_token")
+    .select("status, email, name, leistung, einladung_token, herkunft")
     .eq("id", kontaktId)
     .single();
 
@@ -152,7 +153,7 @@ export async function kontaktSpeichern(
 
 async function einladungVersenden(
   userId: string,
-  kontakt: { email: string; name: string; leistung: string; einladung_token: string },
+  kontakt: { email: string; name: string; leistung: string; einladung_token: string; herkunft?: string },
 ) {
   const supabase = await createClient();
   const { data: profil } = await supabase
@@ -170,7 +171,7 @@ async function einladungVersenden(
   return sendeEmail({
     an: kontakt.email,
     betreff: einladungsBetreff(absenderName),
-    text: einladungsText({
+    text: (kontakt.herkunft === "netzwerk" ? einladungsTextNetzwerk : einladungsText)({
       kontaktName: kontakt.name,
       leistung: kontakt.leistung,
       absenderName,
@@ -190,7 +191,7 @@ export async function einladungErneutSenden(id: string) {
 
   const { data: kontakt } = await supabase
     .from("kontakte")
-    .select("email, name, leistung, einladung_token, status")
+    .select("email, name, leistung, einladung_token, status, herkunft")
     .eq("id", id)
     .eq("besitzer_id", user.id)
     .single();
@@ -221,6 +222,14 @@ export async function kontaktLoeschen(id: string) {
     throw new Error("Der Kontakt konnte nicht gelöscht werden.");
   }
 
+  revalidatePath("/dashboard", "layout");
+  redirect("/dashboard/netzwerk");
+}
+
+/** Erklärung: keine (weiteren) eigenen Kontakte, Netzwerkkontakte zählen als Startkontakte */
+export async function ohneStartkontakteErklaeren() {
+  const supabase = await createClient();
+  await supabase.rpc("ohne_startkontakte_erklaeren");
   revalidatePath("/dashboard", "layout");
   redirect("/dashboard/netzwerk");
 }

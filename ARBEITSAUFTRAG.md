@@ -45,6 +45,20 @@ Wortwahl in der App: „Startkontakte“ (nicht „Pflichtkontakte“) und Konta
 - Später als Option: Kontakte, die man über das Netzwerk kennengelernt hat,
   als Startkontakt zählen lassen.
 
+### Netzwerkkontakte
+
+- Mitglieder können auch Betriebe in ihr Netzwerk aufnehmen, die sie **über die
+  AuftragsKette kennengelernt** haben (Veranstaltung, Empfehlung). Beim Einladen
+  wählt man „Persönlich“ oder „Über die AuftragsKette“; aus der Suche geht das
+  mit „+ In mein Netzwerk“.
+- Auch Netzwerkkontakte müssen zustimmen (eigener Einladungstext).
+- Sie sind in der App markiert, zählen **nicht** als Startkontakte und bringen
+  **3 Punkte** (höchstens 5 pro Jahr), persönliche Kontakte weiterhin 15.
+- Der Kunde bekommt bei ihnen den Text „Teil meines persönlichen
+  Unternehmernetzwerks …“, nicht „Ich kenne die Arbeit persönlich“.
+- Ab 3 Monaten Mitgliedschaft kann man erklären, keine weiteren eigenen
+  Kontakte zu haben. Danach zählen Netzwerkkontakte als Startkontakte.
+
 ## 2. Bestätigung durch den Kontakt (Double Opt-in)
 
 - Wird ein Kontakt mit E-Mail-Adresse eingetragen, erhält er automatisch

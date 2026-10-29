@@ -34,7 +34,7 @@ export default async function MeineAktivitaet() {
       </div>
     );
   }
-  const { data, error } = await supabase.rpc("mitglieder_kennzahlen_v2", { p_id: user.id });
+  const { data, error } = await supabase.rpc("mitglieder_kennzahlen_v3", { p_id: user.id });
   const k = (Array.isArray(data) ? data[0] : data) as Kennzahlen | undefined;
 
   if (error || !k) {

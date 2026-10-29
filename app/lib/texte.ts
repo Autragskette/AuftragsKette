@@ -36,6 +36,39 @@ Viele Grüße
 ${unterschrift}`;
 }
 
+/**
+ * Einladung an jemanden, den das Mitglied über die AuftragsKette kennengelernt
+ * hat (Veranstaltung, Empfehlung), in das eigene Netzwerk.
+ */
+export function einladungsTextNetzwerk({
+  kontaktName,
+  leistung,
+  absenderName,
+  absenderFirma,
+  link,
+}: {
+  kontaktName: string;
+  leistung: string;
+  absenderName: string;
+  absenderFirma: string;
+  link: string;
+}) {
+  const vorname = kontaktName.trim().split(/\s+/)[0] || kontaktName;
+  const unterschrift = [absenderName, absenderFirma, "Mitglied der AuftragsKette"]
+    .filter((z) => z && z.trim())
+    .join("\n");
+
+  return `Hallo ${vorname},
+
+wir haben uns über die AuftragsKette kennengelernt, und ich würde dich gern in mein persönliches Netzwerk aufnehmen. So kann ich dich direkt weiterempfehlen, wenn mich Kunden nach ${leistung.trim() || "deinem Fachgebiet"} fragen.
+
+Wenn du einverstanden bist, bestätige das bitte kurz hier:
+${link}
+
+Viele Grüße
+${unterschrift}`;
+}
+
 /** Betreff der Einladung, wenn sie per E-Mail verschickt wird */
 export function einladungsBetreff(absenderName: string) {
   return `Weiterempfehlung an meine Kunden – ${absenderName}`;

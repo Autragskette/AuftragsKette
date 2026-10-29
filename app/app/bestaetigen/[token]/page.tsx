@@ -31,10 +31,13 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
   const { antwort, fehler } = await props.searchParams;
 
   let einladung: Einladung | null = null;
+  let ausNetzwerk = false;
   if (UUID_MUSTER.test(token) && supabaseEingerichtet()) {
     const supabase = await createClient();
     const { data } = await supabase.rpc("einladung_lesen_v2", { p_token: token });
     einladung = (Array.isArray(data) ? data[0] : data) ?? null;
+    const { data: h } = await supabase.rpc("einladung_herkunft", { p_token: token });
+    ausNetzwerk = h === "netzwerk";
   }
 
   return (
@@ -105,10 +108,22 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
               Hallo {einladung.kontakt_name.split(" ")[0]},
             </h1>
             <p className="mt-4 leading-7 text-slate-700">
-              <strong>{einladung.empfohlen_von}</strong> hat dich als
-              vertrauenswürdigen Geschäftskontakt für{" "}
-              <strong>{einladung.leistung}</strong> empfohlen und lädt dich
-              ein, Teil der AuftragsKette zu werden.
+              {ausNetzwerk ? (
+                <>
+                  <strong>{einladung.empfohlen_von}</strong> hat dich über die
+                  AuftragsKette kennengelernt und möchte dich in das eigene
+                  Netzwerk aufnehmen, um dich für{" "}
+                  <strong>{einladung.leistung}</strong> an Kunden
+                  weiterzuempfehlen.
+                </>
+              ) : (
+                <>
+                  <strong>{einladung.empfohlen_von}</strong> hat dich als
+                  vertrauenswürdigen Geschäftskontakt für{" "}
+                  <strong>{einladung.leistung}</strong> empfohlen und lädt dich
+                  ein, Teil der AuftragsKette zu werden.
+                </>
+              )}
             </p>
 
             <div className="mt-6 space-y-3 rounded-xl bg-gray-50 p-5 text-sm leading-6 text-slate-700">

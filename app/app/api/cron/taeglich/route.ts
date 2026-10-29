@@ -101,7 +101,7 @@ export async function GET(request: Request) {
 
   // 1) Inaktivität
   const [{ data: kennzahlen }, { data: profile }] = await Promise.all([
-    admin.rpc("mitglieder_kennzahlen_v2", { p_id: null }),
+    admin.rpc("mitglieder_kennzahlen_v3", { p_id: null }),
     admin.from("profile").select("id, vorname, erinnerung_stufe"),
   ]);
   const stufen = new Map((profile ?? []).map((p) => [p.id as string, p]));

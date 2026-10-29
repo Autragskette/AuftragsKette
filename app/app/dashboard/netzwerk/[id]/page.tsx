@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { aktuellesMitglied } from "@/lib/mitglied";
 import { emailVersandAktiv } from "@/lib/email";
-import { einladungsBetreff, einladungsText } from "@/lib/texte";
+import { einladungsBetreff, einladungsText, einladungsTextNetzwerk } from "@/lib/texte";
 import { KENNENLERN_EMPFEHLUNGEN } from "@/lib/preise";
 import { mailtoLink, whatsappLink } from "@/lib/teilen";
 import { basisUrl } from "@/lib/url";
@@ -44,7 +44,7 @@ export default async function KontaktBearbeiten(
   const { data: kontakt } = await supabase
     .from("kontakte")
     .select(
-      "name, firma, leistung, email, telefon, plz, ort, notiz, status, einladung_token, bestaetigt_am, interesse_mitgliedschaft",
+      "name, firma, leistung, email, telefon, plz, ort, notiz, status, einladung_token, bestaetigt_am, interesse_mitgliedschaft, herkunft",
     )
     .eq("id", id)
     .eq("besitzer_id", user.id)
@@ -54,7 +54,8 @@ export default async function KontaktBearbeiten(
 
   const link = `${await basisUrl()}/bestaetigen/${kontakt.einladung_token}`;
   const absenderName = `${profil.vorname} ${profil.nachname}`.trim();
-  const text = einladungsText({
+  const ausNetzwerk = kontakt.herkunft === "netzwerk";
+  const text = (ausNetzwerk ? einladungsTextNetzwerk : einladungsText)({
     kontaktName: kontakt.name,
     leistung: kontakt.leistung,
     absenderName,
@@ -93,6 +94,9 @@ export default async function KontaktBearbeiten(
         <h1 className="text-2xl font-semibold tracking-tight text-tinte sm:text-3xl">{kontakt.name}</h1>
         <StatusPlakette status={kontakt.status} />
       </div>
+      {ausNetzwerk && (
+        <p className="mt-2 text-sm text-slate-500">Über die AuftragsKette kennengelernt</p>
+      )}
 
       {hinweis.gespeichert && (
         <p className="mt-4 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-800">
@@ -108,7 +112,7 @@ export default async function KontaktBearbeiten(
             {kontakt.name} hat die kostenlose Kennenlernphase genutzt und ist
             pausiert, bis eine Mitgliedschaft abgeschlossen wird. Bis dahin ist
             der Kontakt in der Suche nicht sichtbar. Die Daten bleiben erhalten
-            und zählen weiter als dein Startkontakt.
+            und zählen weiter zu deinem Netzwerk.
           </p>
         </div>
       ) : kontakt.status === "bestaetigt" ? (
@@ -136,7 +140,9 @@ export default async function KontaktBearbeiten(
           <p className="mt-2 text-sm leading-6 text-gray-600">
             {kontakt.status === "abgelehnt"
               ? "Du kannst die Einladung erneut senden, falls es ein Versehen war."
-              : `Erst wenn ${kontakt.name} zustimmt, wird der Kontakt im Netzwerk sichtbar und zählt als dein Startkontakt.`}
+              : ausNetzwerk
+                ? `Erst wenn ${kontakt.name} zustimmt, gehört der Kontakt zu deinem Netzwerk.`
+                : `Erst wenn ${kontakt.name} zustimmt, wird der Kontakt im Netzwerk sichtbar und zählt als dein Startkontakt.`}
           </p>
 
           {hinweis.versendet && (

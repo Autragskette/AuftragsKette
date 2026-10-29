@@ -4,7 +4,12 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import StatusPlakette from "@/app/components/StatusPlakette";
 import PflichtKontakte from "@/app/components/PflichtKontakte";
-import { aktuellesMitglied, pflichtStand } from "@/lib/mitglied";
+import {
+  aktuellesMitglied,
+  ohneStartkontakteMoeglich,
+  pflichtStand,
+  startkontakteZaehlen,
+} from "@/lib/mitglied";
 
 export const metadata: Metadata = {
   title: "Mein Netzwerk",
@@ -21,6 +26,7 @@ type Kontakt = {
   ort: string;
   status: string;
   abgelehnt_am: string | null;
+  herkunft: "persoenlich" | "netzwerk";
 };
 
 export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk">) {
@@ -35,15 +41,18 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
 
   const { data, error } = await supabase
     .from("kontakte")
-    .select("id, name, firma, leistung, email, telefon, plz, ort, status, abgelehnt_am")
+    .select("id, name, firma, leistung, email, telefon, plz, ort, status, abgelehnt_am, herkunft")
     .eq("besitzer_id", user.id)
     .order("name", { ascending: true });
 
   const alle = (data ?? []) as Kontakt[];
   const kontakte = suche ? alle.filter((k) => passt(k, suche)) : alle;
-  const bestaetigt = alle.filter((k) => k.status === "bestaetigt").length;
-  const wartend = alle.filter((k) => k.status === "eingeladen").length;
   const { profil, istPartner } = await aktuellesMitglied();
+  const ohneEigene = Boolean(profil.ohne_startkontakte_am);
+  const bestaetigt = startkontakteZaehlen(alle, ohneEigene);
+  const wartend = alle.filter(
+    (k) => k.status === "eingeladen" && (k.herkunft !== "netzwerk" || ohneEigene),
+  ).length;
   if (istPartner) {
     return (
       <div className="mx-auto max-w-2xl">
@@ -66,8 +75,9 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
             Deine Geschäftskontakte
           </h1>
           <p className="mt-3 max-w-2xl text-gray-600">
-            Kontakte, die du persönlich kennst und fachlich einschätzen
-            kannst. Nur du siehst diese Liste.
+            Betriebe, die du deinen Kunden guten Gewissens empfiehlst: persönlich
+            bekannte und solche, die du über die AuftragsKette kennengelernt
+            hast. Nur du siehst diese Liste.
           </p>
         </div>
 
@@ -79,7 +89,12 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
         </Link>
       </div>
 
-      <PflichtKontakte stand={pflicht} wartend={wartend} />
+      <PflichtKontakte
+        stand={pflicht}
+        wartend={wartend}
+        ohneEigene={ohneEigene}
+        ohneMoeglich={ohneStartkontakteMoeglich(profil, pflicht.fehlen)}
+      />
 
       {error && (
         <p className="mt-8 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
@@ -147,6 +162,11 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
                 </div>
 
                 <p className="mt-3 text-sm text-gray-700">{k.leistung}</p>
+                {k.herkunft === "netzwerk" && (
+                  <p className="mt-2 inline-block rounded-full bg-papier px-2.5 py-0.5 text-xs font-semibold text-slate-600 ring-1 ring-linie">
+                    Über die AuftragsKette kennengelernt
+                  </p>
+                )}
 
                 <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
                   {(k.plz || k.ort) && <span>{`${k.plz} ${k.ort}`.trim()}</span>}

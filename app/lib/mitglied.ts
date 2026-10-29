@@ -11,6 +11,7 @@ export type Profil = {
   telefon: string;
   erstellt_am: string;
   rolle?: "mitglied" | "partner";
+  ohne_startkontakte_am?: string | null;
 };
 
 /** Angemeldetes Mitglied samt Profil; leitet sonst zur Anmeldung um. */
@@ -23,7 +24,7 @@ export async function aktuellesMitglied() {
 
   const { data } = await supabase
     .from("profile")
-    .select("vorname, nachname, firma, branche, plz, ort, telefon, erstellt_am, rolle")
+    .select("vorname, nachname, firma, branche, plz, ort, telefon, erstellt_am, rolle, ohne_startkontakte_am")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -85,6 +86,27 @@ export function signatur(profil: Partial<Profil>) {
  * ab der letzten Ablehnung 6 Monate Nachfrist für die fehlenden Kontakte.
  */
 export const PFLICHT_GESAMT = 3;
+/** Ab so vielen Monaten Mitgliedschaft kann man erklären, keine eigenen Kontakte mehr zu haben */
+export const OHNE_STARTKONTAKTE_AB_MONATEN = 3;
+
+/**
+ * Wie viele bestätigte Kontakte als Startkontakte zählen: persönliche immer,
+ * Netzwerkkontakte erst, wenn man erklärt hat, keine eigenen Kontakte mehr zu haben.
+ */
+export function startkontakteZaehlen(
+  kontakte: { status: string; herkunft?: string | null }[],
+  ohneEigene: boolean,
+) {
+  return kontakte.filter(
+    (k) => k.status === "bestaetigt" && (k.herkunft !== "netzwerk" || ohneEigene),
+  ).length;
+}
+
+/** Darf man jetzt erklären, keine (weiteren) eigenen Kontakte zu haben? */
+export function ohneStartkontakteMoeglich(profil: Pick<Profil, "erstellt_am" | "ohne_startkontakte_am">, fehlen: number) {
+  if (profil.ohne_startkontakte_am || fehlen === 0) return false;
+  return plusMonate(new Date(profil.erstellt_am), OHNE_STARTKONTAKTE_AB_MONATEN) <= new Date();
+}
 export const PFLICHT_MONATE = [0, 2, 3] as const;
 export const NACHFRIST_MONATE = 6;
 

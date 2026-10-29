@@ -1,15 +1,22 @@
 import Link from "next/link";
 import { datum } from "@/lib/empfehlung";
 import { NACHFRIST_MONATE, type pflichtStand } from "@/lib/mitglied";
+import { ohneStartkontakteErklaeren } from "@/app/dashboard/netzwerk/actions";
 
 type Stand = ReturnType<typeof pflichtStand>;
 
 export default function PflichtKontakte({
   stand,
   wartend,
+  ohneEigene = false,
+  ohneMoeglich = false,
 }: {
   stand: Stand;
   wartend: number;
+  /** Erklärt, keine eigenen Kontakte mehr zu haben: Netzwerkkontakte zählen mit */
+  ohneEigene?: boolean;
+  /** Erklärung ist jetzt möglich */
+  ohneMoeglich?: boolean;
 }) {
   if (stand.fehlen === 0) return null;
 
@@ -54,13 +61,30 @@ export default function PflichtKontakte({
       )}
 
       <p className="mt-3">
-        Lade Betriebe ein, deren Arbeit du kennst und die du deinen Kunden
-        guten Gewissens empfehlen würdest. Sie zählen, sobald sie zugestimmt haben.
+        {ohneEigene
+          ? "Du baust dein Netzwerk über Betriebe auf, die du in der AuftragsKette kennengelernt hast. Sie zählen als Startkontakte, sobald sie zugestimmt haben."
+          : "Lade Betriebe ein, deren Arbeit du kennst und die du deinen Kunden guten Gewissens empfehlen würdest. Sie zählen, sobald sie zugestimmt haben."}
       </p>
 
       <Link href="/dashboard/netzwerk/neu" className="mt-2 inline-block font-semibold underline">
         Kontakt einladen
       </Link>
+
+      {ohneMoeglich && (
+        <details className="mt-4 border-t border-current/15 pt-3">
+          <summary className="cursor-pointer font-medium">Ich habe keine weiteren eigenen Kontakte</summary>
+          <p className="mt-2">
+            Kein Problem. Dann baust du dein Netzwerk über Betriebe auf, die du
+            in der AuftragsKette kennenlernst, zum Beispiel bei Veranstaltungen.
+            Diese zählen dann als Startkontakte. Sie müssen ebenfalls zustimmen.
+          </p>
+          <form action={ohneStartkontakteErklaeren} className="mt-3">
+            <button type="submit" className="rounded-lg bg-white/70 px-4 py-2 font-semibold ring-1 ring-current/20">
+              Ja, ich baue mein Netzwerk über die AuftragsKette auf
+            </button>
+          </form>
+        </details>
+      )}
     </div>
   );
 }

@@ -22,9 +22,12 @@ const LEER: KontaktFelder = {
 export default function KontaktFormular({
   id = null,
   anfangswerte = LEER,
+  herkunft = "persoenlich",
 }: {
   id?: string | null;
   anfangswerte?: KontaktFelder;
+  /** Nur beim Anlegen wählbar */
+  herkunft?: "persoenlich" | "netzwerk";
 }) {
   const [status, aktion, laeuft] = useActionState(
     kontaktSpeichern.bind(null, id),
@@ -41,6 +44,28 @@ export default function KontaktFormular({
       noValidate
       className="space-y-5 rounded-2xl border border-linie bg-white p-4 sm:p-6"
     >
+      {!id && (
+        <fieldset>
+          <legend className="mb-2 block text-sm font-semibold text-gray-700">
+            Woher kennst du den Betrieb?
+          </legend>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <Herkunft
+              wert="persoenlich"
+              aktiv={herkunft}
+              titel="Persönlich"
+              text="Ich kenne die Arbeit aus eigener Erfahrung. Zählt als Startkontakt."
+            />
+            <Herkunft
+              wert="netzwerk"
+              aktiv={herkunft}
+              titel="Über die AuftragsKette"
+              text="Kennengelernt bei einer Veranstaltung oder über eine Empfehlung."
+            />
+          </div>
+        </fieldset>
+      )}
+
       <Feld
         name="name"
         label="Name"
@@ -167,6 +192,28 @@ export default function KontaktFormular({
         </Link>
       </div>
     </form>
+  );
+}
+
+function Herkunft({
+  wert,
+  aktiv,
+  titel,
+  text,
+}: {
+  wert: "persoenlich" | "netzwerk";
+  aktiv: string;
+  titel: string;
+  text: string;
+}) {
+  return (
+    <label className="flex cursor-pointer gap-3 rounded-xl border border-linie p-3.5 has-[:checked]:border-kette has-[:checked]:bg-blue-50/50">
+      <input type="radio" name="herkunft" value={wert} defaultChecked={aktiv === wert} className="mt-1 h-4 w-4" />
+      <span>
+        <span className="block font-semibold text-tinte">{titel}</span>
+        <span className="block text-sm leading-5 text-slate-600">{text}</span>
+      </span>
+    </label>
   );
 }
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { aktuellesMitglied, pflichtStand } from "@/lib/mitglied";
+import { aktuellesMitglied, pflichtStand, startkontakteZaehlen } from "@/lib/mitglied";
 import { datum, nachfrageFaellig } from "@/lib/empfehlung";
 import { aktivStatus, stufe, type Kennzahlen } from "@/lib/aktivitaet";
 import { ARTEN, zeitraum, type Veranstaltung } from "@/lib/veranstaltungen";
@@ -20,13 +20,13 @@ export default async function Start() {
   if (istPartner) return <PartnerStart supabase={supabase} profil={profil} />;
 
   const [kontakteAntwort, empfehlungenAntwort, kennzahlenAntwort, terminAntwort] = await Promise.all([
-    supabase.from("kontakte").select("status, abgelehnt_am").eq("besitzer_id", user.id),
+    supabase.from("kontakte").select("status, abgelehnt_am, herkunft").eq("besitzer_id", user.id),
     supabase
       .from("kundenempfehlungen")
       .select("id, kontakt_name, kunde_name, ergebnis, erstellt_am")
       .order("erstellt_am", { ascending: false })
       .limit(200),
-    supabase.rpc("mitglieder_kennzahlen_v2", { p_id: user.id }),
+    supabase.rpc("mitglieder_kennzahlen_v3", { p_id: user.id }),
     supabase
       .from("veranstaltungen")
       .select("id, titel, art, branche, region, beginn, ende")
@@ -36,11 +36,15 @@ export default async function Start() {
   ]);
 
   const kontakte = kontakteAntwort.data ?? [];
+  const ohneEigene = Boolean(profil.ohne_startkontakte_am);
   const bestaetigt = kontakte.filter((k) => k.status === "bestaetigt").length;
-  const wartend = kontakte.filter((k) => k.status === "eingeladen").length;
+  const startkontakte = startkontakteZaehlen(kontakte, ohneEigene);
+  const wartend = kontakte.filter(
+    (k) => k.status === "eingeladen" && (k.herkunft !== "netzwerk" || ohneEigene),
+  ).length;
   const letzteAblehnung =
     kontakte.map((k) => k.abgelehnt_am as string | null).filter(Boolean).sort().pop() ?? null;
-  const pflicht = pflichtStand(bestaetigt, profil.erstellt_am, letzteAblehnung);
+  const pflicht = pflichtStand(startkontakte, profil.erstellt_am, letzteAblehnung);
 
   const empfehlungen = empfehlungenAntwort.data ?? [];
   const faellig = empfehlungen.filter(nachfrageFaellig);

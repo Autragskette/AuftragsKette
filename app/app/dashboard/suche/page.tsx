@@ -19,6 +19,7 @@ type Treffer = {
   ort: string;
   empfohlen_von: string;
   eigener: boolean;
+  email?: string;
 };
 
 type MitEntfernung = Treffer & { km: number | null };
@@ -58,7 +59,7 @@ export default async function Suche(props: PageProps<"/dashboard/suche">) {
           empfohlen_von: "",
           eigener: false,
         }))
-      : ((data ?? []) as Treffer[]);
+      : doppelteEntfernen((data ?? []) as Treffer[]);
 
     const alle: MitEntfernung[] = roh.map((t) => {
       const k = plzKoordinate(t.plz);
@@ -211,12 +212,33 @@ function TrefferZeile({ t, gesperrt }: { t: MitEntfernung; gesperrt?: boolean })
           {t.eigener && <span>, dein Kontakt</span>}
         </p>
       </div>
-      <Link
-        href={`/dashboard/empfehlen/${t.id}`}
-        className="shrink-0 rounded-xl bg-kette px-4 py-2.5 text-sm font-semibold text-white"
-      >
-        Empfehlen
-      </Link>
+      <div className="flex shrink-0 flex-col items-stretch gap-2">
+        <Link
+          href={`/dashboard/empfehlen/${t.id}`}
+          className="rounded-xl bg-kette px-4 py-2.5 text-center text-sm font-semibold text-white"
+        >
+          Empfehlen
+        </Link>
+        {!t.eigener && (
+          <Link
+            href={`/dashboard/netzwerk/neu?von=${t.id}`}
+            className="rounded-xl px-2 py-1 text-center text-xs font-semibold text-kette"
+          >
+            + In mein Netzwerk
+          </Link>
+        )}
+      </div>
     </li>
   );
+}
+
+/** Derselbe Betrieb kann von mehreren Mitgliedern eingetragen sein: nur einmal zeigen, eigener Eintrag zuerst */
+function doppelteEntfernen(liste: Treffer[]) {
+  const gesehen = new Map<string, Treffer>();
+  for (const t of liste) {
+    const schluessel = t.email?.trim().toLowerCase() || `${t.name.toLowerCase()}|${t.plz}`;
+    const vorhanden = gesehen.get(schluessel);
+    if (!vorhanden || (t.eigener && !vorhanden.eigener)) gesehen.set(schluessel, t);
+  }
+  return [...gesehen.values()];
 }
