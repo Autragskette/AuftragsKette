@@ -5,7 +5,8 @@ import Logo from "@/app/components/Logo";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseEingerichtet } from "@/lib/supabase/config";
 import Footer from "@/app/components/Footer";
-import { einladungBeantworten } from "./actions";
+import { einladungBeantworten, type Angaben } from "./actions";
+import AngabenFormular from "./AngabenFormular";
 import { KENNENLERN_EMPFEHLUNGEN, KENNENLERN_MONATE, KENNENLERN_MONATE_MAX, TARIFE } from "@/lib/preise";
 
 export const metadata: Metadata = {
@@ -28,16 +29,29 @@ type Einladung = {
 
 export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]">) {
   const { token } = await props.params;
-  const { antwort, fehler } = await props.searchParams;
+  const { antwort, fehler, aendern, geaendert } = await props.searchParams;
 
   let einladung: Einladung | null = null;
   let ausNetzwerk = false;
+  let angaben: Angaben = { firma: "", leistung: "", telefon: "", email: "", plz: "", ort: "" };
   if (UUID_MUSTER.test(token) && supabaseEingerichtet()) {
     const supabase = await createClient();
     const { data } = await supabase.rpc("einladung_lesen_v2", { p_token: token });
     einladung = (Array.isArray(data) ? data[0] : data) ?? null;
     const { data: h } = await supabase.rpc("einladung_herkunft", { p_token: token });
     ausNetzwerk = h === "netzwerk";
+    const { data: v } = await supabase.rpc("einladung_vorschau", { p_token: token });
+    const vorschau = (Array.isArray(v) ? v[0] : v) as Partial<Angaben> | undefined;
+    if (vorschau) {
+      angaben = {
+        firma: vorschau.firma ?? "",
+        leistung: vorschau.leistung ?? "",
+        telefon: vorschau.telefon ?? "",
+        email: vorschau.email ?? "",
+        plz: vorschau.plz ?? "",
+        ort: vorschau.ort ?? "",
+      };
+    }
   }
 
   return (
@@ -60,15 +74,34 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
               der Person nach, die dich empfohlen hat.
             </p>
           </Karte>
+        ) : einladung.status === "bestaetigt" && aendern ? (
+          <Karte>
+            <h1 className="text-2xl font-bold">Meine Angaben ändern</h1>
+            <AngabenFormular token={token} anfangswerte={angaben} modus="aendern" />
+            <Link href={`/bestaetigen/${token}`} className="mt-4 block text-center text-sm font-medium text-slate-500 underline">
+              Abbrechen
+            </Link>
+          </Karte>
         ) : antwort === "ja" || (einladung.status === "bestaetigt" && !antwort) ? (
           <Karte>
             <p className="text-4xl">🤝</p>
             <h1 className="mt-4 text-2xl font-bold">Willkommen in der AuftragsKette</h1>
             <p className="mt-3 leading-7 text-slate-600">
-              Danke, {einladung.kontakt_name.split(" ")[0]}! Du bist jetzt als
-              empfohlener Partner gelistet. Mitglieder können dich ab sofort an
-              ihre Kunden weiterempfehlen.
+              Danke, {einladung.kontakt_name.split(" ")[0]}! Du bist jetzt mit
+              deinen Angaben als empfohlener Partner gelistet. Mitglieder können
+              dich ab sofort an ihre Kunden weiterempfehlen.
             </p>
+            {geaendert && (
+              <p className="mt-4 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-800">
+                Deine Angaben sind gespeichert.
+              </p>
+            )}
+            <Link
+              href={`/bestaetigen/${token}?aendern=1`}
+              className="mt-4 inline-block text-sm font-semibold text-kette underline"
+            >
+              Meine Angaben ändern
+            </Link>
             <div className="mt-6 rounded-xl bg-tinte p-5 text-white">
               <p className="font-semibold">Schau dich in der App um</p>
               <p className="mt-1 text-sm leading-6 text-blue-100">
@@ -100,7 +133,7 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
               Falls du es dir anders überlegst, kannst du hier jederzeit
               zustimmen:
             </p>
-            <ZustimmungsFormular token={token} />
+            <AngabenFormular token={token} anfangswerte={angaben} modus="zustimmen" />
           </Karte>
         ) : (
           <Karte>
@@ -162,17 +195,6 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
               </p>
             </div>
 
-            <div className="mt-6 rounded-xl border border-linie p-5 text-sm leading-6 text-slate-700">
-              <p className="font-semibold text-gray-900">Was wird gelistet?</p>
-              <p className="mt-1">
-                Name, Firma, Leistung, Telefon, E-Mail-Adresse und Ort, so wie
-                von {einladung.empfohlen_von_name ?? einladung.empfohlen_von.split(" (")[0]} eingetragen. Diese
-                Angaben sehen nur Mitglieder, und sie werden an Kunden
-                weitergegeben, denen du empfohlen wirst. Du kannst deine
-                Zustimmung jederzeit über diesen Link widerrufen.
-              </p>
-            </div>
-
             <Ansehen token={token} />
 
             {fehler && (
@@ -181,7 +203,7 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
               </p>
             )}
 
-            <ZustimmungsFormular token={token} />
+            <AngabenFormular token={token} anfangswerte={angaben} modus="zustimmen" />
 
             <form action={einladungBeantworten.bind(null, token)} className="mt-3">
               <input type="hidden" name="antwort" value="nein" />
@@ -206,27 +228,6 @@ function Karte({ children }: { children: ReactNode }) {
     <div className="rounded-2xl border border-linie bg-white p-5 shadow-sm sm:p-7">
       {children}
     </div>
-  );
-}
-
-function ZustimmungsFormular({ token }: { token: string }) {
-  return (
-    <form action={einladungBeantworten.bind(null, token)} className="mt-6 space-y-4">
-      <input type="hidden" name="antwort" value="ja" />
-      <label className="flex items-start gap-3 text-sm leading-6 text-slate-700">
-        <input type="checkbox" name="mitglied" className="mt-1 h-4 w-4" />
-        <span>
-          Ich interessiere mich auch dafür, selbst Mitglied zu werden und
-          meine eigenen Kontakte einzuladen.
-        </span>
-      </label>
-      <button
-        type="submit"
-        className="w-full rounded-xl bg-tinte px-6 py-3 font-semibold text-white"
-      >
-        Ja, ich stimme zu
-      </button>
-    </form>
   );
 }
 

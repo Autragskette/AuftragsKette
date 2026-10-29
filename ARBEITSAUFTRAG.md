@@ -61,6 +61,15 @@ Wortwahl in der App: „Startkontakte“ (nicht „Pflichtkontakte“) und Konta
 
 ## 2. Bestätigung durch den Kontakt (Double Opt-in)
 
+**Angaben trägt der Kontakt selbst ein.** Das einladende Mitglied gibt nur
+Name, Leistung und eine eigene Notiz an. Firma, Telefon, E-Mail, PLZ und Ort
+ergänzt der Kontakt auf der Bestätigungsseite und stimmt der Weitergabe
+ausdrücklich zu. Nach der Zustimmung kann nur er selbst seine Angaben ändern
+(über seinen Link), das Mitglied nur noch seine Notiz. Netzwerkkontakte werden
+über eine Suche gewählt; ihre bereits selbst eingetragenen Angaben werden
+übernommen, er bestätigt erneut.
+
+
 - Wird ein Kontakt mit E-Mail-Adresse eingetragen, erhält er automatisch
   eine E-Mail:
   - wer ihn empfohlen hat,

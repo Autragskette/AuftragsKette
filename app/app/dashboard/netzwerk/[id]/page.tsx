@@ -198,23 +198,31 @@ export default async function KontaktBearbeiten(
         </div>
       )}
 
-      <h2 className="mt-10 text-xl font-bold">Kontaktdaten</h2>
-      <p className="mt-1 text-sm text-gray-500">
-        Änderst du die E-Mail-Adresse, muss der Kontakt erneut zustimmen.
-      </p>
+      {(kontakt.firma || kontakt.telefon || kontakt.email || kontakt.ort) && (
+        <>
+          <h2 className="mt-10 text-xl font-bold">Kontaktdaten</h2>
+          <p className="mt-1 text-sm text-gray-500">
+            {kontakt.status === "bestaetigt"
+              ? `So hat ${kontakt.name.split(" ")[0]} die Angaben selbst hinterlegt. Ändern kann sie nur ${kontakt.name.split(" ")[0]}.`
+              : "Diese Angaben prüft und ergänzt der Kontakt bei der Zustimmung selbst."}
+          </p>
+          <dl className="mt-4 grid gap-3 rounded-2xl border border-linie bg-white p-5 text-sm sm:grid-cols-2">
+            {kontakt.firma && <Angabe titel="Firma" wert={kontakt.firma} />}
+            {kontakt.telefon && <Angabe titel="Telefon" wert={kontakt.telefon} />}
+            {kontakt.email && <Angabe titel="E-Mail" wert={kontakt.email} />}
+            {(kontakt.plz || kontakt.ort) && <Angabe titel="Ort" wert={`${kontakt.plz} ${kontakt.ort}`.trim()} />}
+          </dl>
+        </>
+      )}
+
+      <h2 className="mt-10 text-xl font-bold">
+        {kontakt.status === "bestaetigt" ? "Deine Notiz" : "Einladung bearbeiten"}
+      </h2>
       <div className="mt-4">
         <KontaktFormular
           id={id}
-          anfangswerte={{
-            name: kontakt.name,
-            firma: kontakt.firma,
-            leistung: kontakt.leistung,
-            email: kontakt.email,
-            telefon: kontakt.telefon,
-            plz: kontakt.plz,
-            ort: kontakt.ort,
-            notiz: kontakt.notiz,
-          }}
+          nurNotiz={kontakt.status === "bestaetigt"}
+          anfangswerte={{ name: kontakt.name, leistung: kontakt.leistung, notiz: kontakt.notiz }}
         />
       </div>
 
@@ -226,6 +234,15 @@ export default async function KontaktBearbeiten(
         </p>
         <LoeschenKnopf id={id} name={kontakt.name} />
       </div>
+    </div>
+  );
+}
+
+function Angabe({ titel, wert }: { titel: string; wert: string }) {
+  return (
+    <div className="min-w-0">
+      <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">{titel}</dt>
+      <dd className="mt-0.5 truncate text-slate-700">{wert}</dd>
     </div>
   );
 }

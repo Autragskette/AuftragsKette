@@ -5,6 +5,7 @@ import { entfernungKm, orteImUmkreis, plzKoordinate, punktFinden } from "@/lib/g
 import { UMKREISE, UMKREIS_STANDARD } from "@/lib/geo/umkreis";
 import SuchKarte from "@/app/components/SuchKarte";
 import NurFuerMitglieder from "@/app/components/NurFuerMitglieder";
+import { netzwerkKontaktEinladen } from "../netzwerk/actions";
 
 export const metadata: Metadata = {
   title: "Partner finden",
@@ -220,12 +221,11 @@ function TrefferZeile({ t, gesperrt }: { t: MitEntfernung; gesperrt?: boolean })
           Empfehlen
         </Link>
         {!t.eigener && (
-          <Link
-            href={`/dashboard/netzwerk/neu?von=${t.id}`}
-            className="rounded-xl px-2 py-1 text-center text-xs font-semibold text-kette"
-          >
-            + In mein Netzwerk
-          </Link>
+          <form action={netzwerkKontaktEinladen.bind(null, t.id)}>
+            <button type="submit" className="w-full rounded-xl px-2 py-1 text-center text-xs font-semibold text-kette">
+              + In mein Netzwerk
+            </button>
+          </form>
         )}
       </div>
     </li>
