@@ -108,7 +108,7 @@ export default async function KontaktBearbeiten(
             {kontakt.name} hat die kostenlose Kennenlernphase genutzt und ist
             pausiert, bis eine Mitgliedschaft abgeschlossen wird. Bis dahin ist
             der Kontakt in der Suche nicht sichtbar. Die Daten bleiben erhalten
-            und zählen weiter als dein Pflichtkontakt.
+            und zählen weiter als dein Startkontakt.
           </p>
         </div>
       ) : kontakt.status === "bestaetigt" ? (
@@ -136,7 +136,7 @@ export default async function KontaktBearbeiten(
           <p className="mt-2 text-sm leading-6 text-gray-600">
             {kontakt.status === "abgelehnt"
               ? "Du kannst die Einladung erneut senden, falls es ein Versehen war."
-              : `Erst wenn ${kontakt.name} zustimmt, wird der Kontakt im Netzwerk sichtbar und zählt als Pflichtkontakt.`}
+              : `Erst wenn ${kontakt.name} zustimmt, wird der Kontakt im Netzwerk sichtbar und zählt als dein Startkontakt.`}
           </p>
 
           {hinweis.versendet && (

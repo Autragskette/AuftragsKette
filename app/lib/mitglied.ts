@@ -79,7 +79,7 @@ export function signatur(profil: Partial<Profil>) {
 }
 
 /**
- * Regeln für Pflichtkontakte (bestätigte Kontakte):
+ * Regeln für Startkontakte (bestätigte Kontakte):
  *   1. Kontakt zum Start, 2. innerhalb von 2 Monaten, 3. innerhalb von 3 Monaten.
  * Lehnen vorgeschlagene Kontakte ab, bleibt man trotzdem Mitglied und hat
  * ab der letzten Ablehnung 6 Monate Nachfrist für die fehlenden Kontakte.

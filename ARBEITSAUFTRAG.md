@@ -28,12 +28,14 @@ Visitenkarte.
 
 ---
 
-## 1. Aufnahme und Pflichtkontakte
+## 1. Aufnahme und Startkontakte
+
+Wortwahl in der App: „Startkontakte“ (nicht „Pflichtkontakte“) und Kontakte „einladen“ (nicht „einbringen“).
 
 - Aufnahme nur über persönliche Empfehlung oder Einladung, keine offene
   Registrierung.
 - Mitglied ist man ab der Aufnahme.
-- Pflichtkontakte (müssen der Listung zustimmen):
+- Startkontakte (müssen der Listung zustimmen):
   - **1. Kontakt zum Start**
   - **2. Kontakt innerhalb von 2 Monaten**
   - **3. Kontakt innerhalb von 3 Monaten**
@@ -41,7 +43,7 @@ Visitenkarte.
   ab der letzten Ablehnung **6 Monate Nachfrist**, um neue Kontakte
   einzubringen.
 - Später als Option: Kontakte, die man über das Netzwerk kennengelernt hat,
-  als Pflichtkontakt zählen lassen.
+  als Startkontakt zählen lassen.
 
 ## 2. Bestätigung durch den Kontakt (Double Opt-in)
 
@@ -56,7 +58,7 @@ Visitenkarte.
   Kosten). In der Bestätigung kann er zusätzlich Interesse an einer
   eigenen Mitgliedschaft angeben.
 - **Erst nach Bestätigung** ist der Kontakt im Netzwerk sichtbar und
-  empfehlbar, und erst dann zählt er als Pflichtkontakt.
+  empfehlbar, und erst dann zählt er als Startkontakt.
 - Ohne Bestätigung keine Veröffentlichung (DSGVO).
 - Das Mitglied sieht pro Kontakt den Status: eingeladen, bestätigt,
   abgelehnt. Einladung kann erneut gesendet werden.
@@ -158,7 +160,7 @@ Rangliste „Top im Netzwerk“: aktivste Mitglieder und meistempfohlene Partner
   - ohne Empfehlung läuft der Test weiter, **spätestens 6 Monate**.
 - Danach ist der Partner **pausiert**: nicht mehr in der Suche, nicht mehr
   empfehlbar, aber nicht gelöscht. Wird er Mitglied, ist er sofort wieder
-  sichtbar. Für das einladende Mitglied zählt er weiter als Pflichtkontakt.
+  sichtbar. Für das einladende Mitglied zählt er weiter als Startkontakt.
   Bereits angelegte Empfehlungen (auch die 2.) kann das Mitglied weiter senden.
 - Ist ein Partner von mehreren Mitgliedern eingetragen (gleiche E-Mail),
   werden seine Empfehlungen zusammengezählt.
@@ -205,19 +207,19 @@ Rangliste „Top im Netzwerk“: aktivste Mitglieder und meistempfohlene Partner
 | Stufe | Inhalt | Status |
 |---|---|---|
 | 0 | Startseite, Anmeldung, Dashboard, Mein Netzwerk | fertig, online |
-| 1 | Kontaktbestätigung, Pflichtkontakte mit Frist, Profil | fertig, online |
+| 1 | Kontaktbestätigung, Startkontakte mit Frist, Profil | fertig, online |
 | 2 | Regionale Suche im Netzwerk (PLZ-Bereich oder Ort) | fertig, online |
 | 3 | Empfehlung an Kunden (WhatsApp, E-Mail, Visitenkarte mit vCard) | fertig, online |
 | 4 | Nachfrage nach 7 Tagen in der App, Erinnerung an Kunden, Statistik | fertig, online |
 | 4b | Automatische E-Mails (Resend), täglicher Lauf für Nachfragen und Erinnerungen | vorbereitet, Resend-Konto und Server-Schlüssel fehlen |
-| 5 | Neue Pflichtkontakt-Regeln, Aktivitätspunkte, Top-Mitglied, Rangliste, Inaktivität | fertig, online |
+| 5 | Neue Startkontakt-Regeln, Aktivitätspunkte, Top-Mitglied, Rangliste, Inaktivität | fertig, online |
 | 5b | Veranstaltungen (Branchen-Calls, regionale Treffen) mit Check-in und Punkten | fertig, online |
 | 6 | Einladung neuer Mitglieder, Zahlung | geplant |
 
 ## Entscheidungen
 
 - Bestätigter Kontakt = gelisteter Partner, Mitgliedschaft optional
-- Pflichtkontakte: 1 zum Start, 2. nach 2 Monaten, 3. nach 3 Monaten;
+- Startkontakte: 1 zum Start, 2. nach 2 Monaten, 3. nach 3 Monaten;
   6 Monate Nachfrist bei Ablehnungen
 - E-Mail-Dienst: Resend. Bis er eingerichtet ist, verschicken Mitglieder
   Einladungen, Empfehlungen und Erinnerungen über WhatsApp oder ihre

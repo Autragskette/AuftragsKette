@@ -49,7 +49,7 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
       <div className="mx-auto max-w-2xl">
         <NurFuerMitglieder
           titel="Dein eigenes Netzwerk"
-          text="Als Mitglied bringst du Betriebe ein, deren Arbeit du kennst, und empfiehlst sie an deine Kunden weiter. Jeder Kontakt stimmt selbst zu, so wie du."
+          text="Als Mitglied lädst du Betriebe ein, deren Arbeit du kennst, und empfiehlst sie an deine Kunden weiter. Jeder Kontakt stimmt selbst zu, so wie du."
         />
       </div>
     );
@@ -75,7 +75,7 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
           href="/dashboard/netzwerk/neu"
           className="w-full rounded-xl bg-tinte px-5 py-3 text-center font-semibold text-white sm:w-auto"
         >
-          + Kontakt hinzufügen
+          + Kontakt einladen
         </Link>
       </div>
 
@@ -114,7 +114,7 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
             href="/dashboard/netzwerk/neu"
             className="mt-6 inline-block rounded-xl bg-tinte px-5 py-3 font-semibold text-white"
           >
-            Ersten Kontakt hinzufügen
+            Ersten Kontakt einladen
           </Link>
         </div>
       )}

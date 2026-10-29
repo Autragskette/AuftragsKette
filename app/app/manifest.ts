@@ -21,7 +21,7 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     shortcuts: [
       { name: "Empfehlen", url: "/dashboard/suche" },
-      { name: "Kontakt hinzufügen", url: "/dashboard/netzwerk/neu" },
+      { name: "Kontakt einladen", url: "/dashboard/netzwerk/neu" },
       { name: "Veranstaltungen", url: "/dashboard/veranstaltungen" },
     ],
   };

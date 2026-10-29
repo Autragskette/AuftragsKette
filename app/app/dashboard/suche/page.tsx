@@ -147,7 +147,7 @@ export default async function Suche(props: PageProps<"/dashboard/suche">) {
                 )}
               </p>
               <p className="mt-3 text-sm text-slate-500">
-                Kennst du jemanden? Mit jedem Kontakt, den du einbringst,
+                Kennst du jemanden? Mit jedem Kontakt, den du einlädst,
                 wird die AuftragsKette in deiner Region stärker.
               </p>
               {!istPartner && (
@@ -155,7 +155,7 @@ export default async function Suche(props: PageProps<"/dashboard/suche">) {
                   href="/dashboard/netzwerk/neu"
                   className="mt-4 inline-block rounded-xl bg-tinte px-5 py-3 text-sm font-semibold text-white"
                 >
-                  Kontakt einbringen
+                  Kontakt einladen
                 </Link>
               )}
             </div>

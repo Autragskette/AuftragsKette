@@ -29,7 +29,7 @@ export default async function MeineAktivitaet() {
       <div className="mx-auto max-w-2xl">
         <NurFuerMitglieder
           titel="Punkte sammeln und Top-Mitglied werden"
-          text="Mitglieder sammeln Punkte für Empfehlungen, eingebrachte Kontakte und die Teilnahme an Treffen. Die Aktivsten werden Top-Mitglied."
+          text="Mitglieder sammeln Punkte für Empfehlungen, eingeladene Kontakte und die Teilnahme an Treffen. Die Aktivsten werden Top-Mitglied."
         />
       </div>
     );
@@ -56,7 +56,7 @@ export default async function MeineAktivitaet() {
       </div>
       <p className="mt-3 text-gray-600">
         Gezählt werden die letzten 12 Monate. Wer gibt, bekommt: Je mehr du
-        empfiehlst und einbringst, desto sichtbarer wirst du im Netzwerk.
+        empfiehlst und einlädst, desto sichtbarer wirst du im Netzwerk.
       </p>
 
       {/* Nächste Stufe */}
@@ -173,7 +173,7 @@ export default async function MeineAktivitaet() {
           Jemanden empfehlen
         </Link>
         <Link href="/dashboard/netzwerk/neu" className="rounded-xl border border-linie bg-white px-5 py-3 text-sm font-semibold">
-          Kontakt einbringen
+          Kontakt einladen
         </Link>
         <Link href="/dashboard/veranstaltungen" className="rounded-xl border border-linie bg-white px-5 py-3 text-sm font-semibold">
           Zu den Veranstaltungen

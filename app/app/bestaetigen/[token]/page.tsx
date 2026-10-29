@@ -196,7 +196,7 @@ function ZustimmungsFormular({ token }: { token: string }) {
         <input type="checkbox" name="mitglied" className="mt-1 h-4 w-4" />
         <span>
           Ich interessiere mich auch dafür, selbst Mitglied zu werden und
-          meine eigenen Kontakte einzubringen.
+          meine eigenen Kontakte einzuladen.
         </span>
       </label>
       <button

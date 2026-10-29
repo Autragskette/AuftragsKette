@@ -70,7 +70,7 @@ export default async function Start() {
   if (status && status.lage !== "aktiv") {
     aufgaben.push({
       text: status.lage === "warnung" ? "Verlängerung gefährdet" : "Wieder aktiv werden",
-      hinweis: "Gib eine Empfehlung oder bring einen Kontakt ein",
+      hinweis: "Gib eine Empfehlung oder lade einen Kontakt ein",
       href: "/dashboard/aktivitaet",
       dringend: status.lage === "warnung",
     });
@@ -78,7 +78,7 @@ export default async function Start() {
   if (pflicht.naechster) {
     const s = pflicht.naechster;
     aufgaben.push({
-      text: `${s.nr}. Pflichtkontakt einbringen`,
+      text: `${s.nr}. Startkontakt einladen`,
       hinweis: s.sofort
         ? "Zum Start"
         : s.ueberfaellig
@@ -125,8 +125,8 @@ export default async function Start() {
         className="mt-3 flex items-center justify-between rounded-2xl border border-linie bg-white px-5 py-4"
       >
         <span>
-          <span className="block font-semibold text-tinte">Kontakt einbringen</span>
-          <span className="block text-sm text-slate-500">Einen Betrieb eintragen, den du empfehlen würdest</span>
+          <span className="block font-semibold text-tinte">Kontakt einladen</span>
+          <span className="block text-sm text-slate-500">Einen Betrieb, den du deinen Kunden empfehlen würdest</span>
         </span>
         <Plus />
       </Link>

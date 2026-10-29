@@ -60,7 +60,7 @@ export default async function PartnerStart({
               <p className="font-semibold">Schau dich in Ruhe um</p>
               <p className="mt-1 text-sm leading-6 text-blue-100">
                 Hier siehst du, wie die AuftragsKette funktioniert. Empfehlen,
-                Kontakte einbringen und an Treffen teilnehmen können Mitglieder.
+                Kontakte einladen und an Treffen teilnehmen können Mitglieder.
               </p>
             </>
           ) : stand.pausiert ? (

@@ -200,7 +200,7 @@ export default function Home() {
               <p className="mt-6 text-lg leading-8 text-slate-600">
                 AuftragsKette ist kein öffentliches Kontaktverzeichnis.
                 Mitglieder werden persönlich empfohlen oder eingeladen
-                und bringen Geschäftskontakte ein, deren Arbeit sie
+                und laden Geschäftskontakte ein, deren Arbeit sie
                 tatsächlich einschätzen können.
               </p>
             </div>
@@ -243,10 +243,10 @@ export default function Home() {
 
                 <p className="mt-2 leading-7 text-slate-600">
                   Die Aufnahme erfolgt über persönliche Empfehlung oder
-                  Einladung. Mitglieder benennen mindestens drei
-                  persönlich bekannte und fachlich einschätzbare
-                  Geschäftskontakte oder bauen diese innerhalb der
-                  vorgesehenen Anfangsfrist auf.
+                  Einladung. Zum Start lädt jedes Mitglied drei
+                  Geschäftskontakte ein, deren Arbeit es persönlich kennt:
+                  einen gleich zu Beginn, die beiden anderen in den ersten
+                  drei Monaten.
                 </p>
               </div>
 

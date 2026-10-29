@@ -21,7 +21,7 @@ export default function PflichtKontakte({
   return (
     <div className={`mt-6 rounded-xl border p-5 text-sm leading-6 ${farbe}`}>
       <p className="font-semibold">
-        Pflichtkontakte: {3 - stand.fehlen} von 3 bestätigt
+        Deine Startkontakte: {3 - stand.fehlen} von 3 bestätigt
         {wartend > 0 && `, ${wartend} ${wartend === 1 ? "wartet" : "warten"} auf Zustimmung`}
       </p>
 
@@ -49,16 +49,17 @@ export default function PflichtKontakte({
         <p className="mt-3">
           Einige deiner Kontakte haben abgelehnt. Kein Problem: Du bleibst
           Mitglied und hast {NACHFRIST_MONATE} Monate Zeit, bis zum{" "}
-          {datum(stand.nachfristBis.toISOString())} neue Kontakte einzubringen.
+          {datum(stand.nachfristBis.toISOString())} neue Kontakte einzuladen.
         </p>
       )}
 
       <p className="mt-3">
-        Es zählen nur Kontakte, die ihrer Listung zugestimmt haben.
+        Lade Betriebe ein, deren Arbeit du kennst und die du deinen Kunden
+        guten Gewissens empfehlen würdest. Sie zählen, sobald sie zugestimmt haben.
       </p>
 
       <Link href="/dashboard/netzwerk/neu" className="mt-2 inline-block font-semibold underline">
-        Kontakt hinzufügen
+        Kontakt einladen
       </Link>
     </div>
   );

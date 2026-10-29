@@ -131,7 +131,7 @@ ${status.gruende.join("\n")}
 ${
   soll === 2
     ? `Damit deine Mitgliedschaft am ${datum(status.verlaengerungAm.toISOString())} verlängert wird, brauchst du mindestens 40 Aktivitätspunkte und einen Beitrag in den letzten 90 Tagen.`
-    : "Die AuftragsKette lebt davon, dass alle mitmachen: Empfehlungen geben, Kontakte einbringen, dabei sein."
+    : "Die AuftragsKette lebt davon, dass alle mitmachen: Empfehlungen geben, Kontakte einladen, dabei sein."
 }
 
 Schau gleich vorbei und gib eine Empfehlung:

@@ -29,7 +29,7 @@ export const PUNKTE = [
   { aktion: "Empfehlung an einen Kunden gegeben", punkte: 10, feld: "empfehlungen_gegeben" },
   { aktion: "Daraus ist ein Auftrag entstanden", punkte: 20, feld: "auftraege" },
   { aktion: "Ergebnis einer Empfehlung zurückgemeldet", punkte: 3, feld: "ergebnisse_gemeldet" },
-  { aktion: "Kontakt eingebracht und bestätigt", punkte: 15, feld: "kontakte_bestaetigt" },
+  { aktion: "Kontakt eingeladen und bestätigt", punkte: 15, feld: "kontakte_bestaetigt" },
   { aktion: "Dein Kontakt wurde von anderen empfohlen", punkte: 5, feld: "kontakte_empfohlen" },
   { aktion: "Teilnahme an einem Online-Branchen-Call", punkte: 8, feld: "teilnahmen_online" },
   { aktion: "Teilnahme an einem regionalen Community-Treffen", punkte: 12, feld: "teilnahmen_vor_ort" },
@@ -125,7 +125,7 @@ export function aktivStatus(k: Kennzahlen): AktivStatus {
     gruende.push(`Du warst seit ${tageSeitLogin} Tagen nicht mehr in der App.`);
   if (tageSeitBeitrag > ERINNERUNG_BEITRAG_TAGE)
     gruende.push(
-      `Seit ${tageSeitBeitrag} Tagen hast du keine Empfehlung gegeben, keinen Kontakt eingebracht und an keiner Veranstaltung teilgenommen.`,
+      `Seit ${tageSeitBeitrag} Tagen hast du keine Empfehlung gegeben, keinen Kontakt eingeladen und an keiner Veranstaltung teilgenommen.`,
     );
 
   const schonfrist = tageMitglied < SCHONFRIST_TAGE;

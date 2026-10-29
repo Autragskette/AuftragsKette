@@ -5,7 +5,7 @@ import { aktuellesMitglied } from "@/lib/mitglied";
 import NurFuerMitglieder from "@/app/components/NurFuerMitglieder";
 
 export const metadata: Metadata = {
-  title: "Kontakt hinzufügen",
+  title: "Kontakt einladen",
 };
 
 export default async function NeuerKontakt() {
@@ -14,8 +14,8 @@ export default async function NeuerKontakt() {
     return (
       <div className="mx-auto max-w-2xl">
         <NurFuerMitglieder
-          titel="Kontakte einbringen"
-          text="Als Mitglied bringst du Betriebe ein, deren Arbeit du kennst. Sie werden gefragt, ob sie zustimmen, und können dann von allen Mitgliedern empfohlen werden."
+          titel="Kontakte einladen"
+          text="Als Mitglied lädst du Betriebe ein, deren Arbeit du kennst. Sie werden gefragt, ob sie zustimmen, und können dann von allen Mitgliedern empfohlen werden."
         />
       </div>
     );
@@ -30,7 +30,7 @@ export default async function NeuerKontakt() {
       </Link>
 
       <h1 className="mt-4 text-2xl font-semibold tracking-tight text-tinte sm:text-3xl">
-        Kontakt hinzufügen
+        Kontakt einladen
       </h1>
       <p className="mt-3 text-gray-600">
         Trage einen Geschäftskontakt ein, den du persönlich kennst und
