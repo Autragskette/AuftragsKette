@@ -1,29 +1,44 @@
 /** Vorformulierte Texte für Einladungen, Empfehlungen und Erinnerungen. */
 
+/**
+ * Einladung an einen Kontakt, persönlich in der Ich-Form des Mitglieds.
+ * Bausteine: Vorname des Kontakts, Leistung, voller Name und Firma
+ * (ersatzweise Tätigkeit) des Mitglieds, Bestätigungslink.
+ */
 export function einladungsText({
   kontaktName,
-  absender,
-  signatur,
+  leistung,
+  absenderName,
+  absenderFirma,
   link,
 }: {
   kontaktName: string;
-  absender: string;
-  signatur: string;
+  leistung: string;
+  absenderName: string;
+  absenderFirma: string;
   link: string;
 }) {
-  const vorname = kontaktName.split(" ")[0] || kontaktName;
+  const vorname = kontaktName.trim().split(/\s+/)[0] || kontaktName;
+  const unterschrift = [absenderName, absenderFirma, "Mitglied der AuftragsKette"]
+    .filter((z) => z && z.trim())
+    .join("\n");
+
   return `Hallo ${vorname},
 
-${absender} hat dich als vertrauenswürdigen Geschäftskontakt empfohlen und lädt dich ein, Teil der AuftragsKette zu werden.
+wenn mich Kunden nach ${leistung.trim() || "deinem Fachgebiet"} fragen, empfehle ich gern Betriebe, deren Arbeit ich persönlich kenne und schätze. Dabei habe ich an dich gedacht.
 
-AuftragsKette ist ein geschlossenes Unternehmernetzwerk für Unternehmer und Selbstständige: mit Online-Meetings, Branchentreffen und Erfahrungsaustausch. Der Mehrwert: Mitglieder empfehlen ihren Kunden Betriebe, die sie persönlich kennen und deren Arbeit sie einschätzen können. So entstehen neue Aufträge über echte Empfehlungen, ohne Provision.
+Ich empfehle meine Kontakte über ein Netzwerk von Unternehmern und Selbstständigen aus der Region, in dem wir uns gegenseitig an Kunden weitervermitteln. Wenn du einverstanden bist, würde ich dich dort als Kontakt eintragen. So können ich und die anderen Mitglieder dich bei passender Gelegenheit weiterempfehlen. Für dich ist das kostenlos und unverbindlich, und du kannst deine Zustimmung jederzeit zurückziehen.
 
-Damit du im Netzwerk gelistet und weiterempfohlen werden darfst, brauchen wir kurz deine Zustimmung:
+Hier kannst du dir alles in Ruhe ansehen und zustimmen:
 ${link}
 
 Viele Grüße
-${signatur}
-über AuftragsKette`;
+${unterschrift}`;
+}
+
+/** Betreff der Einladung, wenn sie per E-Mail verschickt wird */
+export function einladungsBetreff(absenderName: string) {
+  return `Weiterempfehlung an meine Kunden – ${absenderName}`;
 }
 
 export function empfehlungsText({

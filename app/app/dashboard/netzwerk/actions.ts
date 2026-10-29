@@ -4,8 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { sendeEmail } from "@/lib/email";
-import { einladungsText } from "@/lib/texte";
-import { anzeigeName, profilVollstaendig, signatur, type Profil } from "@/lib/mitglied";
+import { einladungsBetreff, einladungsText } from "@/lib/texte";
+import { profilVollstaendig, type Profil } from "@/lib/mitglied";
 import { basisUrl } from "@/lib/url";
 
 export type KontaktFelder = {
@@ -137,7 +137,7 @@ export async function kontaktSpeichern(
   // Bei neuem Kontakt (oder geänderter E-Mail) automatisch einladen, falls möglich
   const { data: stand } = await supabase
     .from("kontakte")
-    .select("status, email, name, einladung_token")
+    .select("status, email, name, leistung, einladung_token")
     .eq("id", kontaktId)
     .single();
 
@@ -152,7 +152,7 @@ export async function kontaktSpeichern(
 
 async function einladungVersenden(
   userId: string,
-  kontakt: { email: string; name: string; einladung_token: string },
+  kontakt: { email: string; name: string; leistung: string; einladung_token: string },
 ) {
   const supabase = await createClient();
   const { data: profil } = await supabase
@@ -163,16 +163,18 @@ async function einladungVersenden(
 
   // Ohne Namen keine Einladung: der Kontakt soll sehen, wer ihn empfohlen hat
   if (!profil || !profilVollstaendig(profil)) return false;
-  const absender = anzeigeName(profil as Profil);
+  const ich = profil as Profil;
+  const absenderName = `${ich.vorname} ${ich.nachname}`.trim();
   const link = `${await basisUrl()}/bestaetigen/${kontakt.einladung_token}`;
 
   return sendeEmail({
     an: kontakt.email,
-    betreff: `${absender} hat dich bei AuftragsKette empfohlen`,
+    betreff: einladungsBetreff(absenderName),
     text: einladungsText({
       kontaktName: kontakt.name,
-      absender,
-      signatur: signatur(profil as Profil),
+      leistung: kontakt.leistung,
+      absenderName,
+      absenderFirma: ich.firma || ich.branche,
       link,
     }),
   });
@@ -188,7 +190,7 @@ export async function einladungErneutSenden(id: string) {
 
   const { data: kontakt } = await supabase
     .from("kontakte")
-    .select("email, name, einladung_token, status")
+    .select("email, name, leistung, einladung_token, status")
     .eq("id", id)
     .eq("besitzer_id", user.id)
     .single();

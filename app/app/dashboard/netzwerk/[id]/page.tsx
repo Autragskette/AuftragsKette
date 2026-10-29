@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { aktuellesMitglied } from "@/lib/mitglied";
 import { emailVersandAktiv } from "@/lib/email";
-import { einladungsText } from "@/lib/texte";
+import { einladungsBetreff, einladungsText } from "@/lib/texte";
 import { mailtoLink, whatsappLink } from "@/lib/teilen";
 import { basisUrl } from "@/lib/url";
 import StatusPlakette from "@/app/components/StatusPlakette";
@@ -27,7 +27,7 @@ export default async function KontaktBearbeiten(
   const hinweis = await props.searchParams;
   if (!UUID_MUSTER.test(id)) notFound();
 
-  const { supabase, user, anzeigeName, signatur, profilVollstaendig } = await aktuellesMitglied();
+  const { supabase, user, profil, profilVollstaendig } = await aktuellesMitglied();
 
   const { data: kontakt } = await supabase
     .from("kontakte")
@@ -41,8 +41,15 @@ export default async function KontaktBearbeiten(
   if (!kontakt) notFound();
 
   const link = `${await basisUrl()}/bestaetigen/${kontakt.einladung_token}`;
-  const text = einladungsText({ kontaktName: kontakt.name, absender: anzeigeName, signatur, link });
-  const betreff = `${anzeigeName} hat dich bei AuftragsKette empfohlen`;
+  const absenderName = `${profil.vorname} ${profil.nachname}`.trim();
+  const text = einladungsText({
+    kontaktName: kontakt.name,
+    leistung: kontakt.leistung,
+    absenderName,
+    absenderFirma: profil.firma || profil.branche,
+    link,
+  });
+  const betreff = einladungsBetreff(absenderName);
   const mailVersand = emailVersandAktiv();
 
   return (
