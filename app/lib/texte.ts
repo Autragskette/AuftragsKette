@@ -92,10 +92,10 @@ export function erinnerungsText({
   signatur: string;
   karte: string;
 }) {
-  const anrede = kundeName ? `Hallo ${kundeName.split(" ")[0]},` : "Hallo,";
+  const anrede = kundeName.trim() ? `Hallo ${kundeName.trim()},` : "Hallo,";
   return `${anrede}
 
-kurze Erinnerung an meine Empfehlung: ${kontaktName}. Falls du noch Bedarf hast, findest du die Kontaktdaten hier:
+kurze Erinnerung an meine Empfehlung: ${kontaktName}. Die Kontaktdaten finden sich hier:
 ${karte}
 
 Viele Grüße
