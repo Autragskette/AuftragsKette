@@ -74,22 +74,64 @@ export function signatur(profil: Partial<Profil>) {
     .join("\n");
 }
 
-/** Regeln für Pflichtkontakte: 2 zum Start, 3 innerhalb von 3 Monaten. */
-export const PFLICHT_START = 2;
+/**
+ * Regeln für Pflichtkontakte (bestätigte Kontakte):
+ *   1. Kontakt zum Start, 2. innerhalb von 2 Monaten, 3. innerhalb von 3 Monaten.
+ * Lehnen vorgeschlagene Kontakte ab, bleibt man trotzdem Mitglied und hat
+ * ab der letzten Ablehnung 6 Monate Nachfrist für die fehlenden Kontakte.
+ */
 export const PFLICHT_GESAMT = 3;
-export const FRIST_MONATE = 3;
+export const PFLICHT_MONATE = [0, 2, 3] as const;
+export const NACHFRIST_MONATE = 6;
 
-export function pflichtStand(bestaetigt: number, aufgenommenAm: string) {
+export type PflichtSchritt = {
+  nr: number;
+  frist: Date;
+  sofort: boolean;
+  erfuellt: boolean;
+  ueberfaellig: boolean;
+  tageRest: number;
+};
+
+function plusMonate(datum: Date, monate: number) {
+  const neu = new Date(datum);
+  neu.setMonth(neu.getMonth() + monate);
+  return neu;
+}
+
+export function pflichtStand(
+  bestaetigt: number,
+  aufgenommenAm: string,
+  letzteAblehnung?: string | null,
+) {
   const start = new Date(aufgenommenAm);
-  const frist = new Date(start);
-  frist.setMonth(frist.getMonth() + FRIST_MONATE);
-  const tageRest = Math.ceil((frist.getTime() - Date.now()) / 86_400_000);
+  const nachfristBis = letzteAblehnung
+    ? plusMonate(new Date(letzteAblehnung), NACHFRIST_MONATE)
+    : null;
+
+  const schritte: PflichtSchritt[] = PFLICHT_MONATE.map((monate, i) => {
+    let frist = plusMonate(start, monate);
+    if (nachfristBis && nachfristBis > frist) frist = nachfristBis;
+    const erfuellt = bestaetigt > i;
+    const tageRest = Math.ceil((frist.getTime() - Date.now()) / 86_400_000);
+    return {
+      nr: i + 1,
+      frist,
+      sofort: monate === 0 && !nachfristBis,
+      erfuellt,
+      ueberfaellig: !erfuellt && tageRest < 0,
+      tageRest,
+    };
+  });
+
+  const naechster = schritte.find((s) => !s.erfuellt) ?? null;
 
   return {
-    fehlenStart: Math.max(0, PFLICHT_START - bestaetigt),
-    fehlenGesamt: Math.max(0, PFLICHT_GESAMT - bestaetigt),
-    frist,
-    tageRest,
-    fristAbgelaufen: tageRest < 0,
+    schritte,
+    naechster,
+    fehlen: Math.max(0, PFLICHT_GESAMT - bestaetigt),
+    nachfrist: Boolean(nachfristBis && schritte.some((s) => !s.erfuellt)),
+    nachfristBis,
+    ueberfaellig: schritte.some((s) => s.ueberfaellig),
   };
 }

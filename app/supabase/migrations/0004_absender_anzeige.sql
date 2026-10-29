@@ -17,9 +17,8 @@ as $$
   end;
 $$;
 
-drop function public.einladung_lesen(uuid);
-
-create function public.einladung_lesen(p_token uuid)
+-- Neue Fassung der Einladungsabfrage (die alte bleibt für ältere App-Versionen bestehen)
+create function public.einladung_lesen_v2(p_token uuid)
 returns table (
   kontakt_name text,
   firma text,
@@ -41,8 +40,8 @@ as $$
   where k.einladung_token = p_token;
 $$;
 
-revoke execute on function public.einladung_lesen(uuid) from public;
-grant execute on function public.einladung_lesen(uuid) to anon, authenticated;
+revoke execute on function public.einladung_lesen_v2(uuid) from public;
+grant execute on function public.einladung_lesen_v2(uuid) to anon, authenticated;
 
 -- Visitenkarte: Firma, ersatzweise Tätigkeit des Empfehlenden
 create or replace function public.visitenkarte_lesen(p_token uuid)

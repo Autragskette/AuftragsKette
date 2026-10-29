@@ -31,7 +31,7 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
   let einladung: Einladung | null = null;
   if (UUID_MUSTER.test(token) && supabaseEingerichtet()) {
     const supabase = await createClient();
-    const { data } = await supabase.rpc("einladung_lesen", { p_token: token });
+    const { data } = await supabase.rpc("einladung_lesen_v2", { p_token: token });
     einladung = (Array.isArray(data) ? data[0] : data) ?? null;
   }
 

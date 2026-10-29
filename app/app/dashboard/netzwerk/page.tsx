@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import StatusPlakette from "@/app/components/StatusPlakette";
+import PflichtKontakte from "@/app/components/PflichtKontakte";
+import { aktuellesMitglied, pflichtStand } from "@/lib/mitglied";
 
 export const metadata: Metadata = {
   title: "Mein Netzwerk",
@@ -17,6 +19,7 @@ type Kontakt = {
   plz: string;
   ort: string;
   status: string;
+  abgelehnt_am: string | null;
 };
 
 export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk">) {
@@ -31,7 +34,7 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
 
   const { data, error } = await supabase
     .from("kontakte")
-    .select("id, name, firma, leistung, email, telefon, plz, ort, status")
+    .select("id, name, firma, leistung, email, telefon, plz, ort, status, abgelehnt_am")
     .eq("besitzer_id", user.id)
     .order("name", { ascending: true });
 
@@ -39,7 +42,10 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
   const kontakte = suche ? alle.filter((k) => passt(k, suche)) : alle;
   const bestaetigt = alle.filter((k) => k.status === "bestaetigt").length;
   const wartend = alle.filter((k) => k.status === "eingeladen").length;
-  const fehlend = Math.max(0, 3 - bestaetigt);
+  const { profil } = await aktuellesMitglied();
+  const letzteAblehnung =
+    alle.map((k) => k.abgelehnt_am).filter(Boolean).sort().pop() ?? null;
+  const pflicht = pflichtStand(bestaetigt, profil.erstellt_am, letzteAblehnung);
 
   return (
     <>
@@ -63,13 +69,7 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
         </Link>
       </div>
 
-      {fehlend > 0 && (
-        <div className="mt-8 rounded-xl border border-blue-200 bg-blue-50 p-5 text-sm leading-6 text-blue-900">
-          <strong>{bestaetigt} von 3</strong> Pflichtkontakten bestätigt.
-          {wartend > 0 && <> {wartend} {wartend === 1 ? "wartet" : "warten"} noch auf Zustimmung.</>}
-          {" "}Zum Start brauchst du 2 bestätigte Kontakte, den 3. innerhalb von 3 Monaten.
-        </div>
-      )}
+      <PflichtKontakte stand={pflicht} wartend={wartend} />
 
       {error && (
         <p className="mt-8 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">

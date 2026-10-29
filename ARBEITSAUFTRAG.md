@@ -32,13 +32,16 @@ Visitenkarte.
 
 - Aufnahme nur über persönliche Empfehlung oder Einladung, keine offene
   Registrierung.
-- Mitglied ist man ab der Aufnahme. Die Pflichtkontakte müssen **nicht**
-  vorher vollständig sein.
-- Ein neues Mitglied gibt **zu Beginn mindestens 2 Kontakte** an.
-- Der 3. Kontakt muss innerhalb einer **Anfangsfrist** folgen
-  (**3 Monate** ab Aufnahme).
-- Das Dashboard zeigt jederzeit an, wie viele bestätigte Kontakte noch
-  fehlen und wie lange die Frist noch läuft.
+- Mitglied ist man ab der Aufnahme.
+- Pflichtkontakte (müssen der Listung zustimmen):
+  - **1. Kontakt zum Start**
+  - **2. Kontakt innerhalb von 2 Monaten**
+  - **3. Kontakt innerhalb von 3 Monaten**
+- Lehnen vorgeschlagene Kontakte ab, bleibt man trotzdem Mitglied und hat
+  ab der letzten Ablehnung **6 Monate Nachfrist**, um neue Kontakte
+  einzubringen.
+- Später als Option: Kontakte, die man über das Netzwerk kennengelernt hat,
+  als Pflichtkontakt zählen lassen.
 
 ## 2. Bestätigung durch den Kontakt (Double Opt-in)
 
@@ -87,7 +90,44 @@ Visitenkarte.
 - Statistik im Dashboard: Empfehlungen gegeben/erhalten, daraus
   entstandene Aufträge.
 
-## 6. Weitere Bausteine (später)
+## 6. Aktivität, Punkte und Top-Mitglied
+
+Ziel: eine aktive Community ohne Karteileichen. Wer nur Empfehlungen
+bekommt, aber keine gibt, wird darauf hingewiesen.
+
+Punkte (letzte 12 Monate), Regeln zentral in `app/lib/aktivitaet.ts`:
+
+| Aktion | Punkte |
+|---|---|
+| Empfehlung an einen Kunden gegeben | 10 |
+| Daraus Auftrag entstanden | 20 |
+| Ergebnis zurückgemeldet | 3 |
+| Kontakt eingebracht und bestätigt | 15 |
+| Eigener Kontakt von anderen empfohlen | 5 |
+| Aktive Woche in der App | 2 |
+
+Stufen:
+- **Mitglied**: unter 40 Punkten
+- **Aktives Mitglied**: ab 40 Punkten
+- **Top-Mitglied ★** (wie der Superhost bei Airbnb): ab 150 Punkten, mindestens
+  5 gegebene Empfehlungen, 1 Auftrag daraus und aktiv in den letzten 30 Tagen
+
+Rangliste „Top im Netzwerk“: aktivste Mitglieder und meistempfohlene Partner.
+
+## 7. Inaktivität und Verlängerung
+
+- Nach **30 Tagen ohne Besuch** oder **60 Tagen ohne Beitrag** (Empfehlung,
+  Kontakt, Ergebnis): Erinnerung in der App und per E-Mail.
+- Nach **90 Tagen ohne Beitrag**: Warnung, Verlängerung gefährdet.
+- Neue Mitglieder haben 30 Tage Schonfrist.
+- Die Mitgliedschaft läuft ein Jahr. Sie wird **nur verlängert**, wenn man
+  zum Stichtag Aktives Mitglied ist (mindestens 40 Punkte) und in den
+  letzten 90 Tagen etwas beigetragen hat. Die automatische Umsetzung folgt
+  mit der Zahlungsabwicklung.
+- Gibt jemand deutlich weniger Empfehlungen, als er selbst bekommt, erscheint
+  ein Hinweis „Gib etwas zurück“.
+
+## 8. Weitere Bausteine (später)
 
 - Mitgliederprofil (Firma, Gewerk, Region, Kontaktdaten)
 - Einladung neuer Mitglieder durch bestehende Mitglieder
@@ -107,13 +147,15 @@ Visitenkarte.
 | 2 | Regionale Suche im Netzwerk (PLZ-Bereich oder Ort) | fertig, online |
 | 3 | Empfehlung an Kunden (WhatsApp, E-Mail, Visitenkarte mit vCard) | fertig, online |
 | 4 | Nachfrage nach 7 Tagen in der App, Erinnerung an Kunden, Statistik | fertig, online |
-| 4b | Automatische E-Mails (Resend) und tägliche Nachfrage per E-Mail | vorbereitet, Resend-Konto fehlt |
-| 5 | Profile, Einladungen, Zahlung, Veranstaltungen | geplant |
+| 4b | Automatische E-Mails (Resend), täglicher Lauf für Nachfragen und Erinnerungen | vorbereitet, Resend-Konto und Server-Schlüssel fehlen |
+| 5 | Neue Pflichtkontakt-Regeln, Aktivitätspunkte, Top-Mitglied, Rangliste, Inaktivität | fertig, online |
+| 6 | Einladung neuer Mitglieder, Zahlung, Veranstaltungen | geplant |
 
 ## Entscheidungen
 
 - Bestätigter Kontakt = gelisteter Partner, Mitgliedschaft optional
-- Pflichtkontakte: 2 bestätigte zum Start, der 3. innerhalb von 3 Monaten
+- Pflichtkontakte: 1 zum Start, 2. nach 2 Monaten, 3. nach 3 Monaten;
+  6 Monate Nachfrist bei Ablehnungen
 - E-Mail-Dienst: Resend. Bis er eingerichtet ist, verschicken Mitglieder
   Einladungen, Empfehlungen und Erinnerungen über WhatsApp oder ihre
   eigene E-Mail-App direkt aus der App heraus.

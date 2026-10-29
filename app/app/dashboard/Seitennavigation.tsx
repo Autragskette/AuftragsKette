@@ -8,6 +8,8 @@ const MENUE: { name: string; href: string | null }[] = [
   { name: "Mein Netzwerk", href: "/dashboard/netzwerk" },
   { name: "Suchen & Empfehlen", href: "/dashboard/suche" },
   { name: "Meine Empfehlungen", href: "/dashboard/empfehlungen" },
+  { name: "Meine Aktivität", href: "/dashboard/aktivitaet" },
+  { name: "Top im Netzwerk", href: "/dashboard/top" },
   { name: "Mein Profil", href: "/dashboard/profil" },
   { name: "Veranstaltungen", href: null },
 ];

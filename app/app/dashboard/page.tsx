@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { aktuellesMitglied, pflichtStand, PFLICHT_GESAMT, PFLICHT_START } from "@/lib/mitglied";
+import { aktuellesMitglied, pflichtStand } from "@/lib/mitglied";
 import { datum, nachfrageFaellig } from "@/lib/empfehlung";
+import { aktivStatus, stufe, STUFE_AKTIV, STUFE_TOP, type Kennzahlen } from "@/lib/aktivitaet";
+import PflichtKontakte from "@/app/components/PflichtKontakte";
+import StufenAbzeichen from "@/app/components/StufenAbzeichen";
 
 export const metadata: Metadata = {
   title: "Übersicht",
@@ -11,32 +14,43 @@ export const metadata: Metadata = {
 export default async function Dashboard() {
   const { supabase, user, profil } = await aktuellesMitglied();
 
-  const [kontakteAntwort, empfehlungenAntwort] = await Promise.all([
-    supabase.from("kontakte").select("status").eq("besitzer_id", user.id),
+  const [kontakteAntwort, empfehlungenAntwort, kennzahlenAntwort] = await Promise.all([
+    supabase.from("kontakte").select("status, abgelehnt_am").eq("besitzer_id", user.id),
     supabase
       .from("kundenempfehlungen")
       .select("id, kontakt_name, kunde_name, ergebnis, erstellt_am")
       .order("erstellt_am", { ascending: false })
       .limit(200),
+    supabase.rpc("mitglieder_kennzahlen", { p_id: user.id }),
   ]);
 
   const kontakte = kontakteAntwort.data ?? [];
   const bestaetigt = kontakte.filter((k) => k.status === "bestaetigt").length;
   const wartend = kontakte.filter((k) => k.status === "eingeladen").length;
+  const letzteAblehnung =
+    kontakte.map((k) => k.abgelehnt_am as string | null).filter(Boolean).sort().pop() ?? null;
 
   const empfehlungen = empfehlungenAntwort.data ?? [];
   const faellig = empfehlungen.filter(nachfrageFaellig);
-  const auftraege = empfehlungen.filter((e) => e.ergebnis === "auftrag").length;
 
-  const pflicht = pflichtStand(bestaetigt, profil.erstellt_am);
+  const pflicht = pflichtStand(bestaetigt, profil.erstellt_am, letzteAblehnung);
   const profilUnvollstaendig = !profil.vorname || !profil.nachname;
+
+  const kennzahlen = (Array.isArray(kennzahlenAntwort.data)
+    ? kennzahlenAntwort.data[0]
+    : kennzahlenAntwort.data) as Kennzahlen | undefined;
+  const meineStufe = kennzahlen ? stufe(kennzahlen) : null;
+  const status = kennzahlen ? aktivStatus(kennzahlen) : null;
 
   return (
     <>
       <p className="font-semibold text-blue-600">Übersicht</p>
-      <h1 className="mt-2 text-3xl font-bold tracking-tight">
-        {profil.vorname ? `Willkommen, ${profil.vorname}` : "Willkommen bei AuftragsKette"}
-      </h1>
+      <div className="mt-2 flex flex-wrap items-center gap-3">
+        <h1 className="text-3xl font-bold tracking-tight">
+          {profil.vorname ? `Willkommen, ${profil.vorname}` : "Willkommen bei AuftragsKette"}
+        </h1>
+        {meineStufe && <StufenAbzeichen name={meineStufe.name} />}
+      </div>
 
       {profilUnvollstaendig && (
         <Hinweis farbe="blau">
@@ -46,25 +60,37 @@ export default async function Dashboard() {
         </Hinweis>
       )}
 
-      {/* Pflichtkontakte */}
-      {pflicht.fehlenGesamt > 0 && (
-        <Hinweis farbe={pflicht.fehlenStart > 0 || pflicht.fristAbgelaufen ? "gelb" : "blau"}>
+      {/* Inaktivität */}
+      {status && status.lage !== "aktiv" && (
+        <Hinweis farbe={status.lage === "warnung" ? "rot" : "gelb"}>
           <p className="font-semibold">
-            Pflichtkontakte: {bestaetigt} von {PFLICHT_GESAMT} bestätigt
-            {wartend > 0 && `, ${wartend} ${wartend === 1 ? "wartet" : "warten"} auf Zustimmung`}
+            {status.lage === "warnung"
+              ? "Deine Verlängerung ist gefährdet"
+              : "Wir vermissen dich in der AuftragsKette"}
           </p>
+          {status.gruende.map((g) => (
+            <p key={g} className="mt-1">{g}</p>
+          ))}
           <p className="mt-1">
-            {pflicht.fehlenStart > 0
-              ? `Zum Start brauchst du ${PFLICHT_START} bestätigte Kontakte. Es fehlen noch ${pflicht.fehlenStart}.`
-              : pflicht.fristAbgelaufen
-                ? `Die Frist für den ${PFLICHT_GESAMT}. Kontakt ist am ${datum(pflicht.frist.toISOString())} abgelaufen.`
-                : `Den ${PFLICHT_GESAMT}. Kontakt kannst du bis zum ${datum(pflicht.frist.toISOString())} ergänzen (noch ${pflicht.tageRest} Tage).`}
+            Die Community lebt davon, dass alle mitmachen. Gib eine Empfehlung
+            oder bring einen Kontakt ein, dann bist du wieder dabei.
           </p>
-          <Link href="/dashboard/netzwerk/neu" className="mt-2 inline-block font-semibold underline">
-            Kontakt hinzufügen
+          <Link href="/dashboard/suche" className="mt-2 inline-block font-semibold underline">
+            Jetzt jemanden empfehlen
           </Link>
         </Hinweis>
       )}
+
+      {status?.gibUndNimm && (
+        <Hinweis farbe="gelb">
+          Du wurdest im letzten Jahr {kennzahlen!.empfehlungen_erhalten}-mal
+          empfohlen, hast selbst aber erst {kennzahlen!.empfehlungen_gegeben}{" "}
+          Empfehlung{kennzahlen!.empfehlungen_gegeben === 1 ? "" : "en"} gegeben. Gib
+          etwas zurück, davon lebt die AuftragsKette.
+        </Hinweis>
+      )}
+
+      <PflichtKontakte stand={pflicht} wartend={wartend} />
 
       {/* Fällige Nachfragen */}
       {faellig.length > 0 && (
@@ -82,11 +108,42 @@ export default async function Dashboard() {
         </Hinweis>
       )}
 
+      {/* Aktivität */}
+      {kennzahlen && meineStufe && status && (
+        <Link
+          href="/dashboard/aktivitaet"
+          className="mt-8 block rounded-xl border border-gray-200 bg-white p-6 hover:border-blue-300"
+        >
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <h2 className="font-bold">Deine Aktivität</h2>
+            <span className="text-sm text-gray-500">letzte 12 Monate</span>
+          </div>
+          <p className="mt-3 text-3xl font-bold">
+            {kennzahlen.punkte} <span className="text-base font-medium text-gray-500">Punkte</span>
+          </p>
+          <Fortschritt punkte={kennzahlen.punkte} />
+          <p className="mt-3 text-sm text-gray-600">
+            {meineStufe.top
+              ? "Du bist Top-Mitglied. Danke, dass du die AuftragsKette stark machst!"
+              : `Noch ${meineStufe.fehlendePunkte} Punkte bis ${meineStufe.naechste}.`}
+          </p>
+          <p className={`mt-2 text-sm ${status.verlaengerungGesichert ? "text-green-700" : "text-amber-700"}`}>
+            Verlängerung am {datum(status.verlaengerungAm.toISOString())}:{" "}
+            {status.verlaengerungGesichert ? "gesichert ✓" : `noch nicht gesichert (ab ${STUFE_AKTIV} Punkten)`}
+          </p>
+        </Link>
+      )}
+
       {/* Kennzahlen */}
-      <div className="mt-10 grid gap-5 sm:grid-cols-3">
+      <div className="mt-6 grid gap-5 sm:grid-cols-3">
         <Kennzahl titel="Mein Netzwerk" wert={bestaetigt} text="bestätigte Partner" href="/dashboard/netzwerk" />
         <Kennzahl titel="Empfehlungen" wert={empfehlungen.length} text="an Kunden gegeben" href="/dashboard/empfehlungen" />
-        <Kennzahl titel="Aufträge" wert={auftraege} text="aus Empfehlungen" href="/dashboard/empfehlungen" />
+        <Kennzahl
+          titel="Aufträge"
+          wert={empfehlungen.filter((e) => e.ergebnis === "auftrag").length}
+          text="aus Empfehlungen"
+          href="/dashboard/empfehlungen"
+        />
       </div>
 
       {/* Schnellzugriff */}
@@ -99,24 +156,41 @@ export default async function Dashboard() {
           </p>
           <span className="mt-4 inline-block text-sm font-semibold text-blue-700">Netzwerk durchsuchen →</span>
         </Link>
-        <Link href="/dashboard/netzwerk/neu" className="rounded-xl border border-gray-200 bg-white p-6 hover:border-blue-300">
-          <h2 className="font-bold">Kontakt einbringen</h2>
+        <Link href="/dashboard/top" className="rounded-xl border border-gray-200 bg-white p-6 hover:border-blue-300">
+          <h2 className="font-bold">Top im Netzwerk</h2>
           <p className="mt-2 text-sm leading-6 text-gray-600">
-            Trag einen Betrieb ein, den du kennst. Er bekommt eine Einladung
-            und wird nach seiner Zustimmung im Netzwerk gelistet.
+            Wer ist voll dabei? Die aktivsten Mitglieder und die
+            meistempfohlenen Partner der AuftragsKette.
           </p>
-          <span className="mt-4 inline-block text-sm font-semibold text-blue-700">Kontakt hinzufügen →</span>
+          <span className="mt-4 inline-block text-sm font-semibold text-blue-700">Zur Rangliste →</span>
         </Link>
       </div>
     </>
   );
 }
 
-function Hinweis({ farbe, children }: { farbe: "blau" | "gelb"; children: ReactNode }) {
+function Fortschritt({ punkte }: { punkte: number }) {
+  const prozent = Math.min(100, Math.round((punkte / STUFE_TOP) * 100));
+  const markeAktiv = Math.round((STUFE_AKTIV / STUFE_TOP) * 100);
+  return (
+    <div className="relative mt-4 h-2.5 rounded-full bg-gray-100">
+      <div className="h-2.5 rounded-full bg-blue-600" style={{ width: `${prozent}%` }} />
+      <div
+        className="absolute -top-1 h-4.5 w-0.5 bg-gray-400"
+        style={{ left: `${markeAktiv}%` }}
+        title={`Aktives Mitglied ab ${STUFE_AKTIV} Punkten`}
+      />
+    </div>
+  );
+}
+
+function Hinweis({ farbe, children }: { farbe: "blau" | "gelb" | "rot"; children: ReactNode }) {
   const klassen =
-    farbe === "gelb"
-      ? "border-amber-200 bg-amber-50 text-amber-900"
-      : "border-blue-200 bg-blue-50 text-blue-900";
+    farbe === "rot"
+      ? "border-red-200 bg-red-50 text-red-900"
+      : farbe === "gelb"
+        ? "border-amber-200 bg-amber-50 text-amber-900"
+        : "border-blue-200 bg-blue-50 text-blue-900";
   return <div className={`mt-6 rounded-xl border p-5 text-sm leading-6 ${klassen}`}>{children}</div>;
 }
 

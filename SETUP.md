@@ -45,3 +45,16 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=...
 Für lokales Testen: `app/.env.example` nach `app/.env.local` kopieren und die Werte eintragen.
 
 > **Nie** den `service_role`- bzw. `secret`-Key in die App oder ins Repo eintragen.
+
+## 6. Automatische E-Mails und täglicher Lauf (optional, später)
+
+Für automatische Einladungen, Nachfragen nach 7 Tagen und Erinnerungen bei
+Inaktivität bei Vercel unter **Settings → Environment Variables** eintragen:
+
+- `RESEND_API_KEY` und `EMAIL_ABSENDER` (Konto bei https://resend.com)
+- `SUPABASE_SECRET_KEY`: Supabase **Project Settings → API Keys → Secret key**.
+  Nur bei Vercel eintragen, niemals ins Repo oder in einen Chat.
+- `CRON_SECRET`: ein beliebiges langes Zufallspasswort (schützt den täglichen Lauf)
+- `NEXT_PUBLIC_SITE_URL` ist bereits gesetzt.
+
+Der Lauf startet täglich um 8 Uhr (`app/vercel.json`).
