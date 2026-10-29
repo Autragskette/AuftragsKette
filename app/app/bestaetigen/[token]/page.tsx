@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
+import Logo from "@/app/components/Logo";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseEingerichtet } from "@/lib/supabase/config";
 import Footer from "@/app/components/Footer";
@@ -39,7 +40,8 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
     <main className="flex min-h-screen flex-col bg-gray-50 text-gray-900">
       <header className="border-b border-linie bg-white">
         <div className="mx-auto flex max-w-3xl items-center px-5 py-4 sm:px-6 sm:py-5">
-          <Link href="/" className="text-xl font-bold text-kette">
+          <Link href="/" className="flex items-center gap-2 text-lg font-semibold tracking-tight text-tinte">
+            <Logo />
             AuftragsKette
           </Link>
         </div>
@@ -49,7 +51,7 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
         {!einladung ? (
           <Karte>
             <h1 className="text-2xl font-bold">Link ungültig</h1>
-            <p className="mt-3 leading-7 text-gray-600">
+            <p className="mt-3 leading-7 text-slate-600">
               Dieser Bestätigungslink ist nicht (mehr) gültig. Bitte frag bei
               der Person nach, die dich empfohlen hat.
             </p>
@@ -58,12 +60,12 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
           <Karte>
             <p className="text-4xl">🤝</p>
             <h1 className="mt-4 text-2xl font-bold">Willkommen in der AuftragsKette</h1>
-            <p className="mt-3 leading-7 text-gray-600">
+            <p className="mt-3 leading-7 text-slate-600">
               Danke, {einladung.kontakt_name.split(" ")[0]}! Du bist jetzt als
               empfohlener Partner gelistet. Mitglieder können dich ab sofort an
               ihre Kunden weiterempfehlen.
             </p>
-            <p className="mt-4 leading-7 text-gray-600">
+            <p className="mt-4 leading-7 text-slate-600">
               Möchtest du deine Zustimmung später zurückziehen, öffne einfach
               diesen Link erneut.
             </p>
@@ -72,11 +74,11 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
         ) : antwort === "nein" || einladung.status === "abgelehnt" ? (
           <Karte>
             <h1 className="text-2xl font-bold">Schade, aber verstanden</h1>
-            <p className="mt-3 leading-7 text-gray-600">
+            <p className="mt-3 leading-7 text-slate-600">
               Du wirst nicht im Netzwerk gelistet und nicht weiterempfohlen.
               Deine Daten sind für andere Mitglieder nicht sichtbar.
             </p>
-            <p className="mt-3 leading-7 text-gray-600">
+            <p className="mt-3 leading-7 text-slate-600">
               Falls du es dir anders überlegst, kannst du hier jederzeit
               zustimmen:
             </p>
@@ -87,14 +89,14 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
             <h1 className="mt-2 text-2xl font-bold tracking-tight">
               Hallo {einladung.kontakt_name.split(" ")[0]},
             </h1>
-            <p className="mt-4 leading-7 text-gray-700">
+            <p className="mt-4 leading-7 text-slate-700">
               <strong>{einladung.empfohlen_von}</strong> hat dich als
               vertrauenswürdigen Geschäftskontakt für{" "}
               <strong>{einladung.leistung}</strong> empfohlen und lädt dich
               ein, Teil der AuftragsKette zu werden.
             </p>
 
-            <div className="mt-6 space-y-3 rounded-xl bg-gray-50 p-5 text-sm leading-6 text-gray-700">
+            <div className="mt-6 space-y-3 rounded-xl bg-gray-50 p-5 text-sm leading-6 text-slate-700">
               <p className="font-semibold text-gray-900">So funktioniert AuftragsKette</p>
               <p>
                 AuftragsKette ist ein geschlossenes Unternehmernetzwerk für
@@ -112,7 +114,7 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
               </p>
             </div>
 
-            <div className="mt-6 rounded-xl border border-linie p-5 text-sm leading-6 text-gray-700">
+            <div className="mt-6 rounded-xl border border-linie p-5 text-sm leading-6 text-slate-700">
               <p className="font-semibold text-gray-900">Was wird gelistet?</p>
               <p className="mt-1">
                 Name, Firma, Leistung, Telefon, E-Mail-Adresse und Ort, so wie
@@ -135,7 +137,7 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
               <input type="hidden" name="antwort" value="nein" />
               <button
                 type="submit"
-                className="w-full rounded-lg px-6 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900"
+                className="w-full rounded-lg px-6 py-3 text-sm font-semibold text-slate-600 hover:text-gray-900"
               >
                 Nein, ich möchte nicht gelistet werden
               </button>
@@ -161,7 +163,7 @@ function ZustimmungsFormular({ token }: { token: string }) {
   return (
     <form action={einladungBeantworten.bind(null, token)} className="mt-6 space-y-4">
       <input type="hidden" name="antwort" value="ja" />
-      <label className="flex items-start gap-3 text-sm leading-6 text-gray-700">
+      <label className="flex items-start gap-3 text-sm leading-6 text-slate-700">
         <input type="checkbox" name="mitglied" className="mt-1 h-4 w-4" />
         <span>
           Ich interessiere mich auch dafür, selbst Mitglied zu werden und
@@ -182,7 +184,7 @@ function Widerruf({ token }: { token: string }) {
   return (
     <form action={einladungBeantworten.bind(null, token)} className="mt-6">
       <input type="hidden" name="antwort" value="nein" />
-      <button type="submit" className="text-sm font-medium text-gray-500 underline">
+      <button type="submit" className="text-sm font-medium text-slate-500 underline">
         Zustimmung widerrufen
       </button>
     </form>
