@@ -34,7 +34,7 @@ export default async function TopImNetzwerk() {
   return (
     <>
       <p className="font-semibold text-blue-600">Top im Netzwerk</p>
-      <h1 className="mt-2 text-3xl font-bold tracking-tight">Wer ist voll dabei?</h1>
+      <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Wer ist voll dabei?</h1>
       <p className="mt-3 max-w-2xl text-gray-600">
         Die aktivsten Mitglieder und die meistempfohlenen Partner der letzten
         12 Monate. Top-Mitglieder sind mit ★ gekennzeichnet.

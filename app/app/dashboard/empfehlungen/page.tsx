@@ -34,7 +34,7 @@ export default async function MeineEmpfehlungen() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="font-semibold text-blue-600">Meine Empfehlungen</p>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight">
+          <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
             Empfehlungen an Kunden
           </h1>
           <p className="mt-3 text-gray-600">
@@ -44,7 +44,7 @@ export default async function MeineEmpfehlungen() {
         </div>
         <Link
           href="/dashboard/suche"
-          className="rounded-lg bg-gray-900 px-5 py-3 font-semibold text-white"
+          className="w-full rounded-lg bg-gray-900 px-5 py-3 text-center font-semibold text-white sm:w-auto"
         >
           + Neue Empfehlung
         </Link>

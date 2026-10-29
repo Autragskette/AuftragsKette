@@ -15,7 +15,7 @@ export default function Formular() {
   const online = art === "branche_online";
 
   return (
-    <form action={aktion} className="space-y-5 rounded-xl border border-gray-200 bg-white p-6">
+    <form action={aktion} className="space-y-5 rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
       <fieldset>
         <legend className="mb-2 text-sm font-semibold text-gray-700">Art der Veranstaltung</legend>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -100,7 +100,7 @@ export default function Formular() {
       <button
         type="submit"
         disabled={laeuft}
-        className="rounded-lg bg-gray-900 px-6 py-3 font-semibold text-white disabled:opacity-60"
+        className="w-full rounded-lg bg-gray-900 px-6 py-3 font-semibold text-white disabled:opacity-60 sm:w-auto"
       >
         {laeuft ? "Wird gespeichert …" : "Veranstaltung anlegen"}
       </button>

@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f9fafb;
+  --foreground: #111827;
+  /* Platz für die untere Navigationsleiste auf dem Handy */
+  --tab-hoehe: 4.25rem;
 }
 
 @theme inline {
@@ -12,15 +14,53 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  /* Helles Design auch bei Dunkelmodus des Handys */
+  color-scheme: light;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+/* iOS zoomt bei Eingabefeldern unter 16px automatisch hinein – verhindern */
+input,
+select,
+textarea {
+  font-size: max(16px, 1em);
+}
+
+/* Knöpfe und Links reagieren sofort beim Antippen */
+a,
+button,
+label,
+summary {
+  touch-action: manipulation;
+}
+
+button:not(:disabled),
+summary {
+  cursor: pointer;
+}
+
+/* Sichere Bereiche (Notch, Home-Leiste) */
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.pb-tabs {
+  padding-bottom: calc(var(--tab-hoehe) + env(safe-area-inset-bottom) + 1.5rem);
+}
+@media (min-width: 768px) {
+  .pb-tabs {
+    padding-bottom: 2.5rem;
+  }
 }

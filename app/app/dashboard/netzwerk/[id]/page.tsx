@@ -55,7 +55,7 @@ export default async function KontaktBearbeiten(
       </Link>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <h1 className="text-3xl font-bold tracking-tight">{kontakt.name}</h1>
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{kontakt.name}</h1>
         <StatusPlakette status={kontakt.status} />
       </div>
 
@@ -110,6 +110,8 @@ export default async function KontaktBearbeiten(
               </p>
               <div className="mt-3">
                 <TeilenKnoepfe
+                  teilenText={text}
+                  teilenTitel={betreff}
                   whatsapp={whatsappLink(text, kontakt.telefon || undefined)}
                   mailto={kontakt.email ? mailtoLink(kontakt.email, betreff, text) : undefined}
                   kopierText={link}

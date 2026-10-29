@@ -62,7 +62,7 @@ export default async function Veranstaltungen(props: PageProps<"/dashboard/veran
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="font-semibold text-blue-600">Veranstaltungen</p>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight">Gemeinsam netzwerken</h1>
+          <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Gemeinsam netzwerken</h1>
           <p className="mt-3 max-w-2xl text-gray-600">
             Online-Branchen-Calls über Teams und regionale Community-Treffen, bei
             denen sich alle Branchen begegnen. Für jede Teilnahme gibt es Punkte:
@@ -76,7 +76,7 @@ export default async function Veranstaltungen(props: PageProps<"/dashboard/veran
         {istAdmin && (
           <Link
             href="/dashboard/veranstaltungen/neu"
-            className="rounded-lg bg-gray-900 px-5 py-3 font-semibold text-white"
+            className="w-full rounded-lg bg-gray-900 px-5 py-3 text-center font-semibold text-white sm:w-auto"
           >
             + Veranstaltung anlegen
           </Link>

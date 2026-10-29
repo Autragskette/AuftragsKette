@@ -5,8 +5,8 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white text-gray-900">
       {/* Navigation */}
-      <header className="border-b border-gray-100">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+      <header className="pt-safe sticky top-0 z-30 border-b border-gray-100 bg-white/95 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-6 sm:py-5">
           <Link href="/" className="text-xl font-bold text-blue-600">
             AuftragsKette
           </Link>
@@ -37,41 +37,41 @@ export default function Home() {
       </header>
 
       {/* Startbereich */}
-      <section className="mx-auto max-w-6xl px-6 py-24">
+      <section className="mx-auto max-w-6xl px-5 sm:px-6 py-14 sm:py-24">
         <p className="mb-4 text-lg font-semibold text-blue-600">
           AuftragsKette
         </p>
 
-        <h1 className="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
+        <h1 className="max-w-3xl text-3xl font-bold tracking-tight sm:text-4xl sm:text-5xl">
           Das Unternehmernetzwerk,
           <br />
           aus dem Aufträge entstehen.
         </h1>
 
-        <p className="mt-8 max-w-2xl text-xl leading-8 text-gray-600">
+        <p className="mt-6 max-w-2xl text-lg leading-8 text-gray-600 sm:mt-8 sm:text-xl">
           AuftragsKette ist in erster Linie ein großes, geschlossenes
           Netzwerk für Unternehmer und Selbstständige: Wir vernetzen uns in
           Online-Meetings und auf Branchentreffen, tauschen Erfahrungen aus
           und lernen voneinander.
         </p>
 
-        <p className="mt-4 max-w-2xl text-xl leading-8 text-gray-600">
+        <p className="mt-4 max-w-2xl text-lg leading-8 text-gray-600 sm:text-xl">
           Der besondere Mehrwert: Weil sich unsere Mitglieder persönlich
           kennen, empfehlen sie sich gegenseitig an ihre Kunden weiter. So
           entstehen aus echten Beziehungen neue Aufträge.
         </p>
 
-        <div className="mt-10 flex flex-wrap gap-4">
+        <div className="mt-8 grid gap-3 sm:mt-10 sm:flex sm:flex-wrap sm:gap-4">
           <a
             href="#netzwerk"
-            className="rounded-lg bg-gray-900 px-6 py-3 font-semibold text-white"
+            className="rounded-lg bg-gray-900 px-6 py-3 text-center font-semibold text-white"
           >
             Was dich erwartet
           </a>
 
           <a
             href="#mitgliedschaft"
-            className="rounded-lg border border-gray-300 px-6 py-3 font-semibold"
+            className="rounded-lg border border-gray-300 px-6 py-3 text-center font-semibold"
           >
             Mitglied werden
           </a>
@@ -80,12 +80,12 @@ export default function Home() {
 
       {/* Unternehmernetzwerk */}
       <section id="netzwerk" className="border-t border-gray-100 bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-24">
+        <div className="mx-auto max-w-6xl px-5 sm:px-6 py-14 sm:py-24">
           <p className="mb-3 font-semibold text-blue-600">
             Mehr als Aufträge
           </p>
 
-          <h2 className="max-w-2xl text-4xl font-bold tracking-tight">
+          <h2 className="max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">
             Ein Netzwerk, in dem Unternehmer zusammenwachsen.
           </h2>
 
@@ -96,7 +96,7 @@ export default function Home() {
             tragen.
           </p>
 
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 grid gap-4 sm:mt-12 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
                 titel: "Online-Meetings",
@@ -129,12 +129,12 @@ export default function Home() {
         id="so-funktionierts"
         className="border-t border-gray-100 bg-gray-50"
       >
-        <div className="mx-auto max-w-6xl px-6 py-24">
+        <div className="mx-auto max-w-6xl px-5 sm:px-6 py-14 sm:py-24">
           <p className="mb-3 font-semibold text-blue-600">
             So entstehen Aufträge
           </p>
 
-          <h2 className="max-w-2xl text-4xl font-bold tracking-tight">
+          <h2 className="max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">
             Empfehlungen entstehen durch Vertrauen.
           </h2>
 
@@ -145,7 +145,7 @@ export default function Home() {
             Empfehlungsnetzwerk.
           </p>
 
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <div className="mt-8 grid gap-4 sm:mt-12 sm:gap-6 md:grid-cols-3">
             <div className="rounded-xl border border-gray-200 bg-white p-7">
               <div className="mb-5 text-sm font-bold text-blue-600">
                 01
@@ -190,7 +190,7 @@ export default function Home() {
 
       {/* Mitgliedschaft */}
       <section id="mitgliedschaft" className="bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-24">
+        <div className="mx-auto max-w-6xl px-5 sm:px-6 py-14 sm:py-24">
           <div className="grid items-start gap-12 md:grid-cols-2">
             
             <div>
@@ -198,7 +198,7 @@ export default function Home() {
                 Mitgliedschaft
               </p>
 
-              <h2 className="text-4xl font-bold tracking-tight">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
                 Ein Netzwerk, das von echten Beziehungen lebt.
               </h2>
 
@@ -210,7 +210,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-gray-200 p-8 shadow-sm">
+            <div className="rounded-2xl border border-gray-200 p-6 shadow-sm sm:p-8">
               <p className="text-sm font-semibold text-blue-600">
                 AuftragsKette Mitgliedschaft
               </p>

@@ -13,7 +13,7 @@ export default async function Visitenkarte(props: PageProps<"/k/[token]">) {
   const k = await visitenkarteLaden(token);
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-gray-50 px-6 py-10 text-gray-900">
+    <main className="pt-safe pb-safe flex min-h-screen flex-col items-center bg-gray-50 px-4 py-6 text-gray-900 sm:px-6 sm:py-10">
       {!k ? (
         <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 text-center">
           <h1 className="text-xl font-bold">Visitenkarte nicht verfügbar</h1>

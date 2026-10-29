@@ -57,7 +57,7 @@ export default async function Dashboard() {
     <>
       <p className="font-semibold text-blue-600">Übersicht</p>
       <div className="mt-2 flex flex-wrap items-center gap-3">
-        <h1 className="text-3xl font-bold tracking-tight">
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
           {profil.vorname ? `Willkommen, ${profil.vorname}` : "Willkommen bei AuftragsKette"}
         </h1>
         {meineStufe && <StufenAbzeichen name={meineStufe.name} />}
@@ -170,7 +170,7 @@ export default async function Dashboard() {
       )}
 
       {/* Kennzahlen */}
-      <div className="mt-6 grid gap-5 sm:grid-cols-3">
+      <div className="mt-6 grid grid-cols-3 gap-3 sm:gap-5">
         <Kennzahl titel="Mein Netzwerk" wert={bestaetigt} text="bestätigte Partner" href="/dashboard/netzwerk" />
         <Kennzahl titel="Empfehlungen" wert={empfehlungen.length} text="an Kunden gegeben" href="/dashboard/empfehlungen" />
         <Kennzahl
@@ -182,7 +182,7 @@ export default async function Dashboard() {
       </div>
 
       {/* Schnellzugriff */}
-      <div className="mt-10 grid gap-5 md:grid-cols-2">
+      <div className="mt-6 grid gap-4 sm:mt-10 sm:gap-5 md:grid-cols-2">
         <Link href="/dashboard/suche" className="rounded-xl border border-gray-200 bg-white p-6 hover:border-blue-300">
           <h2 className="font-bold">Kunde sucht jemanden?</h2>
           <p className="mt-2 text-sm leading-6 text-gray-600">
@@ -231,10 +231,10 @@ function Hinweis({ farbe, children }: { farbe: "blau" | "gelb" | "rot"; children
 
 function Kennzahl({ titel, wert, text, href }: { titel: string; wert: number; text: string; href: string }) {
   return (
-    <Link href={href} className="block rounded-xl border border-gray-200 bg-white p-6 hover:border-blue-300">
-      <p className="text-sm font-medium text-gray-500">{titel}</p>
-      <p className="mt-3 text-3xl font-bold">{wert}</p>
-      <p className="mt-1 text-sm text-gray-500">{text}</p>
+    <Link href={href} className="block rounded-xl border border-gray-200 bg-white p-3 hover:border-blue-300 sm:p-6">
+      <p className="truncate text-xs font-medium text-gray-500 sm:text-sm">{titel}</p>
+      <p className="mt-1 text-2xl font-bold sm:mt-3 sm:text-3xl">{wert}</p>
+      <p className="mt-0.5 text-xs leading-4 text-gray-500 sm:mt-1 sm:text-sm">{text}</p>
     </Link>
   );
 }

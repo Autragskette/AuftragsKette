@@ -38,14 +38,14 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
   return (
     <main className="flex min-h-screen flex-col bg-gray-50 text-gray-900">
       <header className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-3xl items-center px-6 py-5">
+        <div className="mx-auto flex max-w-3xl items-center px-5 py-4 sm:px-6 sm:py-5">
           <Link href="/" className="text-xl font-bold text-blue-600">
             AuftragsKette
           </Link>
         </div>
       </header>
 
-      <section className="mx-auto w-full max-w-xl flex-1 px-6 py-12">
+      <section className="mx-auto w-full max-w-xl flex-1 px-4 py-6 sm:px-6 sm:py-12">
         {!einladung ? (
           <Karte>
             <h1 className="text-2xl font-bold">Link ungültig</h1>
@@ -152,7 +152,7 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
 
 function Karte({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-7 shadow-sm">
+    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-7">
       {children}
     </div>
   );

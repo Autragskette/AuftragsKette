@@ -40,7 +40,7 @@ export default async function Empfehlen(props: PageProps<"/dashboard/empfehlen/[
         ← Zurück zur Suche
       </Link>
 
-      <h1 className="mt-4 text-3xl font-bold tracking-tight">An Kunden empfehlen</h1>
+      <h1 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">An Kunden empfehlen</h1>
 
       <div className="mt-6 rounded-xl border border-blue-200 bg-blue-50 p-5">
         <p className="font-bold">{partner.name}</p>

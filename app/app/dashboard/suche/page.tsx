@@ -44,7 +44,7 @@ export default async function Suche(props: PageProps<"/dashboard/suche">) {
   return (
     <>
       <p className="font-semibold text-blue-600">Suchen & Empfehlen</p>
-      <h1 className="mt-2 text-3xl font-bold tracking-tight">
+      <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
         Wen kennt das Netzwerk?
       </h1>
       <p className="mt-3 max-w-2xl text-gray-600">

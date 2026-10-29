@@ -102,6 +102,7 @@ export default async function EmpfehlungDetail(
               whatsapp={whatsappLink(text, e.kunde_telefon || undefined)}
               mailto={mailtoLink(e.kunde_email, betreff, text)}
               karte={karte}
+              text={text}
             />
           </div>
           <details className="mt-5 text-sm">
@@ -165,6 +166,7 @@ export default async function EmpfehlungDetail(
                   <div className="mt-3">
                     <ErinnerungVersenden
                       id={e.id}
+                      text={erinnerung}
                       whatsapp={whatsappLink(erinnerung, e.kunde_telefon || undefined)}
                       mailto={e.kunde_email ? mailtoLink(e.kunde_email, `Erinnerung: ${e.kontakt_name}`, erinnerung) : undefined}
                     />

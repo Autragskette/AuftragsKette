@@ -18,7 +18,7 @@ export default function Seitennavigation() {
   const pfad = usePathname();
 
   return (
-    <nav className="flex gap-2 overflow-x-auto md:block md:space-y-2">
+    <nav className="space-y-1">
       {MENUE.map((punkt) => {
         if (!punkt.href) {
           return (
@@ -44,8 +44,8 @@ export default function Seitennavigation() {
             aria-current={aktiv ? "page" : undefined}
             className={
               aktiv
-                ? "block shrink-0 rounded-lg bg-blue-50 px-4 py-3 font-semibold text-blue-700"
-                : "block shrink-0 rounded-lg px-4 py-3 text-gray-600 hover:bg-gray-50"
+                ? "block rounded-lg bg-blue-50 px-4 py-2.5 font-semibold text-blue-700"
+                : "block rounded-lg px-4 py-2.5 text-gray-600 hover:bg-gray-50"
             }
           >
             {punkt.name}

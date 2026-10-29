@@ -16,7 +16,7 @@ export default function EmpfehlungFormular({ kontaktId }: { kontaktId: string })
   );
 
   return (
-    <form action={aktion} className="space-y-5 rounded-xl border border-gray-200 bg-white p-6">
+    <form action={aktion} className="space-y-5 rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
       <div>
         <label htmlFor="kunde_name" className="mb-2 block text-sm font-semibold text-gray-700">
           Name des Kunden <span className="text-red-500">*</span>

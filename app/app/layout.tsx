@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -12,7 +12,24 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#2563eb",
+};
+
 export const metadata: Metadata = {
+  applicationName: "AuftragsKette",
+  appleWebApp: {
+    capable: true,
+    title: "AuftragsKette",
+    statusBarStyle: "default",
+  },
+  icons: {
+    apple: "/icons/apple-touch-icon.png",
+  },
+  formatDetection: { telephone: false },
   title: {
     default: "AuftragsKette – Das Unternehmernetzwerk, aus dem Aufträge entstehen",
     template: "%s | AuftragsKette",

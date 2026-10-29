@@ -12,7 +12,7 @@ export default function Anmelden() {
     <main className="min-h-screen bg-gray-50">
       {/* Kopfbereich */}
       <header className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-6 sm:py-5">
           <Link href="/" className="text-xl font-bold text-blue-600">
             AuftragsKette
           </Link>
@@ -27,13 +27,13 @@ export default function Anmelden() {
       </header>
 
       {/* Anmeldung */}
-      <section className="mx-auto flex max-w-6xl justify-center px-6 py-20">
-        <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
+      <section className="mx-auto flex max-w-6xl justify-center px-4 py-8 sm:px-6 sm:py-20">
+        <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
           <p className="font-semibold text-blue-600">
             Mitgliederbereich
           </p>
 
-          <h1 className="mt-3 text-3xl font-bold tracking-tight">
+          <h1 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
             Willkommen zurück
           </h1>
 

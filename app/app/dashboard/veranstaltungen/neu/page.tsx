@@ -16,7 +16,7 @@ export default async function NeueVeranstaltung() {
       <Link href="/dashboard/veranstaltungen" className="text-sm font-medium text-gray-600 hover:text-gray-900">
         ← Zurück zu Veranstaltungen
       </Link>
-      <h1 className="mt-4 text-3xl font-bold tracking-tight">Veranstaltung anlegen</h1>
+      <h1 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">Veranstaltung anlegen</h1>
 
       <div className="mt-8">
         {istAdmin === true ? (

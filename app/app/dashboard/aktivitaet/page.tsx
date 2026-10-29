@@ -41,7 +41,7 @@ export default async function MeineAktivitaet() {
     <div className="max-w-3xl">
       <p className="font-semibold text-blue-600">Meine Aktivität</p>
       <div className="mt-2 flex flex-wrap items-center gap-3">
-        <h1 className="text-3xl font-bold tracking-tight">{k.punkte} Punkte</h1>
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{k.punkte} Punkte</h1>
         <StufenAbzeichen name={s.name} />
       </div>
       <p className="mt-3 text-gray-600">

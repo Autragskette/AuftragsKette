@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { supabaseEingerichtet } from "@/lib/supabase/config";
 import { abmelden } from "../anmelden/actions";
 import Seitennavigation from "./Seitennavigation";
+import MobilNavigation from "./MobilNavigation";
 
 export default async function MitgliederLayout({
   children,
@@ -31,15 +32,15 @@ export default async function MitgliederLayout({
 
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900">
-      {/* Kopfzeile */}
-      <header className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <Link href="/" className="text-xl font-bold text-blue-600">
+      {/* Kopfzeile: auf dem Handy schlank und fest oben */}
+      <header className="pt-safe sticky top-0 z-30 border-b border-gray-200 bg-white/95 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-6 md:py-5">
+          <Link href="/dashboard" className="text-lg font-bold text-blue-600 md:text-xl">
             AuftragsKette
           </Link>
 
           <div className="flex items-center gap-4">
-            <form action={abmelden}>
+            <form action={abmelden} className="hidden md:block">
               <button
                 type="submit"
                 className="text-sm font-medium text-gray-600 hover:text-gray-900"
@@ -48,23 +49,28 @@ export default async function MitgliederLayout({
               </button>
             </form>
 
-            <div
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-900 font-semibold text-white"
+            <Link
+              href="/dashboard/profil"
+              aria-label="Mein Profil"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-900 text-sm font-semibold text-white md:h-10 md:w-10"
               title={user.email ?? undefined}
             >
               {initiale}
-            </div>
+            </Link>
           </div>
         </div>
       </header>
 
-      <div className="mx-auto grid max-w-7xl md:grid-cols-[240px_1fr]">
-        <aside className="border-b border-gray-200 bg-white px-4 py-4 md:border-b-0 md:border-r md:py-8">
+      <div className="mx-auto max-w-7xl md:grid md:grid-cols-[240px_1fr]">
+        {/* Seitenleiste nur ab Tablet-Breite */}
+        <aside className="hidden border-r border-gray-200 bg-white px-4 py-8 md:block">
           <Seitennavigation />
         </aside>
 
-        <section className="min-w-0 px-6 py-10 md:px-8">{children}</section>
+        <section className="pb-tabs min-w-0 px-4 pt-5 md:px-8 md:pt-10">{children}</section>
       </div>
+
+      <MobilNavigation />
     </main>
   );
 }
