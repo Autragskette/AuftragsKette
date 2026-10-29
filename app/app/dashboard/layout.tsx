@@ -21,11 +21,17 @@ export default async function MitgliederLayout({
 
   if (!user) redirect("/anmelden");
 
-  const [{ data: profil }] = await Promise.all([
-    supabase.from("profile").select("vorname").eq("id", user.id).maybeSingle(),
+  let [{ data: profil }] = await Promise.all([
+    supabase.from("profile").select("vorname, rolle").eq("id", user.id).maybeSingle(),
     // Besuch für die Aktivitätsmessung merken (höchstens einmal pro Stunde)
     supabase.rpc("aktivitaet_merken"),
   ]);
+
+  // Partner: leeres Profil einmalig aus dem eigenen Kontakteintrag übernehmen
+  if (profil && profil.rolle === "partner" && !profil.vorname?.trim()) {
+    await supabase.rpc("profil_aus_kontakt");
+    ({ data: profil } = await supabase.from("profile").select("vorname, rolle").eq("id", user.id).maybeSingle());
+  }
 
   const initiale = (profil?.vorname?.trim() || user.email || "?")
     .charAt(0)

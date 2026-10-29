@@ -22,7 +22,7 @@ export default async function Veranstaltungen(props: PageProps<"/dashboard/veran
   const { art } = await props.searchParams;
   const filter = art === "branche_online" || art === "region_vor_ort" ? art : "";
 
-  const { supabase, user } = await aktuellesMitglied();
+  const { supabase, user, istPartner } = await aktuellesMitglied();
   const grenze = new Date(Date.now() - 24 * 3_600_000).toISOString();
 
   let anfrage = supabase
@@ -141,6 +141,16 @@ export default async function Veranstaltungen(props: PageProps<"/dashboard/veran
                 {(z?.teilgenommen ?? 0) > 0 && `, ${z!.teilgenommen} teilgenommen`}
               </p>
 
+              {istPartner ? (
+                <p className="mt-4 flex items-center gap-2 text-sm text-slate-500">
+                  <span aria-hidden>🔒</span>
+                  Teilnahme für Mitglieder.{" "}
+                  <Link href="/dashboard/mitglied-werden" className="font-semibold text-kette underline underline-offset-2">
+                    Mitglied werden
+                  </Link>
+                </p>
+              ) : (
+              <>
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 {!vorbei && !dabei && (
                   <form action={(angemeldet ? abmelden : anmelden).bind(null, v.id)}>
@@ -171,6 +181,8 @@ export default async function Veranstaltungen(props: PageProps<"/dashboard/veran
                 <div className="mt-4 max-w-md">
                   <Einchecken id={v.id} punkte={a.punkte} />
                 </div>
+              )}
+              </>
               )}
 
               {istAdmin && (

@@ -5,7 +5,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { sendeEmail } from "@/lib/email";
 import { anzeigeName, profilVollstaendig, signatur, type Profil } from "@/lib/mitglied";
-import { empfehlungsText } from "@/lib/texte";
+import { empfehlungsText, pushEmpfohlen } from "@/lib/texte";
+import { pushAktiv, sendePush, type PushAbo } from "@/lib/push";
 import { whatsappLink } from "@/lib/teilen";
 import { basisUrl } from "@/lib/url";
 
@@ -95,6 +96,19 @@ ${absender} hat dich gerade über AuftragsKette${kunde_name ? ` an ${kunde_name}
 Viel Erfolg!
 AuftragsKette`,
     });
+  }
+
+  // Push-Nachricht an den Partner, falls er sie in seinem Zugang aktiviert hat
+  if (pushAktiv()) {
+    const { data: ziele } = await supabase.rpc("push_ziele_empfehlung", { p_empfehlung_id: data.id });
+    const absender = anzeigeName(ich as Profil);
+    await Promise.all(
+      ((ziele ?? []) as (PushAbo & { zweite: boolean })[]).map(async (z) => {
+        const inhalt = pushEmpfohlen({ von: absender, zweite: z.zweite });
+        const r = await sendePush(z, { titel: inhalt.titel, text: inhalt.text, url: "/dashboard" });
+        if (r === "abgelaufen") await supabase.rpc("push_abo_entfernen", { p_endpoint: z.endpoint });
+      }),
+    );
   }
 
   revalidatePath("/dashboard", "layout");

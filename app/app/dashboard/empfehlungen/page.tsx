@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import NurFuerMitglieder from "@/app/components/NurFuerMitglieder";
 import Link from "next/link";
 import { aktuellesMitglied } from "@/lib/mitglied";
 import { datum, nachfrageFaellig } from "@/lib/empfehlung";
@@ -17,7 +18,17 @@ type Eintrag = {
 };
 
 export default async function MeineEmpfehlungen() {
-  const { supabase } = await aktuellesMitglied();
+  const { supabase, istPartner } = await aktuellesMitglied();
+  if (istPartner) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <NurFuerMitglieder
+          titel="Empfehlungen geben"
+          text="Als Mitglied empfiehlst du deinen Kunden Betriebe aus dem Netzwerk und siehst hier, was daraus geworden ist. Wer dich empfohlen hat, siehst du auf deiner Startseite."
+        />
+      </div>
+    );
+  }
 
   const { data, error } = await supabase
     .from("kundenempfehlungen")

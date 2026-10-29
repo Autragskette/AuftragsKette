@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import NurFuerMitglieder from "@/app/components/NurFuerMitglieder";
 import { aktuellesMitglied } from "@/lib/mitglied";
 import { stufe, type Kennzahlen } from "@/lib/aktivitaet";
 import StufenAbzeichen from "@/app/components/StufenAbzeichen";
@@ -18,7 +19,17 @@ type Partner = {
 };
 
 export default async function TopImNetzwerk() {
-  const { supabase, user } = await aktuellesMitglied();
+  const { supabase, user, istPartner } = await aktuellesMitglied();
+  if (istPartner) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <NurFuerMitglieder
+          titel="Top im Netzwerk"
+          text="Die Bestenliste der aktivsten Mitglieder und gefragtesten Partner sehen Mitglieder."
+        />
+      </div>
+    );
+  }
 
   const [mitgliederAntwort, partnerAntwort] = await Promise.all([
     supabase.rpc("mitglieder_kennzahlen_v2", { p_id: null }),

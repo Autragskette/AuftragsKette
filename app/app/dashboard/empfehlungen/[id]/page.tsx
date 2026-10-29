@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import NurFuerMitglieder from "@/app/components/NurFuerMitglieder";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { aktuellesMitglied } from "@/lib/mitglied";
 import { datum, nachfrageFaellig, tageBisNachfrage } from "@/lib/empfehlung";
-import { empfehlungsText, erinnerungsText } from "@/lib/texte";
+import { empfehlungsText, erinnerungsText, partnerBescheidText } from "@/lib/texte";
 import { mailtoLink, whatsappLink } from "@/lib/teilen";
 import { basisUrl } from "@/lib/url";
 import StatusPlakette from "@/app/components/StatusPlakette";
@@ -33,7 +34,17 @@ export default async function EmpfehlungDetail(
   const { neu } = await props.searchParams;
   if (!UUID_MUSTER.test(id)) notFound();
 
-  const { supabase, signatur, profilVollstaendig } = await aktuellesMitglied();
+  const { supabase, signatur, profilVollstaendig, istPartner } = await aktuellesMitglied();
+  if (istPartner) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <NurFuerMitglieder
+          titel="Nur für Mitglieder"
+          text="Empfehlungen geben können Mitglieder der AuftragsKette."
+        />
+      </div>
+    );
+  }
 
   const { data: e } = await supabase
     .from("kundenempfehlungen")
@@ -46,7 +57,7 @@ export default async function EmpfehlungDetail(
 
   let partner: Partner | null = null;
   if (e.kontakt_id) {
-    const { data } = await supabase.rpc("netzwerk_kontakt", { p_id: e.kontakt_id });
+    const { data } = await supabase.rpc("empfehlung_partner", { p_empfehlung_id: e.id });
     partner = ((Array.isArray(data) ? data[0] : data) as Partner | undefined) ?? null;
   }
 
@@ -61,6 +72,14 @@ export default async function EmpfehlungDetail(
         signatur,
         karte,
         nachricht: e.nachricht,
+      })
+    : "";
+  const bescheid = partner
+    ? partnerBescheidText({
+        partnerName: partner.name,
+        kundeName: e.kunde_name,
+        leistung: partner.leistung,
+        signatur,
       })
     : "";
   const erinnerung = erinnerungsText({
@@ -120,6 +139,45 @@ export default async function EmpfehlungDetail(
           Dieser Partner ist nicht mehr im Netzwerk gelistet. Die Empfehlung
           bleibt hier zur Übersicht gespeichert.
         </p>
+      )}
+
+      {/* Partner Bescheid geben, aus dem eigenen WhatsApp */}
+      {partner && profilVollstaendig && (
+        <div className="mt-6 rounded-2xl border border-linie bg-white p-6">
+          <h2 className="font-bold">{partner.name.split(" ")[0]} Bescheid geben</h2>
+          <p className="mt-2 text-sm leading-6 text-gray-600">
+            Sag {partner.name.split(" ")[0]} kurz, dass sich ein Kunde meldet.
+            Die Nachricht geht aus deinem eigenen WhatsApp, persönlich von dir.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            {partner.telefon ? (
+              <a
+                href={whatsappLink(bescheid, partner.telefon)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-xl bg-[#1fa855] px-5 py-3 text-sm font-semibold text-white"
+              >
+                Per WhatsApp Bescheid geben
+              </a>
+            ) : (
+              <p className="text-sm text-gray-500">Für {partner.name} ist keine Telefonnummer hinterlegt.</p>
+            )}
+            {partner.email && (
+              <a
+                href={mailtoLink(partner.email, `Empfehlung an ${e.kunde_name || "einen Kunden"}`, bescheid)}
+                className="rounded-xl border border-linie px-5 py-3 text-sm font-semibold"
+              >
+                Per E-Mail
+              </a>
+            )}
+          </div>
+          <details className="mt-4 text-sm">
+            <summary className="cursor-pointer font-medium text-gray-600">Nachricht ansehen</summary>
+            <pre className="mt-3 whitespace-pre-wrap rounded-lg bg-gray-50 p-4 font-sans text-gray-700">
+              {bescheid}
+            </pre>
+          </details>
+        </div>
       )}
 
       {/* Nachverfolgung */}

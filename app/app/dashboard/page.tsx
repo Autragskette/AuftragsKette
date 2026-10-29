@@ -7,6 +7,7 @@ import { aktivStatus, stufe, type Kennzahlen } from "@/lib/aktivitaet";
 import { ARTEN, zeitraum, type Veranstaltung } from "@/lib/veranstaltungen";
 import SuchKarte from "@/app/components/SuchKarte";
 import StufenAbzeichen from "@/app/components/StufenAbzeichen";
+import PartnerStart from "./PartnerStart";
 
 export const metadata: Metadata = {
   title: "Start",
@@ -15,7 +16,8 @@ export const metadata: Metadata = {
 type Aufgabe = { text: string; hinweis?: string; href: string; dringend?: boolean };
 
 export default async function Start() {
-  const { supabase, user, profil } = await aktuellesMitglied();
+  const { supabase, user, profil, istPartner } = await aktuellesMitglied();
+  if (istPartner) return <PartnerStart supabase={supabase} profil={profil} />;
 
   const [kontakteAntwort, empfehlungenAntwort, kennzahlenAntwort, terminAntwort] = await Promise.all([
     supabase.from("kontakte").select("status, abgelehnt_am").eq("besitzer_id", user.id),

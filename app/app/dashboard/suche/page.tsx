@@ -4,6 +4,7 @@ import { aktuellesMitglied } from "@/lib/mitglied";
 import { entfernungKm, orteImUmkreis, plzKoordinate, punktFinden } from "@/lib/geo";
 import { UMKREISE, UMKREIS_STANDARD } from "@/lib/geo/umkreis";
 import SuchKarte from "@/app/components/SuchKarte";
+import NurFuerMitglieder from "@/app/components/NurFuerMitglieder";
 
 export const metadata: Metadata = {
   title: "Partner finden",
@@ -29,7 +30,7 @@ export default async function Suche(props: PageProps<"/dashboard/suche">) {
   const km = (UMKREISE as readonly number[]).includes(kmWunsch) ? kmWunsch : UMKREIS_STANDARD;
   const gesucht = "suche" in p || "ort" in p;
 
-  const { supabase, profil } = await aktuellesMitglied();
+  const { supabase, profil, istPartner } = await aktuellesMitglied();
 
   // Ohne Ortsangabe: eigener Standort aus dem Profil
   const ortEingabe =
@@ -41,11 +42,25 @@ export default async function Suche(props: PageProps<"/dashboard/suche">) {
   let fehler = false;
 
   if (gesucht) {
-    const { data, error } = await supabase.rpc("netzwerk_suchen_v2", { p_suche: suche, p_limit: 2000 });
+    // Schnupperzugang: nur Gewerk und Ort, keine Namen oder Kontaktdaten
+    const { data, error } = istPartner
+      ? await supabase.rpc("netzwerk_vorschau", { p_suche: suche })
+      : await supabase.rpc("netzwerk_suchen_v2", { p_suche: suche, p_limit: 2000 });
     fehler = Boolean(error);
     if (error) console.error("Netzwerksuche fehlgeschlagen:", error);
 
-    const alle: MitEntfernung[] = ((data ?? []) as Treffer[]).map((t) => {
+    const roh = istPartner
+      ? ((data ?? []) as { leistung: string; plz: string; ort: string }[]).map((t, i) => ({
+          ...t,
+          id: `v${i}`,
+          name: "",
+          firma: "",
+          empfohlen_von: "",
+          eigener: false,
+        }))
+      : ((data ?? []) as Treffer[]);
+
+    const alle: MitEntfernung[] = roh.map((t) => {
       const k = plzKoordinate(t.plz);
       return { ...t, km: mitte && k ? entfernungKm(mitte, k) : null };
     });
@@ -98,10 +113,20 @@ export default async function Suche(props: PageProps<"/dashboard/suche">) {
 
           {imUmkreis.length > 0 && (
             <ul className="mt-4 divide-y divide-linie overflow-hidden rounded-2xl border border-linie bg-white">
-              {imUmkreis.map((t) => (
-                <TrefferZeile key={t.id} t={t} />
+              {imUmkreis.slice(0, istPartner ? 5 : undefined).map((t) => (
+                <TrefferZeile key={t.id} t={t} gesperrt={istPartner} />
               ))}
             </ul>
+          )}
+
+          {istPartner && (
+            <div className="mt-4">
+              <NurFuerMitglieder
+                kompakt
+                titel="Namen und Kontaktdaten sehen Mitglieder"
+                text="Als Mitglied siehst du, wer dahintersteckt, und empfiehlst diese Betriebe deinen Kunden mit zwei Tipps."
+              />
+            </div>
           )}
 
           {imUmkreis.length === 0 && (
@@ -125,16 +150,18 @@ export default async function Suche(props: PageProps<"/dashboard/suche">) {
                 Kennst du jemanden? Mit jedem Kontakt, den du einbringst,
                 wird die AuftragsKette in deiner Region stärker.
               </p>
-              <Link
-                href="/dashboard/netzwerk/neu"
-                className="mt-4 inline-block rounded-xl bg-tinte px-5 py-3 text-sm font-semibold text-white"
-              >
-                Kontakt einbringen
-              </Link>
+              {!istPartner && (
+                <Link
+                  href="/dashboard/netzwerk/neu"
+                  className="mt-4 inline-block rounded-xl bg-tinte px-5 py-3 text-sm font-semibold text-white"
+                >
+                  Kontakt einbringen
+                </Link>
+              )}
             </div>
           )}
 
-          {ausserhalb.length > 0 && (
+          {ausserhalb.length > 0 && !istPartner && (
             <>
               <h2 className="mt-8 text-sm font-semibold text-slate-500">Etwas weiter weg</h2>
               <ul className="mt-2 divide-y divide-linie overflow-hidden rounded-2xl border border-linie bg-white">
@@ -150,9 +177,25 @@ export default async function Suche(props: PageProps<"/dashboard/suche">) {
   );
 }
 
-function TrefferZeile({ t }: { t: MitEntfernung }) {
+function TrefferZeile({ t, gesperrt }: { t: MitEntfernung; gesperrt?: boolean }) {
   const entfernung =
     t.km === null ? "" : t.km < 1 ? "unter 1 km" : `${Math.round(t.km)} km`;
+  if (gesperrt) {
+    return (
+      <li className="flex items-center gap-4 p-4">
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-semibold text-tinte">{t.leistung}</p>
+          <p className="mt-0.5 flex items-center gap-1.5 text-sm text-slate-400">
+            <span aria-hidden>🔒</span> Name für Mitglieder sichtbar
+          </p>
+          <p className="mt-1 text-xs text-slate-500">
+            {t.ort || t.plz}
+            {entfernung && <span className="font-semibold text-slate-700"> {entfernung}</span>}
+          </p>
+        </div>
+      </li>
+    );
+  }
   return (
     <li className="flex items-center gap-4 p-4">
       <div className="min-w-0 flex-1">

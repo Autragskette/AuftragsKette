@@ -66,11 +66,24 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
               empfohlener Partner gelistet. Mitglieder können dich ab sofort an
               ihre Kunden weiterempfehlen.
             </p>
-            <p className="mt-4 leading-7 text-slate-600">
+            <div className="mt-6 rounded-xl bg-tinte p-5 text-white">
+              <p className="font-semibold">Schau dich in der App um</p>
+              <p className="mt-1 text-sm leading-6 text-blue-100">
+                Mit deinem kostenlosen Zugang siehst du, wer dich empfohlen hat,
+                und bekommst eine Nachricht aufs Handy, sobald es passiert.
+              </p>
+              <Link
+                href={`/zugang/${token}`}
+                className="mt-4 inline-block rounded-xl bg-white px-5 py-3 text-sm font-semibold text-tinte"
+              >
+                Kostenlosen Zugang anlegen
+              </Link>
+            </div>
+            <Ansehen token={token} />
+            <p className="mt-6 text-sm leading-6 text-slate-500">
               Möchtest du deine Zustimmung später zurückziehen, öffne einfach
               diesen Link erneut.
             </p>
-            <Ansehen token={token} />
             <Widerruf token={token} />
           </Karte>
         ) : antwort === "nein" || einladung.status === "abgelehnt" ? (

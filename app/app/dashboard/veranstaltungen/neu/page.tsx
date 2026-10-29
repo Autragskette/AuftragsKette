@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import NurFuerMitglieder from "@/app/components/NurFuerMitglieder";
 import Link from "next/link";
 import { aktuellesMitglied } from "@/lib/mitglied";
 import Formular from "./Formular";
@@ -8,7 +9,17 @@ export const metadata: Metadata = {
 };
 
 export default async function NeueVeranstaltung() {
-  const { supabase } = await aktuellesMitglied();
+  const { supabase, istPartner } = await aktuellesMitglied();
+  if (istPartner) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <NurFuerMitglieder
+          titel="Nur für Mitglieder"
+          text="Veranstaltungen anlegen können Mitglieder mit Verwaltungsrechten."
+        />
+      </div>
+    );
+  }
   const { data: istAdmin } = await supabase.rpc("ist_admin");
 
   return (

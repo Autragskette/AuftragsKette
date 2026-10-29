@@ -3,10 +3,16 @@ import Link from "next/link";
 import { aktuellesMitglied } from "@/lib/mitglied";
 import { abmelden } from "../../anmelden/actions";
 import AppInstallieren from "@/app/components/AppInstallieren";
+import PushSchalter from "@/app/components/PushSchalter";
 
 export const metadata: Metadata = {
   title: "Mehr",
 };
+
+const PARTNER_EINTRAEGE = [
+  { name: "Mitglied werden", text: "Jahres- oder Halbjahresabo", href: "/dashboard/mitglied-werden" },
+  { name: "Mein Profil", text: "Name, Firma und Kontaktdaten", href: "/dashboard/profil" },
+];
 
 const EINTRAEGE = [
   { name: "Meine Empfehlungen", text: "Gegebene Empfehlungen und Nachfragen", href: "/dashboard/empfehlungen" },
@@ -16,7 +22,8 @@ const EINTRAEGE = [
 ];
 
 export default async function Mehr() {
-  const { user, anzeigeName } = await aktuellesMitglied();
+  const { user, anzeigeName, istPartner } = await aktuellesMitglied();
+  const eintraege = istPartner ? PARTNER_EINTRAEGE : EINTRAEGE;
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -25,7 +32,7 @@ export default async function Mehr() {
       <p className="truncate text-sm text-slate-400">{user.email}</p>
 
       <ul className="mt-6 divide-y divide-linie overflow-hidden rounded-2xl border border-linie bg-white">
-        {EINTRAEGE.map((e) => (
+        {eintraege.map((e) => (
           <li key={e.href}>
             <Link href={e.href} className="flex items-center justify-between gap-4 px-5 py-4 active:bg-gray-50">
               <span className="min-w-0">
@@ -39,6 +46,10 @@ export default async function Mehr() {
       </ul>
 
       <div className="mt-6">
+        <PushSchalter />
+      </div>
+
+      <div className="mt-4">
         <AppInstallieren />
       </div>
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import NurFuerMitglieder from "@/app/components/NurFuerMitglieder";
 import Link from "next/link";
 import { aktuellesMitglied } from "@/lib/mitglied";
 import { datum } from "@/lib/empfehlung";
@@ -22,7 +23,17 @@ export const metadata: Metadata = {
 };
 
 export default async function MeineAktivitaet() {
-  const { supabase, user } = await aktuellesMitglied();
+  const { supabase, user, istPartner } = await aktuellesMitglied();
+  if (istPartner) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <NurFuerMitglieder
+          titel="Punkte sammeln und Top-Mitglied werden"
+          text="Mitglieder sammeln Punkte für Empfehlungen, eingebrachte Kontakte und die Teilnahme an Treffen. Die Aktivsten werden Top-Mitglied."
+        />
+      </div>
+    );
+  }
   const { data, error } = await supabase.rpc("mitglieder_kennzahlen_v2", { p_id: user.id });
   const k = (Array.isArray(data) ? data[0] : data) as Kennzahlen | undefined;
 

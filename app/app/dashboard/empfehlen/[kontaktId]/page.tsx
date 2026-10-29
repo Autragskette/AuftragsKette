@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import NurFuerMitglieder from "@/app/components/NurFuerMitglieder";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { aktuellesMitglied } from "@/lib/mitglied";
@@ -29,7 +30,17 @@ export default async function Empfehlen(props: PageProps<"/dashboard/empfehlen/[
   const { kontaktId } = await props.params;
   if (!UUID_MUSTER.test(kontaktId)) notFound();
 
-  const { supabase, profilVollstaendig } = await aktuellesMitglied();
+  const { supabase, profilVollstaendig, istPartner } = await aktuellesMitglied();
+  if (istPartner) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <NurFuerMitglieder
+          titel="Empfehlen ist Mitgliedern vorbehalten"
+          text="Als Mitglied empfiehlst du deinen Kunden Betriebe aus dem Netzwerk, per WhatsApp oder E-Mail, mit zwei Tipps."
+        />
+      </div>
+    );
+  }
   const { data } = await supabase.rpc("netzwerk_kontakt", { p_id: kontaktId });
   const partner = (Array.isArray(data) ? data[0] : data) as Partner | undefined;
   if (!partner) notFound();

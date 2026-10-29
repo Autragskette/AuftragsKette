@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import NurFuerMitglieder from "@/app/components/NurFuerMitglieder";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { aktuellesMitglied } from "@/lib/mitglied";
@@ -28,7 +29,17 @@ export default async function KontaktBearbeiten(
   const hinweis = await props.searchParams;
   if (!UUID_MUSTER.test(id)) notFound();
 
-  const { supabase, user, profil, profilVollstaendig } = await aktuellesMitglied();
+  const { supabase, user, profil, profilVollstaendig, istPartner } = await aktuellesMitglied();
+  if (istPartner) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <NurFuerMitglieder
+          titel="Nur für Mitglieder"
+          text="Kontakte verwalten können Mitglieder der AuftragsKette."
+        />
+      </div>
+    );
+  }
 
   const { data: kontakt } = await supabase
     .from("kontakte")

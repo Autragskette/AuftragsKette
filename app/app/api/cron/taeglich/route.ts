@@ -2,11 +2,15 @@ import { createClient } from "@supabase/supabase-js";
 import { emailVersandAktiv, sendeEmail } from "@/lib/email";
 import { aktivStatus, erinnerungsStufe, type Kennzahlen } from "@/lib/aktivitaet";
 import { datum, NACHFRAGE_TAGE } from "@/lib/empfehlung";
+import { pushAktiv, sendePush, type PushAbo } from "@/lib/push";
+import { testHinweis } from "@/lib/texte";
 
 /**
  * Täglicher Lauf (Vercel Cron, siehe vercel.json):
  *  - Erinnerung an inaktive Mitglieder (Stufe 1) und Warnung (Stufe 2)
  *  - Nachfrage „Kam es zum Auftrag?“ 7 Tage nach einer Empfehlung
+ *  - Partner: Hinweis 7 Tage vor Ende und am Ende der Testphase
+ *    (Push-Nachricht, zusätzlich E-Mail, sobald der Versand aktiv ist)
  *
  * Benötigt beim Hoster: CRON_SECRET, SUPABASE_SECRET_KEY, RESEND_API_KEY,
  * EMAIL_ABSENDER und NEXT_PUBLIC_SITE_URL. Fehlt etwas, passiert nichts.
@@ -23,13 +27,65 @@ export async function GET(request: Request) {
   const schluessel = process.env.SUPABASE_SECRET_KEY;
   const seite = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://auftragskette.vercel.app").replace(/\/$/, "");
 
-  if (!url || !schluessel || !emailVersandAktiv()) {
-    return Response.json({ uebersprungen: "E-Mail-Versand oder Server-Schlüssel nicht eingerichtet" });
+  if (!url || !schluessel) {
+    return Response.json({ uebersprungen: "Server-Schlüssel nicht eingerichtet" });
   }
 
   const admin = createClient(url, schluessel, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
+
+  // 0) Testphase der Partner
+  let partnerHinweise = 0;
+  {
+    const { data: phasen } = await admin.rpc("partner_testphasen");
+    const liste = (phasen ?? []) as {
+      nutzer_id: string;
+      email: string;
+      vorname: string;
+      empfehlungen: number;
+      frei_bis: string | null;
+      pausiert: boolean;
+      hinweis_stufe: number;
+    }[];
+    const ids = liste.map((p) => p.nutzer_id);
+    const { data: abos } = ids.length
+      ? await admin.from("push_abos").select("nutzer_id, endpoint, p256dh, auth").in("nutzer_id", ids)
+      : { data: [] };
+
+    for (const p of liste) {
+      const baldBis = p.frei_bis ? new Date(p.frei_bis).getTime() - Date.now() : Infinity;
+      const soll = p.pausiert ? 2 : baldBis <= 7 * 86_400_000 ? 1 : 0;
+      if (soll <= p.hinweis_stufe) continue;
+
+      const hinweis = testHinweis({
+        art: soll === 2 ? "beendet" : "bald",
+        vorname: p.vorname,
+        bis: p.frei_bis,
+        link: `${seite}/dashboard/mitglied-werden`,
+      });
+
+      let erreicht = false;
+      if (pushAktiv()) {
+        for (const a of (abos ?? []).filter((a) => a.nutzer_id === p.nutzer_id)) {
+          const r = await sendePush(a as PushAbo, { titel: hinweis.titel, text: hinweis.kurz, url: "/dashboard/mitglied-werden" });
+          if (r === "ok") erreicht = true;
+          if (r === "abgelaufen") await admin.rpc("push_abo_entfernen", { p_endpoint: a.endpoint });
+        }
+      }
+      if (emailVersandAktiv() && p.email) {
+        erreicht = (await sendeEmail({ an: p.email, betreff: hinweis.titel, text: hinweis.lang })) || erreicht;
+      }
+      if (erreicht) {
+        partnerHinweise++;
+        await admin.from("profile").update({ test_hinweis_stufe: soll }).eq("id", p.nutzer_id);
+      }
+    }
+  }
+
+  if (!emailVersandAktiv()) {
+    return Response.json({ partnerHinweise, uebersprungen: "E-Mail-Versand nicht eingerichtet" });
+  }
 
   // E-Mail-Adressen der Mitglieder
   const emails = new Map<string, string>();
@@ -130,5 +186,5 @@ Dein AuftragsKette-Team`,
     }
   }
 
-  return Response.json({ erinnerungen, nachfragen });
+  return Response.json({ partnerHinweise, erinnerungen, nachfragen });
 }

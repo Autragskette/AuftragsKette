@@ -8,7 +8,8 @@ export const metadata: Metadata = {
   title: "Anmelden",
 };
 
-export default function Anmelden() {
+export default async function Anmelden(props: PageProps<"/anmelden">) {
+  const { bestaetigt } = await props.searchParams;
   return (
     <main className="min-h-screen bg-papier">
       {/* Kopfbereich */}
@@ -39,6 +40,13 @@ export default function Anmelden() {
           <p className="mt-3 leading-7 text-slate-600">
             Melde dich mit deinen Zugangsdaten bei AuftragsKette an.
           </p>
+
+          {bestaetigt && (
+            <p className="mt-5 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-800">
+              Deine E-Mail-Adresse ist bestätigt. Melde dich jetzt mit deinem
+              Passwort an.
+            </p>
+          )}
 
           <AnmeldeFormular />
 

@@ -94,3 +94,82 @@ ${karte}
 Viele Grüße
 ${signatur}`;
 }
+
+/**
+ * WhatsApp vom Mitglied an den Partner, nachdem es ihn an einen Kunden
+ * empfohlen hat. Geht aus dem eigenen WhatsApp des Mitglieds raus.
+ */
+export function partnerBescheidText({
+  partnerName,
+  kundeName,
+  leistung,
+  signatur,
+}: {
+  partnerName: string;
+  kundeName: string;
+  leistung: string;
+  signatur: string;
+}) {
+  const vorname = partnerName.trim().split(/\s+/)[0] || partnerName;
+  const kunde = kundeName.trim();
+  return `Hallo ${vorname},
+
+kurze Info: Ich habe dich gerade ${kunde ? `an ${kunde}` : "an einen Kunden"} für ${leistung.trim() || "deine Leistungen"} weiterempfohlen. ${kunde ? `${kunde.split(/\s+/)[0]} meldet` : "Der Kunde meldet"} sich in den nächsten Tagen bei dir.
+
+Viele Grüße
+${signatur}`;
+}
+
+/** Push an den Partner, sobald er empfohlen wurde */
+export function pushEmpfohlen({ von, zweite }: { von: string; zweite: boolean }) {
+  return {
+    titel: "Du wurdest empfohlen",
+    text: zweite
+      ? `${von} hat dich an einen Kunden empfohlen. Das war die letzte Empfehlung deiner kostenlosen Testphase.`
+      : `${von} hat dich gerade an einen Kunden empfohlen.`,
+  };
+}
+
+/** Hinweis an den Partner kurz vor bzw. nach dem Ende der Testphase */
+export function testHinweis({
+  art,
+  vorname,
+  bis,
+  link,
+}: {
+  art: "bald" | "beendet";
+  vorname: string;
+  bis: string | null;
+  link: string;
+}) {
+  const anrede = vorname ? `Hallo ${vorname},` : "Hallo,";
+  const datum = bis ? new Date(bis).toLocaleDateString("de-DE", { timeZone: "Europe/Berlin" }) : "";
+  if (art === "bald") {
+    return {
+      titel: "Deine kostenlose Testphase endet bald",
+      kurz: `Am ${datum} endet deine Testphase. Werde Mitglied, damit du weiter empfohlen wirst.`,
+      lang: `${anrede}
+
+deine kostenlose Testphase in der AuftragsKette endet am ${datum}. Danach wirst du in der Suche nicht mehr angezeigt und kannst nicht mehr empfohlen werden.
+
+Wenn du weiter dabei sein möchtest, kannst du hier Mitglied werden:
+${link}
+
+Viele Grüße
+Dein AuftragsKette-Team`,
+    };
+  }
+  return {
+    titel: "Deine kostenlose Testphase ist beendet",
+    kurz: "Werde Mitglied, damit dich andere Unternehmer weiter empfehlen können.",
+    lang: `${anrede}
+
+deine kostenlose Testphase in der AuftragsKette ist beendet. Dein Eintrag bleibt erhalten, ist aber pausiert: Du wirst in der Suche nicht mehr angezeigt und kannst nicht mehr empfohlen werden.
+
+Sobald du Mitglied wirst, bist du sofort wieder sichtbar:
+${link}
+
+Viele Grüße
+Dein AuftragsKette-Team`,
+  };
+}

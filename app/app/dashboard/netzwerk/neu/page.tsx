@@ -1,12 +1,25 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import KontaktFormular from "../KontaktFormular";
+import { aktuellesMitglied } from "@/lib/mitglied";
+import NurFuerMitglieder from "@/app/components/NurFuerMitglieder";
 
 export const metadata: Metadata = {
   title: "Kontakt hinzufügen",
 };
 
-export default function NeuerKontakt() {
+export default async function NeuerKontakt() {
+  const { istPartner } = await aktuellesMitglied();
+  if (istPartner) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <NurFuerMitglieder
+          titel="Kontakte einbringen"
+          text="Als Mitglied bringst du Betriebe ein, deren Arbeit du kennst. Sie werden gefragt, ob sie zustimmen, und können dann von allen Mitgliedern empfohlen werden."
+        />
+      </div>
+    );
+  }
   return (
     <div className="max-w-2xl">
       <Link

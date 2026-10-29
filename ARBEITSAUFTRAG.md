@@ -152,16 +152,42 @@ Rangliste „Top im Netzwerk“: aktivste Mitglieder und meistempfohlene Partner
 
 - Mitgliedschaft: **Jahresabo 69 € netto/Monat** (12 Monate Laufzeit,
   monatliche Zahlung) oder **Halbjahresabo 89 € netto/Monat** (6 Monate).
-- Eingeladene Partner sind zunächst ganz kostenlos dabei: die ersten
-  Empfehlungen (intern: 2 erhaltene Empfehlungen) bzw. die ersten 3 Monate ab
-  Zustimmung, je nachdem, was zuerst eintritt.
+- Eingeladene Partner sind zunächst ganz kostenlos dabei. Testregel:
+  - endet mit der **2. erhaltenen Empfehlung**,
+  - nach **3 Monaten**, wenn bis dahin mindestens eine Empfehlung kam,
+  - ohne Empfehlung läuft der Test weiter, **spätestens 6 Monate**.
 - Danach ist der Partner **pausiert**: nicht mehr in der Suche, nicht mehr
   empfehlbar, aber nicht gelöscht. Wird er Mitglied, ist er sofort wieder
   sichtbar. Für das einladende Mitglied zählt er weiter als Pflichtkontakt.
+  Bereits angelegte Empfehlungen (auch die 2.) kann das Mitglied weiter senden.
 - Ist ein Partner von mehreren Mitgliedern eingetragen (gleiche E-Mail),
   werden seine Empfehlungen zusammengezählt.
-- Umsetzung: Migration 0008 (`partner_kennenlernen`, `partner_pausiert`),
-  Werte in `app/lib/preise.ts`.
+
+### Schnupperzugang
+
+- Nach der Zustimmung kann sich der Partner einen kostenlosen Zugang anlegen
+  (E-Mail aus seinem Eintrag, eigenes Passwort, Bestätigung per E-Mail).
+- Rolle **Partner**: sieht seinen Teststand, wer ihn empfohlen hat (ohne
+  Kundendaten), Termine und wie viele Betriebe im Netzwerk sind. Die Suche
+  zeigt nur Gewerk, Ort und Entfernung, keine Namen.
+- Gesperrt (in der Datenbank, nicht nur in der App): Kontakte einbringen,
+  empfehlen, Namen und Kontaktdaten anderer, Teilnahme und Einchecken,
+  Punkte und Bestenliste.
+- „Mitglied werden“ merkt den Wunsch vor; freigeschaltet wird von Hand,
+  bis die Zahlung (Stripe) eingerichtet ist.
+
+### Benachrichtigungen an Partner
+
+- **Kostenlos, keine WhatsApp-Business-Schnittstelle.**
+- Nach jeder Empfehlung bietet die App dem Mitglied an, den Partner **aus
+  dem eigenen WhatsApp** zu informieren (vorformulierte Nachricht).
+- **Push-Nachricht** aufs Handy des Partners, sofort bei jeder Empfehlung,
+  sobald er sie in seinem Zugang einschaltet (iPhone: App auf dem
+  Home-Bildschirm nötig).
+- Täglicher Lauf: Hinweis 7 Tage vor Ende und am Ende der Testphase per Push,
+  zusätzlich per E-Mail, sobald Resend eingerichtet ist.
+- Umsetzung: Migrationen 0008 bis 0012, `app/lib/push.ts`, `public/sw.js`,
+  Werte in `app/lib/preise.ts`, Texte in `app/lib/texte.ts`.
 
 ## 8. Weitere Bausteine (später)
 

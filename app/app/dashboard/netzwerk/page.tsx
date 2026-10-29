@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import NurFuerMitglieder from "@/app/components/NurFuerMitglieder";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import StatusPlakette from "@/app/components/StatusPlakette";
@@ -42,7 +43,17 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
   const kontakte = suche ? alle.filter((k) => passt(k, suche)) : alle;
   const bestaetigt = alle.filter((k) => k.status === "bestaetigt").length;
   const wartend = alle.filter((k) => k.status === "eingeladen").length;
-  const { profil } = await aktuellesMitglied();
+  const { profil, istPartner } = await aktuellesMitglied();
+  if (istPartner) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <NurFuerMitglieder
+          titel="Dein eigenes Netzwerk"
+          text="Als Mitglied bringst du Betriebe ein, deren Arbeit du kennst, und empfiehlst sie an deine Kunden weiter. Jeder Kontakt stimmt selbst zu, so wie du."
+        />
+      </div>
+    );
+  }
   const letzteAblehnung =
     alle.map((k) => k.abgelehnt_am).filter(Boolean).sort().pop() ?? null;
   const pflicht = pflichtStand(bestaetigt, profil.erstellt_am, letzteAblehnung);

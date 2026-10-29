@@ -10,6 +10,7 @@ export type Profil = {
   ort: string;
   telefon: string;
   erstellt_am: string;
+  rolle?: "mitglied" | "partner";
 };
 
 /** Angemeldetes Mitglied samt Profil; leitet sonst zur Anmeldung um. */
@@ -22,7 +23,7 @@ export async function aktuellesMitglied() {
 
   const { data } = await supabase
     .from("profile")
-    .select("vorname, nachname, firma, branche, plz, ort, telefon, erstellt_am")
+    .select("vorname, nachname, firma, branche, plz, ort, telefon, erstellt_am, rolle")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -35,6 +36,7 @@ export async function aktuellesMitglied() {
     ort: "",
     telefon: "",
     erstellt_am: new Date().toISOString(),
+    rolle: "partner",
   }) as Profil;
 
   return {
@@ -44,6 +46,8 @@ export async function aktuellesMitglied() {
     anzeigeName: anzeigeName(profil),
     signatur: signatur(profil),
     profilVollstaendig: profilVollstaendig(profil),
+    /** Schnupperzugang: sieht die App, kann aber nur Mitgliedern Vorbehaltenes nicht nutzen */
+    istPartner: profil.rolle !== "mitglied",
   };
 }
 

@@ -34,6 +34,7 @@ const MELDUNGEN: Record<string, string> = {
   falscher_code: "Der Code stimmt nicht. Bitte prüfe ihn noch einmal.",
   zu_frueh: "Einchecken ist erst 30 Minuten vor Beginn möglich.",
   zu_spaet: "Einchecken war nur bis 24 Stunden nach Ende möglich.",
+  nur_mitglieder: "Einchecken und Punkte sammeln ist Mitgliedern vorbehalten.",
   unbekannt: "Diese Veranstaltung gibt es nicht mehr.",
 };
 
