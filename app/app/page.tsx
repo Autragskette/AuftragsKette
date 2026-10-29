@@ -42,7 +42,7 @@ export default function Home() {
           AuftragsKette
         </p>
 
-        <h1 className="max-w-3xl text-3xl font-bold tracking-tight sm:text-4xl sm:text-5xl">
+        <h1 className="max-w-3xl text-[2rem] font-bold leading-tight tracking-tight sm:text-5xl">
           Das Unternehmernetzwerk,
           <br />
           aus dem Aufträge entstehen.
