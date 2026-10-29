@@ -70,6 +70,7 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
               Möchtest du deine Zustimmung später zurückziehen, öffne einfach
               diesen Link erneut.
             </p>
+            <Ansehen token={token} />
             <Widerruf token={token} />
           </Karte>
         ) : antwort === "nein" || einladung.status === "abgelehnt" ? (
@@ -138,6 +139,8 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
               </p>
             </div>
 
+            <Ansehen token={token} />
+
             {fehler && (
               <p className="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
                 Das hat leider nicht geklappt. Bitte versuche es erneut.
@@ -190,6 +193,26 @@ function ZustimmungsFormular({ token }: { token: string }) {
         Ja, ich stimme zu
       </button>
     </form>
+  );
+}
+
+function Ansehen({ token }: { token: string }) {
+  return (
+    <div className="mt-6 grid gap-3 sm:grid-cols-2">
+      <Link
+        href={`/bestaetigen/${token}/vorschau`}
+        className="rounded-xl border border-linie bg-white px-4 py-3 text-center text-sm font-semibold text-tinte hover:border-kette"
+      >
+        So sehen dich Kunden →
+      </Link>
+      <Link
+        href="/"
+        target="_blank"
+        className="rounded-xl border border-linie bg-white px-4 py-3 text-center text-sm font-semibold text-tinte hover:border-kette"
+      >
+        Mehr über AuftragsKette →
+      </Link>
+    </div>
   );
 }
 
