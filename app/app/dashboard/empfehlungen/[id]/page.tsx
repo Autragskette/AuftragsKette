@@ -25,6 +25,7 @@ type Partner = {
   leistung: string;
   telefon: string;
   email: string;
+  eigener: boolean;
 };
 
 export default async function EmpfehlungDetail(
@@ -57,7 +58,7 @@ export default async function EmpfehlungDetail(
 
   let partner: Partner | null = null;
   if (e.kontakt_id) {
-    const { data } = await supabase.rpc("empfehlung_partner", { p_empfehlung_id: e.id });
+    const { data } = await supabase.rpc("empfehlung_partner_v2", { p_empfehlung_id: e.id });
     partner = ((Array.isArray(data) ? data[0] : data) as Partner | undefined) ?? null;
   }
 
@@ -72,6 +73,7 @@ export default async function EmpfehlungDetail(
         signatur,
         karte,
         nachricht: e.nachricht,
+        eigener: partner.eigener,
       })
     : "";
   const bescheid = partner

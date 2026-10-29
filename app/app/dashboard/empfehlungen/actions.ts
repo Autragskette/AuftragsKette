@@ -25,6 +25,7 @@ type Partner = {
   email: string;
   telefon: string;
   leistung: string;
+  eigener: boolean;
 };
 
 export async function empfehlungAnlegen(
@@ -123,6 +124,7 @@ AuftragsKette`,
       signatur: signatur(ich as Profil),
       karte,
       nachricht,
+      eigener: partner.eigener,
     });
     whatsapp = whatsappLink(text, kunde_telefon || undefined);
   }

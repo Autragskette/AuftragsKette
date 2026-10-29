@@ -47,20 +47,27 @@ export function empfehlungsText({
   signatur,
   karte,
   nachricht,
+  eigener = false,
 }: {
   kundeName: string;
   kontakt: { name: string; firma: string; leistung: string; telefon: string; email: string };
   signatur: string;
   karte: string;
   nachricht: string;
+  /** Eigener Kontakt des Mitglieds (sonst: aus dem Netzwerk, von anderen eingebracht) */
+  eigener?: boolean;
 }) {
-  const anrede = kundeName ? `Hallo ${kundeName.split(" ")[0]},` : "Hallo,";
+  // Ohne Du oder Sie, damit der Text zu jedem Kunden passt
+  const anrede = kundeName.trim() ? `Hallo ${kundeName.trim()},` : "Hallo,";
   const firma = kontakt.firma ? ` (${kontakt.firma})` : "";
+  const einleitung = `wie besprochen empfehle ich ${kontakt.name}${firma} für ${kontakt.leistung}.`;
+  const begruendung = eigener
+    ? "Ich kenne die Arbeit persönlich und kann sie guten Gewissens weiterempfehlen."
+    : `${kontakt.name} ist Teil meines persönlichen Unternehmernetzwerks. Dort sind nur Betriebe vertreten, die von anderen Unternehmern persönlich empfohlen wurden. Deshalb kann ich diesen Betrieb guten Gewissens weiterempfehlen.`;
   const zeilen = [
     anrede,
     "",
-    nachricht ||
-      `wie besprochen empfehle ich dir ${kontakt.name}${firma} für ${kontakt.leistung}. Ich kenne die Arbeit persönlich und kann sie guten Gewissens weiterempfehlen.`,
+    nachricht || `${einleitung} ${begruendung}`,
     "",
     `${kontakt.name}${firma}`,
     kontakt.telefon ? `Telefon: ${kontakt.telefon}` : "",
