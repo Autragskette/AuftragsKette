@@ -148,11 +148,26 @@ Rangliste „Top im Netzwerk“: aktivste Mitglieder und meistempfohlene Partner
 - Gibt jemand deutlich weniger Empfehlungen, als er selbst bekommt, erscheint
   ein Hinweis „Gib etwas zurück“.
 
+## 7a. Preise und Kennenlernphase für Partner
+
+- Mitgliedschaft: **Jahresabo 69 € netto/Monat** (12 Monate Laufzeit,
+  monatliche Zahlung) oder **Halbjahresabo 89 € netto/Monat** (6 Monate).
+- Eingeladene Partner sind zunächst ganz kostenlos dabei: die ersten
+  Empfehlungen (intern: 2 erhaltene Empfehlungen) bzw. die ersten 3 Monate ab
+  Zustimmung, je nachdem, was zuerst eintritt.
+- Danach ist der Partner **pausiert**: nicht mehr in der Suche, nicht mehr
+  empfehlbar, aber nicht gelöscht. Wird er Mitglied, ist er sofort wieder
+  sichtbar. Für das einladende Mitglied zählt er weiter als Pflichtkontakt.
+- Ist ein Partner von mehreren Mitgliedern eingetragen (gleiche E-Mail),
+  werden seine Empfehlungen zusammengezählt.
+- Umsetzung: Migration 0008 (`partner_kennenlernen`, `partner_pausiert`),
+  Werte in `app/lib/preise.ts`.
+
 ## 8. Weitere Bausteine (später)
 
 - Mitgliederprofil (Firma, Gewerk, Region, Kontaktdaten)
 - Einladung neuer Mitglieder durch bestehende Mitglieder
-- Mitgliedschaft 69 €/Monat mit Zahlung (z. B. Stripe)
+- Zahlung der Mitgliedschaft (z. B. Stripe) und Mitteilung an Partner, wenn die Kennenlernphase endet
 - Veranstaltungen für Mitglieder
 - Impressum und Datenschutzerklärung mit echten Daten (Pflicht vor
   Livegang)

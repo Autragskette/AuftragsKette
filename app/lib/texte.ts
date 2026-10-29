@@ -27,7 +27,7 @@ export function einladungsText({
 
 wenn mich Kunden nach ${leistung.trim() || "deinem Fachgebiet"} fragen, empfehle ich gern Betriebe, deren Arbeit ich persönlich kenne und schätze. Dabei habe ich an dich gedacht.
 
-Ich empfehle meine Kontakte über ein Netzwerk von Unternehmern und Selbstständigen aus der Region, in dem wir uns gegenseitig an Kunden weitervermitteln. Wenn du einverstanden bist, würde ich dich dort als Kontakt eintragen. So können ich und die anderen Mitglieder dich bei passender Gelegenheit weiterempfehlen. Für dich ist das kostenlos und unverbindlich, und du kannst deine Zustimmung jederzeit zurückziehen.
+Ich empfehle meine Kontakte über ein Netzwerk von Unternehmern und Selbstständigen aus der Region, in dem wir uns gegenseitig an Kunden weitervermitteln. Wenn du einverstanden bist, würde ich dich dort als Kontakt eintragen. So können ich und die anderen Mitglieder dich bei passender Gelegenheit weiterempfehlen. Für dich ist das zunächst ganz kostenlos: Die ersten Empfehlungen bzw. die ersten drei Monate kannst du unverbindlich ausprobieren. Danach entscheidest du selbst, ob du Mitglied werden möchtest. Deine Zustimmung kannst du jederzeit zurückziehen.
 
 Hier kannst du dir alles in Ruhe ansehen und zustimmen:
 ${link}

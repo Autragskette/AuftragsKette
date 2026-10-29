@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Footer from "./components/Footer";
 import Logo from "./components/Logo";
+import { KENNENLERN_MONATE, TARIFE } from "@/lib/preise";
 
 export default function Home() {
   return (
@@ -209,10 +210,22 @@ export default function Home() {
                 AuftragsKette Mitgliedschaft
               </p>
 
-              <div className="mt-4 flex items-end gap-2">
-                <span className="text-5xl font-bold">69 €</span>
-                <span className="pb-1 text-gray-500">/ Monat</span>
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                {TARIFE.map((t) => (
+                  <div key={t.name} className="rounded-xl bg-papier p-4">
+                    <p className="text-sm font-semibold text-gray-700">{t.name}</p>
+                    <p className="mt-1 flex items-end gap-1">
+                      <span className="text-3xl font-bold sm:text-4xl">{t.preis} €</span>
+                      <span className="pb-1 text-sm text-gray-500">/ Monat</span>
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-gray-500">{t.laufzeit}</p>
+                  </div>
+                ))}
               </div>
+              <p className="mt-3 text-xs text-gray-500">
+                Alle Preise netto zzgl. MwSt. Empfohlene Partner testen die
+                ersten Empfehlungen bzw. die ersten {KENNENLERN_MONATE} Monate kostenlos.
+              </p>
 
               <div className="mt-8 space-y-4 text-gray-700">
                 <p>✓ Zugang zum geschlossenen Unternehmernetzwerk</p>

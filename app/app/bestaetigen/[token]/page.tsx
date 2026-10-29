@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { supabaseEingerichtet } from "@/lib/supabase/config";
 import Footer from "@/app/components/Footer";
 import { einladungBeantworten } from "./actions";
+import { TARIFE } from "@/lib/preise";
 
 export const metadata: Metadata = {
   title: "Empfehlung bestätigen",
@@ -109,8 +110,20 @@ export default async function Bestaetigen(props: PageProps<"/bestaetigen/[token]
                 Fragt ein Kunde zum Beispiel einen Fotografen nach einem
                 Floristen, sucht der Fotograf in AuftragsKette einen Floristen
                 aus der Region und schickt dem Kunden die Kontaktdaten. So
-                entstehen Aufträge über echte Empfehlungen, ohne Provision und
-                ohne Kosten für dich.
+                entstehen Aufträge über echte Empfehlungen, ohne Provision.
+              </p>
+            </div>
+
+            <div className="mt-6 rounded-xl border border-linie p-5 text-sm leading-6 text-slate-700">
+              <p className="font-semibold text-gray-900">Was kostet das?</p>
+              <p className="mt-1">
+                Für dich ist das zunächst ganz kostenlos: Die ersten
+                Empfehlungen bzw. die ersten drei Monate kannst du
+                unverbindlich ausprobieren. Danach entscheidest du selbst, ob
+                du Mitglied werden möchtest, im Jahresabo für {TARIFE[0].preis} € oder
+                im Halbjahresabo für {TARIFE[1].preis} € im Monat (netto, zzgl.
+                MwSt.). Ohne Mitgliedschaft endet deine Listung automatisch, es
+                entstehen keine Kosten.
               </p>
             </div>
 

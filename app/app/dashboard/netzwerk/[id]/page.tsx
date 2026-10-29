@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { aktuellesMitglied } from "@/lib/mitglied";
 import { emailVersandAktiv } from "@/lib/email";
 import { einladungsBetreff, einladungsText } from "@/lib/texte";
+import { KENNENLERN_EMPFEHLUNGEN } from "@/lib/preise";
 import { mailtoLink, whatsappLink } from "@/lib/teilen";
 import { basisUrl } from "@/lib/url";
 import StatusPlakette from "@/app/components/StatusPlakette";
@@ -52,6 +53,22 @@ export default async function KontaktBearbeiten(
   const betreff = einladungsBetreff(absenderName);
   const mailVersand = emailVersandAktiv();
 
+  type Kennenlernen = {
+    empfehlungen: number;
+    frei_bis: string | null;
+    ist_mitglied: boolean;
+    pausiert: boolean;
+  };
+  let phase: Kennenlernen | null = null;
+  if (kontakt.status === "bestaetigt") {
+    const { data } = await supabase.rpc("partner_kennenlernen", { p_kontakt_id: id });
+    phase = (Array.isArray(data) ? data[0] : data) ?? null;
+  }
+  const freiBis = phase?.frei_bis
+    ? new Date(phase.frei_bis).toLocaleDateString("de-DE", { timeZone: "Europe/Berlin" })
+    : null;
+  const restEmpfehlungen = Math.max(0, KENNENLERN_EMPFEHLUNGEN - (phase?.empfehlungen ?? 0));
+
   return (
     <div className="max-w-2xl">
       <Link
@@ -73,12 +90,29 @@ export default async function KontaktBearbeiten(
       )}
 
       {/* Bestätigung */}
-      {kontakt.status === "bestaetigt" ? (
+      {kontakt.status === "bestaetigt" && phase?.pausiert ? (
+        <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900">
+          <p className="font-semibold">Kennenlernphase beendet</p>
+          <p className="mt-1">
+            {kontakt.name} hat die kostenlose Kennenlernphase genutzt und ist
+            pausiert, bis eine Mitgliedschaft abgeschlossen wird. Bis dahin ist
+            der Kontakt in der Suche nicht sichtbar. Die Daten bleiben erhalten
+            und zählen weiter als dein Pflichtkontakt.
+          </p>
+        </div>
+      ) : kontakt.status === "bestaetigt" ? (
         <div className="mt-6 rounded-xl border border-green-200 bg-green-50 p-5 text-sm leading-6 text-green-900">
           {kontakt.name} hat zugestimmt und ist im Netzwerk sichtbar und
           empfehlbar.
           {kontakt.interesse_mitgliedschaft && (
             <> Außerdem besteht Interesse, selbst Mitglied zu werden.</>
+          )}
+          {phase && !phase.ist_mitglied && (
+            <p className="mt-2 text-green-800">
+              Kostenlose Kennenlernphase: noch {restEmpfehlungen}{" "}
+              {restEmpfehlungen === 1 ? "Empfehlung" : "Empfehlungen"}
+              {freiBis && <>, längstens bis {freiBis}</>}.
+            </p>
           )}
         </div>
       ) : (
