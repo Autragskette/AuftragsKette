@@ -1,12 +1,31 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { visitenkarteLaden } from "@/lib/visitenkarte";
+import { basisUrl } from "@/lib/url";
 import VisitenkarteAnsicht from "@/app/components/VisitenkarteAnsicht";
 
-export const metadata: Metadata = {
-  title: "Empfehlung",
-  robots: { index: false },
-};
+/** Titel und Vorschaubild für WhatsApp & Co.: die Visitenkarte als Bild */
+export async function generateMetadata(props: PageProps<"/k/[token]">): Promise<Metadata> {
+  const { token } = await props.params;
+  const k = await visitenkarteLaden(token);
+  if (!k) return { title: "Empfehlung", robots: { index: false } };
+
+  const titel = k.firma ? `${k.name} – ${k.firma}` : k.name;
+  const beschreibung = [k.leistung, k.ort].filter(Boolean).join(" · ");
+  const bild = `${await basisUrl()}/k/${token}/bild`;
+  return {
+    title: titel,
+    description: beschreibung,
+    robots: { index: false },
+    openGraph: {
+      type: "profile",
+      title: titel,
+      description: `${beschreibung}${beschreibung ? " · " : ""}Empfohlen von ${k.empfohlen_von}`,
+      images: [{ url: bild, width: 1200, height: 630, alt: `Visitenkarte von ${k.name}` }],
+    },
+    twitter: { card: "summary_large_image", images: [bild] },
+  };
+}
 
 export default async function Visitenkarte(props: PageProps<"/k/[token]">) {
   const { token } = await props.params;
