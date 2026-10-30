@@ -131,10 +131,7 @@ export default async function KontaktBearbeiten(
             </p>
           )}
           <div className="mt-4">
-            <SchnellEmpfehlen kontaktId={id} breit />
-            <Link href={`/dashboard/empfehlen/${id}`} className="mt-2 block text-center text-sm font-semibold text-green-900 underline">
-              Mit Kundendaten empfehlen
-            </Link>
+            <SchnellEmpfehlen kontaktId={id} partnerName={kontakt.firma || kontakt.name} breit />
           </div>
         </div>
       ) : (

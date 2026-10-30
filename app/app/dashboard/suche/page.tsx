@@ -215,13 +215,7 @@ function TrefferZeile({ t, gesperrt }: { t: MitEntfernung; gesperrt?: boolean })
         </p>
       </div>
       <div className="flex shrink-0 flex-col items-stretch gap-2">
-        <SchnellEmpfehlen kontaktId={t.id} />
-        <Link
-          href={`/dashboard/empfehlen/${t.id}`}
-          className="px-2 text-center text-xs font-semibold text-slate-500"
-        >
-          mit Kundendaten
-        </Link>
+        <SchnellEmpfehlen kontaktId={t.id} partnerName={t.firma || t.name} />
         {!t.eigener && (
           <form action={netzwerkKontaktEinladen.bind(null, t.id)}>
             <button type="submit" className="w-full rounded-xl px-2 py-1 text-center text-xs font-semibold text-kette">

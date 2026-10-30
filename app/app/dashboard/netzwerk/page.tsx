@@ -177,10 +177,7 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
               </Link>
               {k.status === "bestaetigt" && (
                 <div className="flex items-center gap-3 border-t border-linie px-5 py-3">
-                  <SchnellEmpfehlen kontaktId={k.id} />
-                  <Link href={`/dashboard/empfehlen/${k.id}`} className="text-xs font-semibold text-slate-500">
-                    mit Kundendaten
-                  </Link>
+                  <SchnellEmpfehlen kontaktId={k.id} partnerName={k.firma || k.name} />
                 </div>
               )}
             </li>
