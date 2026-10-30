@@ -5,6 +5,7 @@ import { entfernungKm, orteImUmkreis, plzKoordinate, punktFinden } from "@/lib/g
 import { UMKREISE, UMKREIS_STANDARD } from "@/lib/geo/umkreis";
 import SuchKarte from "@/app/components/SuchKarte";
 import NurFuerMitglieder from "@/app/components/NurFuerMitglieder";
+import SchnellEmpfehlen from "@/app/components/SchnellEmpfehlen";
 import { netzwerkKontaktEinladen } from "../netzwerk/actions";
 
 export const metadata: Metadata = {
@@ -214,11 +215,12 @@ function TrefferZeile({ t, gesperrt }: { t: MitEntfernung; gesperrt?: boolean })
         </p>
       </div>
       <div className="flex shrink-0 flex-col items-stretch gap-2">
+        <SchnellEmpfehlen kontaktId={t.id} />
         <Link
           href={`/dashboard/empfehlen/${t.id}`}
-          className="rounded-xl bg-kette px-4 py-2.5 text-center text-sm font-semibold text-white"
+          className="px-2 text-center text-xs font-semibold text-slate-500"
         >
-          Empfehlen
+          mit Kundendaten
         </Link>
         {!t.eigener && (
           <form action={netzwerkKontaktEinladen.bind(null, t.id)}>

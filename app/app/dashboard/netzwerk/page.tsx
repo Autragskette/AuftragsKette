@@ -4,6 +4,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import StatusPlakette from "@/app/components/StatusPlakette";
 import PflichtKontakte from "@/app/components/PflichtKontakte";
+import SchnellEmpfehlen from "@/app/components/SchnellEmpfehlen";
 import {
   aktuellesMitglied,
   ohneStartkontakteMoeglich,
@@ -146,10 +147,10 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
       {kontakte.length > 0 && (
         <ul className="mt-6 grid gap-4 lg:grid-cols-2">
           {kontakte.map((k) => (
-            <li key={k.id}>
+            <li key={k.id} className="flex flex-col overflow-hidden rounded-2xl border border-linie bg-white hover:border-blue-300">
               <Link
                 href={`/dashboard/netzwerk/${k.id}`}
-                className="block h-full rounded-2xl border border-linie bg-white p-5 hover:border-blue-300"
+                className="block flex-1 p-5"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
@@ -174,6 +175,14 @@ export default async function MeinNetzwerk(props: PageProps<"/dashboard/netzwerk
                   {k.telefon && <span>{k.telefon}</span>}
                 </div>
               </Link>
+              {k.status === "bestaetigt" && (
+                <div className="flex items-center gap-3 border-t border-linie px-5 py-3">
+                  <SchnellEmpfehlen kontaktId={k.id} />
+                  <Link href={`/dashboard/empfehlen/${k.id}`} className="text-xs font-semibold text-slate-500">
+                    mit Kundendaten
+                  </Link>
+                </div>
+              )}
             </li>
           ))}
         </ul>

@@ -9,6 +9,7 @@ import { KENNENLERN_EMPFEHLUNGEN } from "@/lib/preise";
 import { mailtoLink, whatsappLink } from "@/lib/teilen";
 import { basisUrl } from "@/lib/url";
 import StatusPlakette from "@/app/components/StatusPlakette";
+import SchnellEmpfehlen from "@/app/components/SchnellEmpfehlen";
 import TeilenKnoepfe from "@/app/components/TeilenKnoepfe";
 import ProfilFehlt from "@/app/components/ProfilFehlt";
 import KontaktFormular from "../KontaktFormular";
@@ -129,6 +130,12 @@ export default async function KontaktBearbeiten(
               {freiBis && <>, längstens bis {freiBis}</>}.
             </p>
           )}
+          <div className="mt-4">
+            <SchnellEmpfehlen kontaktId={id} breit />
+            <Link href={`/dashboard/empfehlen/${id}`} className="mt-2 block text-center text-sm font-semibold text-green-900 underline">
+              Mit Kundendaten empfehlen
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="mt-6 rounded-xl border border-amber-200 bg-white p-6">
